@@ -19,11 +19,13 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.ActionBar.OnNavigationListener;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.MenuItem;
 
@@ -31,7 +33,7 @@ import douzi.android.qexport.QExport.ExportListener;
 import douzifly.android.uilib.GridProgressBar;
 
 public class MainActivity extends SherlockActivity 
-       implements OnClickListener,ExportListener,OnItemClickListener {
+       implements OnClickListener,ExportListener,OnItemClickListener, OnNavigationListener {
 	
 	QExport            mQExport;
 	Button             mScanButton;
@@ -42,6 +44,8 @@ public class MainActivity extends SherlockActivity
 	ResultAdapter      mAdapter;
 	List<Integer>      mMergeing = new ArrayList<Integer>();
 	GridProgressBar    mProgress;
+	
+	String[]		   mNavigations = new String[]{"我的文件", "合并分享"};
 	
 
 	@Override
@@ -69,6 +73,10 @@ public class MainActivity extends SherlockActivity
 		bar.setHomeButtonEnabled(true);
 		bar.setTitle("");
 		bar.setBackgroundDrawable(new ColorDrawable(0xff0099cc));
+		
+		bar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+		
+		bar.setListNavigationCallbacks(new ArrayAdapter<String>(this, R.layout.navigation_text, mNavigations), this);
 	}
 	
 	@Override
@@ -246,4 +254,10 @@ public class MainActivity extends SherlockActivity
 	    super.onDestroy();
 	    android.os.Process.killProcess(Process.myPid());
 	}
+
+	@Override
+	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
+		return false;
+	}
+
 }

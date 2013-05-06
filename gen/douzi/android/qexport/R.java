@@ -969,13 +969,14 @@ containing a value of this type.
         public static final int homeAsUp=0x7f040006;
         public static final int listMode=0x7f040002;
         public static final int listResult=0x7f040033;
-        public static final int menu_settings=0x7f04003a;
+        public static final int menu_settings=0x7f04003b;
         public static final int normal=0x7f040001;
         public static final int progressBar=0x7f040035;
         public static final int showCustom=0x7f040008;
         public static final int showHome=0x7f040005;
         public static final int showTitle=0x7f040007;
         public static final int tabMode=0x7f040003;
+        public static final int textView1=0x7f04003a;
         public static final int txtName=0x7f040038;
         public static final int txtProgress=0x7f040037;
         public static final int txtSize=0x7f040039;
@@ -1011,8 +1012,9 @@ containing a value of this type.
         public static final int abs__simple_dropdown_hint=0x7f030016;
         public static final int activity_main=0x7f030017;
         public static final int list_result_item=0x7f030018;
-        public static final int sherlock_spinner_dropdown_item=0x7f030019;
-        public static final int sherlock_spinner_item=0x7f03001a;
+        public static final int navigation_text=0x7f030019;
+        public static final int sherlock_spinner_dropdown_item=0x7f03001a;
+        public static final int sherlock_spinner_item=0x7f03001b;
     }
     public static final class menu {
         public static final int activity_main=0x7f0b0000;

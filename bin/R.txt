@@ -292,13 +292,14 @@ int id edit_query 0x7f040027
 int id homeAsUp 0x7f040006
 int id listMode 0x7f040002
 int id listResult 0x7f040033
-int id menu_settings 0x7f04003a
+int id menu_settings 0x7f04003b
 int id normal 0x7f040001
 int id progressBar 0x7f040035
 int id showCustom 0x7f040008
 int id showHome 0x7f040005
 int id showTitle 0x7f040007
 int id tabMode 0x7f040003
+int id textView1 0x7f04003a
 int id txtName 0x7f040038
 int id txtProgress 0x7f040037
 int id txtSize 0x7f040039
@@ -330,8 +331,9 @@ int layout abs__search_view 0x7f030015
 int layout abs__simple_dropdown_hint 0x7f030016
 int layout activity_main 0x7f030017
 int layout list_result_item 0x7f030018
-int layout sherlock_spinner_dropdown_item 0x7f030019
-int layout sherlock_spinner_item 0x7f03001a
+int layout navigation_text 0x7f030019
+int layout sherlock_spinner_dropdown_item 0x7f03001a
+int layout sherlock_spinner_item 0x7f03001b
 int menu activity_main 0x7f0b0000
 int string abs__action_bar_home_description 0x7f090000
 int string abs__action_bar_up_description 0x7f090001
