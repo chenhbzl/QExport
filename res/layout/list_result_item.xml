@@ -14,7 +14,7 @@
         android:layout_centerVertical="true"
         android:layout_marginRight="3dp"
         android:text="50%"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="18sp"
         android:textColor="#005500"
         android:visibility="gone" />
     

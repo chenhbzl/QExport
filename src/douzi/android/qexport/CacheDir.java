@@ -107,6 +107,7 @@ public class CacheDir {
 		}
 		v.paths = files;
 		v.size = size;
+		v.hash = "qvod://" + v.size + "|" + f.getName() + "|" + v.name+"|";
 		return v;
 	}
 	

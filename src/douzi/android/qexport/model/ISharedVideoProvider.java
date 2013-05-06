@@ -19,4 +19,6 @@ public interface ISharedVideoProvider {
 	public interface OnSharedVideoLoadedListener{
 		public void onVideoLoaded(boolean sucess, List<SharedVideoInfo> videos);
 	}
+	
+	public void updateVideo(SharedVideoInfo v);
 }

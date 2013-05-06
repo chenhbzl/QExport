@@ -9,7 +9,6 @@ package douzi.android.qexport;
 import java.util.List;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,12 +58,9 @@ public class SharedVideoAdapter extends BaseAdapter {
 		if(arg1 == null){
 			LayoutInflater lf = (LayoutInflater) mContext.
 					getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			v = lf.inflate(R.layout.list_result_item, null);
+			v = lf.inflate(R.layout.list_shared_item, null);
 			ViewHolder holder = new ViewHolder();
-			holder.textName = (TextView)v.findViewById(R.id.txtName);
-			holder.textSize = (TextView)v.findViewById(R.id.txtSize);
-			holder.textProgress = (TextView) v.findViewById(R.id.txtProgress);
-			holder.container = v;
+			holder.textTitle = (TextView)v.findViewById(R.id.txt_title);
 			v.setTag(holder);
 			tag = holder;
 		}else{
@@ -76,17 +72,11 @@ public class SharedVideoAdapter extends BaseAdapter {
 	}
 	
 	public static class ViewHolder{
-		public TextView textName;
-		public TextView textSize;
-		public TextView textProgress;
-		public View container;
+		public TextView textTitle;
 	}
 
 	private void updateTag(ViewHolder tag, int pos){
 		SharedVideoInfo v = mVideos.get(pos);
-		tag.textName.setText(v.title);
-		tag.textSize.setText("");
-		tag.textProgress.setVisibility(View.GONE);
-		tag.container.setBackgroundColor(Color.TRANSPARENT);
+		tag.textTitle.setText(v.title);
 	}
 }

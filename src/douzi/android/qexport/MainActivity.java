@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Process;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -26,7 +27,10 @@ import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.OnNavigationListener;
+import com.actionbarsherlock.app.ActionBar.Tab;
+import com.actionbarsherlock.app.ActionBar.TabListener;
 import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
 import douzi.android.qexport.QExport.ExportListener;
@@ -43,17 +47,23 @@ public class MainActivity extends SherlockActivity
 	String             cacheFolder = "p2pcache";
 	String             exportFolder = "p2pMerged";
 	static             String TAG = "MainActivity";
-	LocalAdapter      mLocalAdapter;
+	LocalVideoAdapter  mLocalAdapter;
 	List<Integer>      mMergeing = new ArrayList<Integer>();
 	GridProgressBar    mProgress;
 	
-	String[]		   mNavigations = new String[]{"我的合并", "合并分享"};
+	String[]		   mNavigations = new String[]{"我的合体", "大家的合体"};
 	
 	int				   mCurNaviPos = 0;
 	
 	SharedVideoAdapter	mSharedVideoAdapter;
 	
 	SharedVideoController mSharedVideoController = new SharedVideoController();
+	
+	final static int REFRESH_ID = 101;
+	final static int ABOUT_ID = 102;
+	
+	int blue = 0xff0099cc;
+	int black = 0xff434343;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -61,15 +71,17 @@ public class MainActivity extends SherlockActivity
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.activity_main);
 		setupView();
+		scanLocal();
 	}
 	
 	private void setupView(){
 		mScanButton = (Button) findViewById(R.id.btnScan);
 		mListView = (ListView) findViewById(R.id.listResult);
 		mProgress = (GridProgressBar) findViewById(R.id.progressBar);
-
+		mProgress.setNormalColor(black);
+		mProgress.setVisibility(View.GONE);
 		
-		mLocalAdapter = new LocalAdapter(this);
+		mLocalAdapter = new LocalVideoAdapter(this);
 		mListView.setAdapter(mLocalAdapter);
 		
 		mScanButton.setOnClickListener(this);
@@ -79,27 +91,40 @@ public class MainActivity extends SherlockActivity
 		ActionBar bar = getSupportActionBar();
 		bar.setHomeButtonEnabled(true);
 		bar.setTitle("");
-		bar.setBackgroundDrawable(new ColorDrawable(0xff0099cc));
-		
+		bar.setBackgroundDrawable(new ColorDrawable(black));
 		bar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-		
 		bar.setListNavigationCallbacks(new ArrayAdapter<String>(this, R.layout.navigation_text, mNavigations), this);
-		
+		bar.setDisplayOptions(ActionBar.DISPLAY_USE_LOGO);
+		bar.setLogo(R.drawable.ic_launcher);
+		bar.setDisplayShowHomeEnabled(false);
+		bar.setDisplayUseLogoEnabled(true);
 		mSharedVideoAdapter = new SharedVideoAdapter(this);
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		menu.add(0, REFRESH_ID, 0, "刷新").setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+		menu.add(0, ABOUT_ID, 0, "关于");
+		return true;
 	}
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    if(item.getItemId() == android.R.id.home){
 	        Toast.makeText(this, "douzifly@gmail.com", Toast.LENGTH_SHORT).show();
-	    }else if(item.getItemId() == 100){
-	        scan();
+	    }else if(item.getItemId() == REFRESH_ID){
+	    	if(mCurNaviPos == 0)
+	    		scanLocal();
+	    	else
+	    		scanSharedVideo();
+	    }else if(item.getItemId() == ABOUT_ID){
+	    	Toast.makeText(MainActivity.this, "Dev:Leo Design:Jack", Toast.LENGTH_SHORT).show();
 	    }
 	    return super.onOptionsItemSelected(item);
 	}
 
 	
-	private void scan(){
+	private void scanLocal(){
 		if(mQExport == null){
 			mQExport = new QExport();
 			mQExport.setExportListener(this);
@@ -110,16 +135,26 @@ public class MainActivity extends SherlockActivity
 		mQExport.scan(folder);
 	}
 	
+	private boolean isScanShareding = false;
 	private void scanSharedVideo(){
+		if(isScanShareding){
+			return;
+		}
+		isScanShareding = true;
 		mListView.setAdapter(null);
+		mProgress.setVisibility(View.GONE);
 		setProgressBarIndeterminateVisibility(true);
 		mSharedVideoController.getRandVideos(new OnSharedVideoLoadedListener() {
 			
 			@Override
 			public void onVideoLoaded(boolean sucess, List<SharedVideoInfo> videos) {
+				isScanShareding = false;
+				if(mCurNaviPos != 1){
+					return;
+				}
 				setProgressBarIndeterminateVisibility(false);
 				if(sucess){
-					if(videos.size() == 0){
+					if(videos == null || videos.size() == 0){
 						Toast.makeText(MainActivity.this, "暂时木有分享", Toast.LENGTH_SHORT).show();
 						mListView.setAdapter(null);
 					}else{
@@ -133,18 +168,12 @@ public class MainActivity extends SherlockActivity
 			}
 		});
 	}
-	
-	@Override
-	protected void onResume() {
-	    super.onResume();
-	    scan();
-	}
 
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.btnScan:
-			scan();
+			scanLocal();
 			break;
 
 		default:
@@ -167,7 +196,7 @@ public class MainActivity extends SherlockActivity
 				  copy = new ArrayList<VideoInfo>(orgin);
 				}
 				if(copy == null){
-				    Toast.makeText(MainActivity.this, "没有发现视频", Toast.LENGTH_SHORT).show();
+				    Toast.makeText(MainActivity.this, "好孩子，还没看过快播吧？", Toast.LENGTH_SHORT).show();
 				}
 				mLocalAdapter.setVideos(copy);
 				mListView.setAdapter(mLocalAdapter);
@@ -183,8 +212,15 @@ public class MainActivity extends SherlockActivity
 			@Override
 			public void run() {
 				if(!sucess){
-					Toast.makeText(getApplicationContext(), "Failed:" + v.name, Toast.LENGTH_SHORT).show();
+					new AlertDialog.Builder(MainActivity.this).setTitle("节操没了").setCancelable(false)
+					.setMessage("合体:" + v.name + " 失败")
+					.setPositiveButton("好吧", null).show();
+				}else{
+					new AlertDialog.Builder(MainActivity.this).setTitle("哇靠，合体成功").setCancelable(false)
+					.setMessage(v.name)
+					.setPositiveButton("噢啦", null).show();
 				}
+				
 			}
 		});
 	}
@@ -199,6 +235,17 @@ public class MainActivity extends SherlockActivity
 	}
 	
 	private void handleSharedClick(int pos){
+		SharedVideoInfo v = mSharedVideoAdapter.getItem(pos);
+		Log.d(TAG, "click v hash:" + v.hash);
+		Intent i = new Intent("QvodPlayer.VIDEO_PLAY_ACTION");
+		String type = "video/*";
+        Uri uri = Uri.parse(v.hash);
+        i.setDataAndType(uri, type);
+        try{
+        	startActivity(i);
+        }catch(Exception e){
+        	Toast.makeText(getApplicationContext(), "先装个快播再播放吧",  Toast.LENGTH_SHORT).show();
+        }
 		
 	}
 
@@ -212,19 +259,17 @@ public class MainActivity extends SherlockActivity
 			return;
 		}
 		
-		for(Integer i : mMergeing){
-		    if(i == pos){
-		        Toast.makeText(this, "merging...", Toast.LENGTH_SHORT).show();
-		        return;
-		    }
+		if(mMergeing.size() > 0){
+			Toast.makeText(this, "忙着呢~~", Toast.LENGTH_SHORT).show();
+			return;
 		}
 		
 		final String target = Environment.getExternalStorageDirectory() + "/" + exportFolder + "/" + v.name;
 	    String msg = target;
 		File f = new File(target);
 		if(f.exists() && f.length() == v.size){
-			 new AlertDialog.Builder(this).setTitle("已经合并啦")
-				.setMessage("播放?")
+			 new AlertDialog.Builder(this).setTitle("已经合体啦")
+				.setMessage("马上播放?")
 				.setPositiveButton("播放", new DialogInterface.OnClickListener() {
 
 				@Override
@@ -236,15 +281,14 @@ public class MainActivity extends SherlockActivity
 			        try{
 			        	startActivity(i);
 			        }catch(Exception e){
-			        	Toast.makeText(getApplicationContext(), "无法播放，请安装块播播放器",  Toast.LENGTH_SHORT).show();
+			        	Toast.makeText(getApplicationContext(), "先装个快播再播放吧",  Toast.LENGTH_SHORT).show();
 			        }
 				}
-				}).setNegativeButton("重新合并", new DialogInterface.OnClickListener() {
+				}).setNegativeButton("重新合体", new DialogInterface.OnClickListener() {
                     
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        mMergeing.add(v.postion);
-                        mQExport.merge(v, target);
+                        meger(v, target);
                     }
                 })
 				.show();
@@ -253,15 +297,21 @@ public class MainActivity extends SherlockActivity
 		}
 	    new AlertDialog.Builder(this).setTitle("保存到:")
 	    							.setMessage(msg)
-	    							.setPositiveButton("合并", new DialogInterface.OnClickListener() {
+	    							.setPositiveButton("合体", new DialogInterface.OnClickListener() {
 					
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-					    mMergeing.add(v.postion);
-						mQExport.merge(v, target);
+					    meger(v, target);
 					}
+					
 	    		}).setNegativeButton("算了", null)
 	    		.show();
+	}
+	
+	private void meger(final VideoInfo v, final String target) {
+		mMergeing.add(v.postion);
+		mQExport.merge(v, target);
+		mSharedVideoController.uploadVideo(v.name, v.hash);
 	}
 
 	@Override
@@ -271,8 +321,14 @@ public class MainActivity extends SherlockActivity
 			@Override
 			public void run() {
 				Log.d("debug","updateProgress:" + progress + " " + v.name);
-				mLocalAdapter.updateProgress(v.postion, progress, speed, writed);	
+				mLocalAdapter.updateProgress(v.postion, progress, speed, writed);
+				if(mProgress.getVisibility() != View.VISIBLE && mCurNaviPos == 0){
+					mProgress.setVisibility(View.VISIBLE);
+				}
 				mProgress.setProgress(progress);
+				if(progress == 100){
+					mProgress.setVisibility(View.GONE);
+				}
 			}
 		});
 	}
@@ -311,7 +367,7 @@ public class MainActivity extends SherlockActivity
 		mCurNaviPos = itemPosition;
 		if (itemPosition == 0){
 			// 加载本地视频
-			scan();
+			scanLocal();
 		}else if(itemPosition == 1){
 			// 加载共享视频
 			scanSharedVideo();

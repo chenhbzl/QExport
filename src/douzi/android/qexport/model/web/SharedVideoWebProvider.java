@@ -16,7 +16,9 @@ import org.json.JSONObject;
 import android.util.Log;
 
 import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 
 import douzi.android.qexport.model.ISharedVideoProvider;
 import douzi.android.qexport.model.SharedVideoInfo;
@@ -29,6 +31,7 @@ import douzi.android.qexport.model.SharedVideoInfo;
 public class SharedVideoWebProvider implements ISharedVideoProvider{
 	
 	public final static String URL_RAND = "http://dzsvr.sinaapp.com/rand";
+	public final static String URL_UPLOAD = "http://dzsvr.sinaapp.com/add";
 	public final static String TAG = "VideoWebProvider";
 
 	AsyncHttpClient mClient = new AsyncHttpClient();
@@ -58,6 +61,14 @@ public class SharedVideoWebProvider implements ISharedVideoProvider{
 			}
 			
 			@Override
+			public void onFailure(Throwable e, JSONObject errorResponse) {
+				// TODO Auto-generated method stub
+				super.onFailure(e, errorResponse);
+				Log.d(TAG, "onFailure json");
+				l.onVideoLoaded(false, null);
+			}
+			
+			@Override
 			public void onFailure(Throwable error, String content) {
 				super.onFailure(error, content);
 				Log.d(TAG, "onFailure content:" + content);
@@ -65,7 +76,44 @@ public class SharedVideoWebProvider implements ISharedVideoProvider{
 			}
 			
 			@Override
+			public void onSuccess(int statusCode, JSONObject response) {
+				super.onSuccess(statusCode, response);
+				Log.d(TAG, "onSucess jsonObject");
+				l.onVideoLoaded(true, null);
+			}
+			
+			@Override
 			public void onFinish() {
+				super.onFinish();
+				Log.d(TAG, "onFinish");
+			}
+		});
+	}
+
+	@Override
+	public void updateVideo(SharedVideoInfo v) {
+		Log.d(TAG, "updateVideo t:" + v.title + " h:" + v.hash);
+		RequestParams params = new RequestParams();
+		params.put("t", v.title);
+		params.put("h", v.hash);
+		mClient.get(URL_UPLOAD, params, new AsyncHttpResponseHandler(){
+			@Override
+			public void onSuccess(String content) {
+				// TODO Auto-generated method stub
+				super.onSuccess(content);
+				Log.d(TAG, "onSuccess:"+ content);
+			}
+			
+			@Override
+			public void onFailure(Throwable error, String content) {
+				// TODO Auto-generated method stub
+				super.onFailure(error, content);
+				Log.d(TAG, "onFailure:"+ content);
+			}
+			
+			@Override
+			public void onFinish() {
+				// TODO Auto-generated method stub
 				super.onFinish();
 				Log.d(TAG, "onFinish");
 			}

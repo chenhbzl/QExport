@@ -105,11 +105,13 @@ public class QExport {
 						log("progress:"+newProgress+ " " + v.name);
 						long time = System.currentTimeMillis();
 						long speed = 0;
-						if(time-lastTime > 1000){
-						    speed = (writed - lastWrite) / ((time - lastTime) / 1000);
-						    lastTime = time;
-						    lastWrite = writed;
+						long timediff = time - lastTime;
+						if(timediff < 1000){
+							timediff = 1000;
 						}
+						speed = (writed - lastWrite) / (timediff / 1000);
+						lastTime = time;
+						lastWrite = writed;
 						mListener.onMergeProgress(v, newProgress, (int)speed, writed);
 						oldProgress = newProgress;
 					}

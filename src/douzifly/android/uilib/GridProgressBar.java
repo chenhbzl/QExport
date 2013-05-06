@@ -37,6 +37,16 @@ public class GridProgressBar extends View {
         int l,t,r,b;
         boolean animating;
     }
+    
+    public void setNormalColor(int color){
+    	mNormalColor = color;
+    	invalidate();
+    }
+    
+    public void setCoverColor(int color){
+    	mCoverColor = color;
+    	invalidate();
+    }
   
     public GridProgressBar(Context context) {
         super(context);
