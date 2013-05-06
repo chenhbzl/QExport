@@ -47,6 +47,7 @@ public class MainActivity extends SherlockActivity
 	
 	String[]		   mNavigations = new String[]{"我的合并", "合并分享"};
 	
+	int				   mCurNaviPos = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -257,7 +258,14 @@ public class MainActivity extends SherlockActivity
 
 	@Override
 	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
-		return false;
+		if(itemPosition == mCurNaviPos){
+			return true;
+		}
+		mCurNaviPos = itemPosition;
+		if(itemPosition == 1){
+			mAdapter.setVideos(null);
+		}
+		return true;
 	}
 
 }
