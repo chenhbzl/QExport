@@ -30,6 +30,8 @@ import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.MenuItem;
 
 import douzi.android.qexport.QExport.ExportListener;
+import douzi.android.qexport.model.ISharedVideoProvider.OnSharedVideoLoadedListener;
+import douzi.android.qexport.model.SharedVideoInfo;
 import douzifly.android.uilib.GridProgressBar;
 
 public class MainActivity extends SherlockActivity 
@@ -37,17 +39,21 @@ public class MainActivity extends SherlockActivity
 	
 	QExport            mQExport;
 	Button             mScanButton;
-	ListView           mResultListView;
+	ListView           mListView;
 	String             cacheFolder = "p2pcache";
 	String             exportFolder = "p2pMerged";
 	static             String TAG = "MainActivity";
-	ResultAdapter      mAdapter;
+	LocalAdapter      mLocalAdapter;
 	List<Integer>      mMergeing = new ArrayList<Integer>();
 	GridProgressBar    mProgress;
 	
 	String[]		   mNavigations = new String[]{"我的合并", "合并分享"};
 	
 	int				   mCurNaviPos = 0;
+	
+	SharedVideoAdapter	mSharedVideoAdapter;
+	
+	SharedVideoController mSharedVideoController = new SharedVideoController();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -59,15 +65,15 @@ public class MainActivity extends SherlockActivity
 	
 	private void setupView(){
 		mScanButton = (Button) findViewById(R.id.btnScan);
-		mResultListView = (ListView) findViewById(R.id.listResult);
+		mListView = (ListView) findViewById(R.id.listResult);
 		mProgress = (GridProgressBar) findViewById(R.id.progressBar);
 
 		
-		mAdapter = new ResultAdapter(this);
-		mResultListView.setAdapter(mAdapter);
+		mLocalAdapter = new LocalAdapter(this);
+		mListView.setAdapter(mLocalAdapter);
 		
 		mScanButton.setOnClickListener(this);
-		mResultListView.setOnItemClickListener(this);
+		mListView.setOnItemClickListener(this);
 		setProgressBarIndeterminateVisibility(false);
 		
 		ActionBar bar = getSupportActionBar();
@@ -78,6 +84,8 @@ public class MainActivity extends SherlockActivity
 		bar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 		
 		bar.setListNavigationCallbacks(new ArrayAdapter<String>(this, R.layout.navigation_text, mNavigations), this);
+		
+		mSharedVideoAdapter = new SharedVideoAdapter(this);
 	}
 	
 	@Override
@@ -100,6 +108,30 @@ public class MainActivity extends SherlockActivity
 		String folder = Environment.getExternalStorageDirectory() + "/" + cacheFolder;
 		mScanButton.setEnabled(false);
 		mQExport.scan(folder);
+	}
+	
+	private void scanSharedVideo(){
+		mListView.setAdapter(null);
+		setProgressBarIndeterminateVisibility(true);
+		mSharedVideoController.getRandVideos(new OnSharedVideoLoadedListener() {
+			
+			@Override
+			public void onVideoLoaded(boolean sucess, List<SharedVideoInfo> videos) {
+				setProgressBarIndeterminateVisibility(false);
+				if(sucess){
+					if(videos.size() == 0){
+						Toast.makeText(MainActivity.this, "暂时木有分享", Toast.LENGTH_SHORT).show();
+						mListView.setAdapter(null);
+					}else{
+						mSharedVideoAdapter.setVideos(videos);
+						mListView.setAdapter(mSharedVideoAdapter);
+					}
+				}else{
+					mListView.setAdapter(null);
+					Toast.makeText(MainActivity.this, "貌似网络不给力", Toast.LENGTH_SHORT).show();
+				}
+			}
+		});
 	}
 	
 	@Override
@@ -137,7 +169,8 @@ public class MainActivity extends SherlockActivity
 				if(copy == null){
 				    Toast.makeText(MainActivity.this, "没有发现视频", Toast.LENGTH_SHORT).show();
 				}
-				mAdapter.setVideos(copy);
+				mLocalAdapter.setVideos(copy);
+				mListView.setAdapter(mLocalAdapter);
 			}
 		});
 	}
@@ -157,15 +190,30 @@ public class MainActivity extends SherlockActivity
 	}
 
 	@Override
-	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-		final VideoInfo v = mAdapter.getItem(arg2);
+	public void onItemClick(AdapterView<?> arg0, View arg1, int pos, long arg3) {
+		if(mCurNaviPos == 0){
+			handleLocalClick(pos);
+		}else if(mCurNaviPos == 1){
+			handleSharedClick(pos);
+		}
+	}
+	
+	private void handleSharedClick(int pos){
+		
+	}
+
+	/**
+	 * @param pos
+	 */
+	private void handleLocalClick(int pos) {
+		final VideoInfo v = mLocalAdapter.getItem(pos);
 		if(v == null){
 			Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
 			return;
 		}
 		
 		for(Integer i : mMergeing){
-		    if(i == arg2){
+		    if(i == pos){
 		        Toast.makeText(this, "merging...", Toast.LENGTH_SHORT).show();
 		        return;
 		    }
@@ -214,7 +262,6 @@ public class MainActivity extends SherlockActivity
 					}
 	    		}).setNegativeButton("算了", null)
 	    		.show();
-	    
 	}
 
 	@Override
@@ -224,7 +271,7 @@ public class MainActivity extends SherlockActivity
 			@Override
 			public void run() {
 				Log.d("debug","updateProgress:" + progress + " " + v.name);
-				mAdapter.updateProgress(v.postion, progress, speed, writed);	
+				mLocalAdapter.updateProgress(v.postion, progress, speed, writed);	
 				mProgress.setProgress(progress);
 			}
 		});
@@ -262,8 +309,12 @@ public class MainActivity extends SherlockActivity
 			return true;
 		}
 		mCurNaviPos = itemPosition;
-		if(itemPosition == 1){
-			mAdapter.setVideos(null);
+		if (itemPosition == 0){
+			// 加载本地视频
+			scan();
+		}else if(itemPosition == 1){
+			// 加载共享视频
+			scanSharedVideo();
 		}
 		return true;
 	}
