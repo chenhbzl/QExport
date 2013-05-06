@@ -45,7 +45,7 @@ public class MainActivity extends SherlockActivity
 	List<Integer>      mMergeing = new ArrayList<Integer>();
 	GridProgressBar    mProgress;
 	
-	String[]		   mNavigations = new String[]{"我的文件", "合并分享"};
+	String[]		   mNavigations = new String[]{"我的合并", "合并分享"};
 	
 
 	@Override
