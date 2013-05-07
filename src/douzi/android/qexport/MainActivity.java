@@ -241,6 +241,7 @@ public class MainActivity extends SherlockActivity
 		String type = "video/*";
         Uri uri = Uri.parse(v.hash);
         i.setDataAndType(uri, type);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         try{
         	startActivity(i);
         }catch(Exception e){
