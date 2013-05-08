@@ -2,10 +2,24 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="5dp"
-    android:layout_marginBottom="5dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
     android:orientation="vertical" >
-    
+
+    <FrameLayout
+        android:id="@+id/item_left_icon_container"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_centerVertical="true" >
+
+        <ImageView
+            android:id="@+id/icon_ok"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_ok" />
+    </FrameLayout>
+
     <TextView
         android:id="@+id/txtProgress"
         android:layout_width="wrap_content"
@@ -14,35 +28,37 @@
         android:layout_centerVertical="true"
         android:layout_marginRight="3dp"
         android:text="50%"
-        android:textSize="18sp"
         android:textColor="#005500"
+        android:textSize="18sp"
         android:visibility="gone" />
-    
-    <TextView android:id="@+id/txtName"
-        android:layout_height="wrap_content"
+
+    <TextView
+        android:id="@+id/txtSize"
         android:layout_width="wrap_content"
-        android:text="Name"
-        android:gravity="center_vertical"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginRight="5dp"
-  		android:layout_toLeftOf="@id/txtProgress"
-        android:singleLine="true"
-        android:layout_alignParentLeft="true"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        />
-    
-    <TextView android:id="@+id/txtSize"
         android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:text="Size"
-        android:layout_toLeftOf="@id/txtProgress"
-        android:layout_below="@id/txtName"
-        android:layout_marginLeft="5dp"
+        android:textColor="@color/list_item_file_size"
         android:layout_marginBottom="5dp"
-        android:textColor="#808080"
+        android:layout_marginLeft="5dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
         android:gravity="left|center_vertical"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        />
+        android:textSize="@dimen/list_local_text_size"
+        android:layout_marginRight="10dp"
+        android:text="100MB" />
+
+    <TextView
+        android:id="@+id/txtName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@id/txtSize"
+        android:layout_toRightOf="@+id/item_left_icon_container"
+        android:gravity="center_vertical"
+        android:maxLines="2"
+        android:text="Name"
+        android:textSize="@dimen/list_local_text_size"
+        android:textColor="@color/list_item_main" />
 
 </RelativeLayout>

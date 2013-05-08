@@ -7,7 +7,6 @@ import java.util.List;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -20,7 +19,6 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -39,7 +37,7 @@ import douzi.android.qexport.model.SharedVideoInfo;
 import douzifly.android.uilib.GridProgressBar;
 
 public class MainActivity extends SherlockActivity 
-       implements OnClickListener,ExportListener,OnItemClickListener, OnNavigationListener {
+       implements OnClickListener,ExportListener,OnItemClickListener, OnNavigationListener, TabListener {
 	
 	QExport            mQExport;
 	Button             mScanButton;
@@ -89,21 +87,27 @@ public class MainActivity extends SherlockActivity
 		setProgressBarIndeterminateVisibility(false);
 		
 		ActionBar bar = getSupportActionBar();
-		bar.setHomeButtonEnabled(true);
-		bar.setTitle("");
-		bar.setBackgroundDrawable(new ColorDrawable(black));
-		bar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-		bar.setListNavigationCallbacks(new ArrayAdapter<String>(this, R.layout.navigation_text, mNavigations), this);
-		bar.setDisplayOptions(ActionBar.DISPLAY_USE_LOGO);
-		bar.setLogo(R.drawable.ic_launcher);
-		bar.setDisplayShowHomeEnabled(false);
-		bar.setDisplayUseLogoEnabled(true);
+		bar.setHomeButtonEnabled(false);
+		bar.setTitle(mNavigations[0]);
+		bar.setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_action_bar));
+	
+		bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE|ActionBar.DISPLAY_SHOW_HOME);
+//		bar.setLogo(R.drawable.ic_launcher);
+//		bar.setDisplayShowHomeEnabled(false);
+//		bar.setDisplayUseLogoEnabled(true);
 		mSharedVideoAdapter = new SharedVideoAdapter(this);
+		
+		
+		// set navigation mode
+		bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		//bar.setListNavigationCallbacks(new ArrayAdapter<String>(this, R.layout.navigation_text, mNavigations), this);
+		bar.addTab(bar.newTab().setText(mNavigations[0]).setTabListener(this), true);
+		bar.addTab(bar.newTab().setText(mNavigations[1]).setTabListener(this));
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		menu.add(0, REFRESH_ID, 0, "刷新").setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+		menu.add(0, REFRESH_ID, 0, "刷新").setIcon(R.drawable.ic_refresh).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 		menu.add(0, ABOUT_ID, 0, "关于");
 		return true;
 	}
@@ -374,6 +378,36 @@ public class MainActivity extends SherlockActivity
 			scanSharedVideo();
 		}
 		return true;
+	}
+
+	@Override
+	public void onTabSelected(Tab tab, FragmentTransaction ft) {
+		// TODO Auto-generated method stub
+		int itemPosition = tab.getPosition();
+		if(itemPosition == mCurNaviPos){
+			return;
+		}
+		getSupportActionBar().setTitle(mNavigations[itemPosition]);
+		mCurNaviPos = itemPosition;
+		if (itemPosition == 0){
+			// 加载本地视频
+			scanLocal();
+		}else if(itemPosition == 1){
+			// 加载共享视频
+			scanSharedVideo();
+		}
+	}
+
+	@Override
+	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onTabReselected(Tab tab, FragmentTransaction ft) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

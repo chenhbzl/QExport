@@ -33,12 +33,14 @@ public class SharedVideoWebProvider implements ISharedVideoProvider{
 	public final static String URL_RAND = "http://dzsvr.sinaapp.com/rand";
 	public final static String URL_UPLOAD = "http://dzsvr.sinaapp.com/add";
 	public final static String TAG = "VideoWebProvider";
+	
+	public final static String URL_ALL = "http://dzsvr.sinaapp.com/?start=0&count=10000";
 
 	AsyncHttpClient mClient = new AsyncHttpClient();
 	
 	@Override
 	public void getVideos(final OnSharedVideoLoadedListener l) {
-		mClient.get(URL_RAND, new JsonHttpResponseHandler(){
+		mClient.get(URL_ALL, new JsonHttpResponseHandler(){
 			
 			@Override
 			public void onSuccess(JSONArray response) {
