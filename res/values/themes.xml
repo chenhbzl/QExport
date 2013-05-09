@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.QExport" parent="Theme.Sherlock">
+        <item name="android:actionBarStyle">@style/QExportActionBar</item>
+        <item name="android:actionBarTabStyle">@style/QExportActionBar.TabView</item>
+        <item name="android:actionBarTabBarStyle">@style/QExportActionBar.TabBar</item>
+    </style>
+</resources>

@@ -89,7 +89,6 @@ public class MainActivity extends SherlockActivity
 		ActionBar bar = getSupportActionBar();
 		bar.setHomeButtonEnabled(false);
 		bar.setTitle(mNavigations[0]);
-		bar.setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_action_bar));
 	
 		bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE|ActionBar.DISPLAY_SHOW_HOME);
 //		bar.setLogo(R.drawable.ic_launcher);

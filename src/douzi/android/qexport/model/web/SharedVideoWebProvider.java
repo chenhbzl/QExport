@@ -40,7 +40,7 @@ public class SharedVideoWebProvider implements ISharedVideoProvider{
 	
 	@Override
 	public void getVideos(final OnSharedVideoLoadedListener l) {
-		mClient.get(URL_ALL, new JsonHttpResponseHandler(){
+		mClient.get(URL_RAND, new JsonHttpResponseHandler(){
 			
 			@Override
 			public void onSuccess(JSONArray response) {
