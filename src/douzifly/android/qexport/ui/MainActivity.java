@@ -5,13 +5,11 @@ import java.util.List;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Process;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,15 +26,9 @@ import com.actionbarsherlock.view.MenuItem;
 import com.viewpagerindicator.TabPageIndicator;
 
 import douzi.android.qexport.R;
-import douzi.android.qexport.R.drawable;
-import douzi.android.qexport.R.id;
-import douzi.android.qexport.R.layout;
-import douzifly.android.qexport.controller.SharedVideoController;
-import douzifly.android.qexport.model.SharedVideoInfo;
-import douzifly.android.qexport.model.ISharedVideoProvider.OnSharedVideoLoadedListener;
 
 public class MainActivity extends SherlockFragmentActivity 
-       implements OnClickListener, OnNavigationListener, TabListener {
+       implements IActivity, OnClickListener, OnNavigationListener, TabListener {
 	
 	static String 			TAG = "MainActivity";
 	String[]		   		mNavigations = new String[]{"我的合体", "大家的合体"};
@@ -48,6 +40,7 @@ public class MainActivity extends SherlockFragmentActivity
 	
 	final static int REFRESH_ID = 101;
 	final static int ABOUT_ID = 102;
+	BaseFragment 		mCurrentFragment;
 	
 	private List<BaseFragment> mFragments = new ArrayList<BaseFragment>();
 
@@ -63,6 +56,27 @@ public class MainActivity extends SherlockFragmentActivity
 		setProgressBarIndeterminateVisibility(false);
 		
 		mIndicator = (TabPageIndicator) findViewById(R.id.indicator);
+		mIndicator.setOnPageChangeListener(new OnPageChangeListener() {
+			
+			@Override
+			public void onPageSelected(int arg0) {
+				BaseFragment fragment = mFragments.get(arg0);
+				if(fragment == mCurrentFragment){
+					return;
+				}
+				mCurrentFragment.onLeave();
+				fragment.onInto();
+				mCurrentFragment = fragment;
+			}
+			
+			@Override
+			public void onPageScrolled(int arg0, float arg1, int arg2) {
+			}
+			
+			@Override
+			public void onPageScrollStateChanged(int arg0) {
+			}
+		});
 		mPager = (ViewPager)findViewById(R.id.pager);
 		mPager.setAdapter(new MainPagerAdapter(getSupportFragmentManager()));
 		
@@ -81,10 +95,11 @@ public class MainActivity extends SherlockFragmentActivity
 	
 	private void initFragments(){
 		MainPagerAdapter adapter = (MainPagerAdapter) mPager.getAdapter();
-		mFragments.add(new LocalVideoFragment());
-		mFragments.add(new ShareVideoFragment());
+		mFragments.add(new LocalVideoFragment().setIActivity(this));
+		mFragments.add(new ShareVideoFragment().setIActivity(this));
 		adapter.setFragments(mFragments);
 		mIndicator.setViewPager(mPager);
+		mCurrentFragment = mFragments.get(0);
 	}
 
 	@Override
@@ -177,14 +192,22 @@ public class MainActivity extends SherlockFragmentActivity
 
 	@Override
 	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void onTabReselected(Tab tab, FragmentTransaction ft) {
-		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void showProgressOnActionBar() {
+		setProgressBarIndeterminateVisibility(true);
+	}
+
+	@Override
+	public void hideProgressOnActionBar() {
+		setProgressBarIndeterminateVisibility(false);
 	}
 
 }

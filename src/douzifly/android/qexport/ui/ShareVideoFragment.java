@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -53,7 +54,6 @@ public class ShareVideoFragment extends BaseFragment implements OnItemClickListe
 	
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		Log.d(TAG, "onViewCreated");
-		scanSharedVideo();
 	};
 	
 	View setupView(LayoutInflater inflater){
@@ -61,6 +61,14 @@ public class ShareVideoFragment extends BaseFragment implements OnItemClickListe
 		mListView = (ListView) v.findViewById(R.id.listView);
 		mBtnChange = (Button) v.findViewById(R.id.btn_change);
 		mListView.setAdapter(new SharedVideoAdapter(getActivity()));
+		
+		mBtnChange.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				scanSharedVideo();
+			}
+		});
 		return v;
 	}
 	
@@ -69,12 +77,14 @@ public class ShareVideoFragment extends BaseFragment implements OnItemClickListe
 		if(isScanShareding){
 			return;
 		}
+		showProgressOnActionBar();
 		isScanShareding = true;
 		mSharedVideoController.getRandVideos(new OnSharedVideoLoadedListener() {
 			
 			@Override
 			public void onVideoLoaded(boolean sucess, List<SharedVideoInfo> videos) {
 				isScanShareding = false;
+				hideProgressOnActionBar();
 				if(sucess){
 					if(videos == null || videos.size() == 0){
 						Toast.makeText(getActivity(), "暂时木有分享", Toast.LENGTH_SHORT).show();
@@ -109,5 +119,15 @@ public class ShareVideoFragment extends BaseFragment implements OnItemClickListe
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		handleSharedClick(arg2);
+	}
+	
+	boolean firstInto = true;
+	@Override
+	public void onInto() {
+		super.onInto();
+		if(firstInto){
+			scanSharedVideo();
+			firstInto = false;
+		}
 	}
 }

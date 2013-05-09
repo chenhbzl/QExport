@@ -87,6 +87,7 @@ public class LocalVideoFragment extends BaseFragment implements OnItemClickListe
 			mQExport = new QExport();
 			mQExport.setExportListener(this);
 		}
+		showProgressOnActionBar();
 		String folder = Environment.getExternalStorageDirectory() + "/" + cacheFolder;
 		mQExport.scan(folder);
 	}
@@ -104,6 +105,7 @@ public class LocalVideoFragment extends BaseFragment implements OnItemClickListe
 	@Override
 	public void onScanOk() {
 		Log.d(TAG,"onScanOk");
+		hideProgressOnActionBar();
 		getActivity().runOnUiThread(new Runnable() {
 			
 			@Override

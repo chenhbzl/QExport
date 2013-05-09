@@ -14,6 +14,13 @@ import android.support.v4.app.Fragment;
  */
 public class BaseFragment extends Fragment {
 	
+	IActivity activity;
+	
+	public BaseFragment setIActivity(IActivity a){
+		activity = a;
+		return this;
+	}
+	
 	public String getTitle(){
 		return "";
 	}
@@ -21,4 +28,18 @@ public class BaseFragment extends Fragment {
 	public boolean showRefreshButton(){
 		return false;
 	}
+	
+	public void showProgressOnActionBar(){
+		if(activity == null) return;
+		activity.showProgressOnActionBar();
+	}
+	
+	public void hideProgressOnActionBar(){
+		if(activity == null) return;
+		activity.hideProgressOnActionBar();
+	}
+	
+	public void onInto(){}
+	
+	public void onLeave(){}
 }
