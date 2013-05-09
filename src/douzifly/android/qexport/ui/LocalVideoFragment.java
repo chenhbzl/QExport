@@ -54,6 +54,17 @@ public class LocalVideoFragment extends BaseFragment implements OnItemClickListe
 	int black = 0xff434343;
 	
 	@Override
+	public boolean showRefreshButton() {
+		return true;
+	}
+	
+	@Override
+	public void onRefreshPressed() {
+		super.onRefreshPressed();
+		scanLocal();
+	}
+	
+	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View v = setupView(inflater);
@@ -105,11 +116,11 @@ public class LocalVideoFragment extends BaseFragment implements OnItemClickListe
 	@Override
 	public void onScanOk() {
 		Log.d(TAG,"onScanOk");
-		hideProgressOnActionBar();
 		getActivity().runOnUiThread(new Runnable() {
 			
 			@Override
 			public void run() {
+				hideProgressOnActionBar();
 				List<VideoInfo> orgin = mQExport.getVideos();
 				List<VideoInfo> copy = null;
 				if(orgin != null && orgin.size() > 0){

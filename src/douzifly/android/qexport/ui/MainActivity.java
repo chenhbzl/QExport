@@ -67,6 +67,7 @@ public class MainActivity extends SherlockFragmentActivity
 				mCurrentFragment.onLeave();
 				fragment.onInto();
 				mCurrentFragment = fragment;
+				updatePageState(mCurrentFragment);
 			}
 			
 			@Override
@@ -77,13 +78,15 @@ public class MainActivity extends SherlockFragmentActivity
 			public void onPageScrollStateChanged(int arg0) {
 			}
 		});
+		
 		mPager = (ViewPager)findViewById(R.id.pager);
 		mPager.setAdapter(new MainPagerAdapter(getSupportFragmentManager()));
 		
 		ActionBar bar = getSupportActionBar();
 		bar.setHomeButtonEnabled(false);
-		bar.setTitle(mNavigations[0]);
-		bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE|ActionBar.DISPLAY_SHOW_HOME);
+//		bar.setTitle(mNavigations[0]);
+		bar.setTitle(":)");
+		bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE);
 		// set navigation mode
 		bar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 		//bar.setListNavigationCallbacks(new ArrayAdapter<String>(this, R.layout.navigation_text, mNavigations), this);
@@ -101,12 +104,24 @@ public class MainActivity extends SherlockFragmentActivity
 		mIndicator.setViewPager(mPager);
 		mCurrentFragment = mFragments.get(0);
 	}
+	
+	void updatePageState(BaseFragment current){
+		invalidateOptionsMenu();
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		menu.add(0, REFRESH_ID, 0, "刷新").setIcon(R.drawable.ic_refresh).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+		boolean showRefresh = mCurrentFragment.showRefreshButton();
+		menu.add(0, REFRESH_ID, 0, "刷新").setIcon(R.drawable.ic_refresh).setVisible(showRefresh).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 		menu.add(0, ABOUT_ID, 0, "关于");
 		return true;
+	}
+	
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		boolean showRefresh = mCurrentFragment.showRefreshButton();
+		menu.getItem(0).setVisible(showRefresh);
+		return super.onPrepareOptionsMenu(menu);
 	}
 	
 	@Override
@@ -114,6 +129,9 @@ public class MainActivity extends SherlockFragmentActivity
 	    if(item.getItemId() == android.R.id.home){
 	        Toast.makeText(this, "douzifly@gmail.com", Toast.LENGTH_SHORT).show();
 	    }else if(item.getItemId() == REFRESH_ID){
+	    	if(mCurrentFragment != null){
+	    		mCurrentFragment.onRefreshPressed();
+	    	}
 	    }else if(item.getItemId() == ABOUT_ID){
 	    	Toast.makeText(MainActivity.this, "Dev:Leo Design:Jack", Toast.LENGTH_SHORT).show();
 	    }
@@ -175,7 +193,6 @@ public class MainActivity extends SherlockFragmentActivity
 
 	@Override
 	public void onTabSelected(Tab tab, FragmentTransaction ft) {
-		// TODO Auto-generated method stub
 		int itemPosition = tab.getPosition();
 		if(itemPosition == mCurNaviPos){
 			return;

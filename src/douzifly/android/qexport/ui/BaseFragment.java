@@ -42,4 +42,6 @@ public class BaseFragment extends Fragment {
 	public void onInto(){}
 	
 	public void onLeave(){}
+	
+	public void onRefreshPressed(){}
 }
