@@ -3,24 +3,31 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-    
-    <Button android:id="@+id/btn_change"
-        android:layout_width="wrap_content"
+
+    <FrameLayout
+        android:id="@+id/bottom_container"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="换一换"
-        android:layout_marginBottom="3dp"
-        android:layout_marginTop="3dp"
-        android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
-        />
-    
-     <ListView
+        android:layout_centerHorizontal="true"
+        android:background="@color/abs__background_holo_dark"
+        android:padding="4dp" >
+
+        <Button
+            android:id="@+id/btn_change"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="换一换" />
+    </FrameLayout>
+
+    <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:divider="@color/list_divider"
+        android:layout_above="@id/bottom_container"
         android:layout_alignParentTop="true"
-        android:layout_above="@id/btn_change"
+        android:divider="@color/list_divider"
         android:dividerHeight="1dp" >
     </ListView>
 
