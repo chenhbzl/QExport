@@ -62,20 +62,16 @@ public class MainActivity extends SherlockFragmentActivity
 		mPager = (ViewPager)findViewById(R.id.pager);
 		mPager.setAdapter(new MainPagerAdapter(getSupportFragmentManager()));
 		
-		mIndicator.setViewPager(mPager);;
-		
 		ActionBar bar = getSupportActionBar();
 		bar.setHomeButtonEnabled(false);
 		bar.setTitle(mNavigations[0]);
-	
 		bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE|ActionBar.DISPLAY_SHOW_HOME);
 		mSharedVideoAdapter = new SharedVideoAdapter(this);
-		
 		// set navigation mode
-		bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		bar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 		//bar.setListNavigationCallbacks(new ArrayAdapter<String>(this, R.layout.navigation_text, mNavigations), this);
-		bar.addTab(bar.newTab().setText(mNavigations[0]).setTabListener(this), true);
-		bar.addTab(bar.newTab().setText(mNavigations[1]).setTabListener(this));
+//		bar.addTab(bar.newTab().setText(mNavigations[0]).setTabListener(this), true);
+//		bar.addTab(bar.newTab().setText(mNavigations[1]).setTabListener(this));
 		
 		initFragments();
 	}
@@ -85,6 +81,7 @@ public class MainActivity extends SherlockFragmentActivity
 		mFragments.add(new LocalVideoFragment());
 		mFragments.add(new LocalVideoFragment());
 		adapter.setFragments(mFragments);
+		mIndicator.setViewPager(mPager);
 	}
 
 	@Override

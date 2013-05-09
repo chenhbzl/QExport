@@ -12,13 +12,16 @@ import java.util.List;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.util.Log;
+import android.view.ViewGroup;
 
 /**
  * @author Xiaoyuan Lau
  *
  */
 public class MainPagerAdapter extends FragmentPagerAdapter{
-
+	
+	final static String TAG = "MainPagerAdapter";
 	
 	private List<BaseFragment> mFragments = new ArrayList<BaseFragment>(); 
 	
@@ -47,4 +50,9 @@ public class MainPagerAdapter extends FragmentPagerAdapter{
 		return mFragments.size();
 	}
 
+	@Override
+	public CharSequence getPageTitle(int position) {
+		return mFragments.get(position).getTitle();
+	}
+	
 }

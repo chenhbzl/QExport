@@ -4,5 +4,6 @@
         <item name="android:actionBarStyle">@style/QExportActionBar</item>
         <item name="android:actionBarTabStyle">@style/QExportActionBar.TabView</item>
         <item name="android:actionBarTabBarStyle">@style/QExportActionBar.TabBar</item>
+        <item name="vpiTabPageIndicatorStyle">@style/CustomTabPageIndicator</item>
     </style>
 </resources>

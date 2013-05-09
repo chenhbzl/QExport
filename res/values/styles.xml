@@ -1,15 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
+
     <style name="QExportActionBar" parent="Widget.Sherlock.ActionBar">
-         <item name="android:background">@drawable/bg_action_bar</item>
+        <item name="android:background">@drawable/bg_action_bar</item>
     </style>
+
     <style name="QExportActionBar.TabView" parent="Widget.Sherlock.ActionBar.TabView">
         <item name="android:background">@drawable/bg_tab</item>
     </style>
-    
+
     <style name="QExportActionBar.TabBar" parent="Widget.Sherlock.ActionBar.TabBar">
         <item name="android:showDividers">middle</item>
         <item name="android:dividerPadding">12dip</item>
     </style>
+
+    <!-- indicator -->
+    <style name="CustomTabPageIndicator" parent="Widget.TabPageIndicator">
+        <item name="android:background">@drawable/custom_tab_indicator</item>
+        <item name="android:textAppearance">@style/CustomTabPageIndicator.Text</item>
+        <item name="android:textColor">#FF555555</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:divider">@drawable/custom_tab_indicator_divider</item>
+        <item name="android:dividerPadding">10dp</item>
+        <item name="android:showDividers">middle</item>
+        <item name="android:paddingLeft">8dp</item>
+        <item name="android:paddingRight">8dp</item>
+        <item name="android:fadingEdge">horizontal</item>
+        <item name="android:fadingEdgeLength">8dp</item>
+    </style>
+    
+     <style name="CustomTabPageIndicator.Text" parent="android:TextAppearance.Medium">
+        <item name="android:typeface">monospace</item>
+    </style>
+
 </resources>

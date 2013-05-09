@@ -13,6 +13,7 @@ import java.util.List;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -50,13 +51,15 @@ public class LocalVideoFragment extends BaseFragment implements OnItemClickListe
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		return setupView(inflater);
+		View v = setupView(inflater);
+		scanLocal();
+		return v;
 	}
 	
 	View setupView(LayoutInflater inflater){
 		
 		View root = inflater.inflate(R.layout.local_video, null);
-		
+				
 		mListView = (ListView) root.findViewById(R.id.listResult);
 		mProgress = (GridProgressBar) root.findViewById(R.id.progressBar);
 		mProgress.setNormalColor(black);
@@ -67,6 +70,11 @@ public class LocalVideoFragment extends BaseFragment implements OnItemClickListe
 		mListView.setOnItemClickListener(this);
 		
 		return root;
+	}
+	
+	@Override
+	public String getTitle() {
+		return "我的合体";
 	}
 	
 	private void scanLocal(){
