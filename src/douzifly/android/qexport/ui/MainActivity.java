@@ -41,8 +41,7 @@ public class MainActivity extends SherlockFragmentActivity
 	static String 			TAG = "MainActivity";
 	String[]		   		mNavigations = new String[]{"我的合体", "大家的合体"};
 	int				   		mCurNaviPos = 0;
-	SharedVideoAdapter		mSharedVideoAdapter;
-	SharedVideoController	mSharedVideoController = new SharedVideoController();
+	
 	
 	TabPageIndicator	mIndicator;
 	ViewPager			mPager;
@@ -71,7 +70,6 @@ public class MainActivity extends SherlockFragmentActivity
 		bar.setHomeButtonEnabled(false);
 		bar.setTitle(mNavigations[0]);
 		bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE|ActionBar.DISPLAY_SHOW_HOME);
-		mSharedVideoAdapter = new SharedVideoAdapter(this);
 		// set navigation mode
 		bar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 		//bar.setListNavigationCallbacks(new ArrayAdapter<String>(this, R.layout.navigation_text, mNavigations), this);
@@ -84,7 +82,7 @@ public class MainActivity extends SherlockFragmentActivity
 	private void initFragments(){
 		MainPagerAdapter adapter = (MainPagerAdapter) mPager.getAdapter();
 		mFragments.add(new LocalVideoFragment());
-		mFragments.add(new LocalVideoFragment());
+		mFragments.add(new ShareVideoFragment());
 		adapter.setFragments(mFragments);
 		mIndicator.setViewPager(mPager);
 	}
@@ -109,35 +107,6 @@ public class MainActivity extends SherlockFragmentActivity
 
 	
 	
-	private boolean isScanShareding = false;
-	private void scanSharedVideo(){
-		if(isScanShareding){
-			return;
-		}
-		isScanShareding = true;
-		setProgressBarIndeterminateVisibility(true);
-		mSharedVideoController.getRandVideos(new OnSharedVideoLoadedListener() {
-			
-			@Override
-			public void onVideoLoaded(boolean sucess, List<SharedVideoInfo> videos) {
-				isScanShareding = false;
-				if(mCurNaviPos != 1){
-					return;
-				}
-				setProgressBarIndeterminateVisibility(false);
-				if(sucess){
-					if(videos == null || videos.size() == 0){
-						Toast.makeText(MainActivity.this, "暂时木有分享", Toast.LENGTH_SHORT).show();
-					}else{
-						mSharedVideoAdapter.setVideos(videos);
-					}
-				}else{
-					Toast.makeText(MainActivity.this, "貌似网络不给力", Toast.LENGTH_SHORT).show();
-				}
-			}
-		});
-	}
-
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
@@ -147,21 +116,6 @@ public class MainActivity extends SherlockFragmentActivity
 		}
 	}
 	
-	private void handleSharedClick(int pos){
-		SharedVideoInfo v = mSharedVideoAdapter.getItem(pos);
-		Log.d(TAG, "click v hash:" + v.hash);
-		Intent i = new Intent("QvodPlayer.VIDEO_PLAY_ACTION");
-		String type = "video/*";
-        Uri uri = Uri.parse(v.hash);
-        i.setDataAndType(uri, type);
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        try{
-        	startActivity(i);
-        }catch(Exception e){
-        	Toast.makeText(getApplicationContext(), "先装个快播再播放吧",  Toast.LENGTH_SHORT).show();
-        }
-		
-	}
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -199,7 +153,7 @@ public class MainActivity extends SherlockFragmentActivity
 			// 加载本地视频
 		}else if(itemPosition == 1){
 			// 加载共享视频
-			scanSharedVideo();
+//			scanSharedVideo();
 		}
 		return true;
 	}
@@ -217,7 +171,7 @@ public class MainActivity extends SherlockFragmentActivity
 			// 加载本地视频
 		}else if(itemPosition == 1){
 			// 加载共享视频
-			scanSharedVideo();
+//			scanSharedVideo();
 		}
 	}
 

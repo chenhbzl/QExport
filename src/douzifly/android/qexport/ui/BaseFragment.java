@@ -17,4 +17,8 @@ public class BaseFragment extends Fragment {
 	public String getTitle(){
 		return "";
 	}
+	
+	public boolean showRefreshButton(){
+		return false;
+	}
 }
