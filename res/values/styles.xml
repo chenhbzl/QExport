@@ -28,9 +28,16 @@
         <item name="android:fadingEdge">horizontal</item>
         <item name="android:fadingEdgeLength">8dp</item>
     </style>
-    
-     <style name="CustomTabPageIndicator.Text" parent="android:TextAppearance.Medium">
+
+    <style name="CustomTabPageIndicator.Text" parent="android:TextAppearance.Medium">
         <item name="android:typeface">monospace</item>
+    </style>
+
+    <style name="CustomUnderlinePageIndicator">
+        <item name="selectedColor">#FFCC0000</item>
+        <item name="android:background">#FFCCCCCC</item>
+        <item name="fadeLength">1000</item>
+        <item name="fadeDelay">1000</item>
     </style>
 
 </resources>
