@@ -52,6 +52,7 @@ public class LocalVideoFragment extends BaseFragment implements OnItemClickListe
 	
 	int blue = 0xff0099cc;
 	int black = 0xff434343;
+	int yellow = 0xfffa5a16;
 	
 	@Override
 	public boolean showRefreshButton() {
@@ -78,7 +79,8 @@ public class LocalVideoFragment extends BaseFragment implements OnItemClickListe
 				
 		mListView = (ListView) root.findViewById(R.id.listResult);
 		mProgress = (GridProgressBar) root.findViewById(R.id.progressBar);
-		mProgress.setNormalColor(black);
+		mProgress.setNormalColor(yellow);
+		mProgress.setCoverColor(blue);
 		mProgress.setVisibility(View.GONE);
 		
 		mLocalAdapter = new LocalVideoAdapter(getActivity());

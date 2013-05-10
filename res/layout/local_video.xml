@@ -10,11 +10,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:gravity="center"
-        android:orientation="vertical"
-        android:padding="5dp" >
+        android:orientation="vertical">
 
         <douzifly.android.uilib.GridProgressBar
             android:id="@+id/progressBar"
+            android:background="@drawable/bg_black_bottom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>

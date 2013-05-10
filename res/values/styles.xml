@@ -7,7 +7,17 @@
         <item name="android:displayOptions">showTitle</item>
         <item name="displayOptions">showTitle</item>
         <item name="android:icon">@null</item>
+        <item name="android:indeterminateProgressStyle">@style/IndeterminateProgress</item>
     </style>
+    
+    <style name="IndeterminateProgress" parent="Widget.Sherlock.Light.ProgressBar">
+<!--     	<item name="android:indeterminateDrawable"></item> -->
+      	<item name="android:minWidth">32dp</item>
+        <item name="android:maxWidth">32dip</item>
+        <item name="android:minHeight">32dip</item>
+        <item name="android:maxHeight">32dip</item>
+	</style>
+
 
     <style name="QExportActionBar.Text">
         <item name="android:textColor">#F9F9F9</item>

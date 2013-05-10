@@ -38,6 +38,7 @@ public class ShareVideoFragment extends BaseFragment implements OnItemClickListe
 	ListView mListView;
 	Button	 mBtnChange;
 	SharedVideoController mSharedVideoController = new SharedVideoController();
+	boolean  mViewDestoryed = false;
 	
 	@Override
 	public String getTitle() {
@@ -54,6 +55,11 @@ public class ShareVideoFragment extends BaseFragment implements OnItemClickListe
 	
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		Log.d(TAG, "onViewCreated");
+		if(mViewDestoryed){
+			Log.d(TAG, "mViewDestoryed == true scan");
+			mViewDestoryed = false;
+			scanSharedVideo();
+		}
 	};
 	
 	View setupView(LayoutInflater inflater){
@@ -73,8 +79,10 @@ public class ShareVideoFragment extends BaseFragment implements OnItemClickListe
 	}
 	
 	boolean isScanShareding = false;
-	private void scanSharedVideo(){
+	private synchronized void scanSharedVideo(){
+		Log.d(TAG, "scanSharedVideo");
 		if(isScanShareding){
+			Log.d(TAG, "scaning return");
 			return;
 		}
 		showProgressOnActionBar();
@@ -129,5 +137,18 @@ public class ShareVideoFragment extends BaseFragment implements OnItemClickListe
 			scanSharedVideo();
 			firstInto = false;
 		}
+	}
+	
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		Log.d(TAG, "onDestory");
+	}
+	
+	@Override
+	public void onDestroyView() {
+		super.onDestroyView();
+		mViewDestoryed = true;
+		Log.d(TAG, "onDestroyView");
 	}
 }
