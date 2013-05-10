@@ -116,6 +116,7 @@ public class LocalVideoAdapter extends BaseAdapter{
 		    tag.textSize.setText(parseFileSize(v.size, true));
 			tag.textProgress.setVisibility(View.GONE);
 			tag.progressBar.setVisibility(View.GONE);
+			tag.mergeOk.setVisibility(View.GONE);
 		}
 //		if(v.progress == 100){
 //			tag.textProgress.setVisibility(View.GONE);
