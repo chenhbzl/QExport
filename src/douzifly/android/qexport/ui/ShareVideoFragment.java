@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 import douzi.android.qexport.R;
@@ -39,6 +40,7 @@ public class ShareVideoFragment extends BaseFragment implements OnItemClickListe
 	Button	 mBtnChange;
 	SharedVideoController mSharedVideoController = new SharedVideoController();
 	boolean  mViewDestoryed = false;
+	List<SharedVideoInfo> mVideos;
 	
 	@Override
 	public String getTitle() {
@@ -56,9 +58,9 @@ public class ShareVideoFragment extends BaseFragment implements OnItemClickListe
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		Log.d(TAG, "onViewCreated");
 		if(mViewDestoryed){
-			Log.d(TAG, "mViewDestoryed == true scan");
+			Log.d(TAG, "mViewDestoryed == true reloadData");
 			mViewDestoryed = false;
-			scanSharedVideo();
+			((SharedVideoAdapter)mListView.getAdapter()).setVideos(mVideos);
 		}
 	};
 	
@@ -98,6 +100,7 @@ public class ShareVideoFragment extends BaseFragment implements OnItemClickListe
 						Toast.makeText(getActivity(), "暂时木有分享", Toast.LENGTH_SHORT).show();
 					}else{
 						SharedVideoAdapter adapter = (SharedVideoAdapter) mListView.getAdapter();
+						mVideos = videos;
 						adapter.setVideos(videos);
 					}
 				}else{
