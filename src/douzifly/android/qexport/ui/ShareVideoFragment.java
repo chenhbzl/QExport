@@ -100,8 +100,14 @@ public class ShareVideoFragment extends BaseFragment implements OnItemClickListe
 					if(videos == null || videos.size() == 0){
 						Toast.makeText(getActivity(), "暂时木有分享", Toast.LENGTH_SHORT).show();
 					}else{
+						if(mListView == null){
+							return;
+						}
 						SharedVideoAdapter adapter = (SharedVideoAdapter) mListView.getAdapter();
 						mVideos = videos;
+						if(adapter == null){
+							return;
+						}
 						adapter.setVideos(videos);
 					}
 				}else{
