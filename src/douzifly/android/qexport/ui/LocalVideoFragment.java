@@ -142,12 +142,13 @@ public class LocalVideoFragment extends BaseFragment implements OnItemClickListe
 			
 			@Override
 			public void run() {
+				mProgress.setVisibility(View.GONE);
 				if(!sucess){
 					new AlertDialog.Builder(getActivity()).setTitle("节操没了").setCancelable(false)
 					.setMessage("合体:" + v.name + " 失败")
 					.setPositiveButton("好吧", null).show();
 				}else{
-					new AlertDialog.Builder(getActivity()).setTitle("哇靠，合体成功").setCancelable(false)
+					new AlertDialog.Builder(getActivity()).setTitle("哇，合体成功").setCancelable(false)
 					.setMessage(v.name)
 					.setPositiveButton("噢啦", null).show();
 				}
@@ -163,14 +164,14 @@ public class LocalVideoFragment extends BaseFragment implements OnItemClickListe
 			@Override
 			public void run() {
 				Log.d("debug","updateProgress:" + progress + " " + v.name);
-//				mLocalAdapter.updateProgress(v.postion, progress, speed, writed);
-//				if(mProgress.getVisibility() != View.VISIBLE && mCurNaviPos == 0){
-//					mProgress.setVisibility(View.VISIBLE);
-//				}
-//				mProgress.setProgress(progress);
-//				if(progress == 100){
-//					mProgress.setVisibility(View.GONE);
-//				}
+				mLocalAdapter.updateProgress(v.postion, progress, speed, writed);
+				if(mProgress.getVisibility() != View.VISIBLE){
+					mProgress.setVisibility(View.VISIBLE);
+				}
+				mProgress.setProgress(progress);
+				if(progress == 100){
+					mProgress.setVisibility(View.GONE);
+				}
 			}
 		});
 	}

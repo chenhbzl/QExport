@@ -28,6 +28,8 @@
         android:layout_above="@id/bottom_container"
         android:layout_alignParentTop="true"
         android:divider="@color/list_divider"
+        android:cacheColorHint="#000"
+        android:scrollingCache="false"
         android:dividerHeight="1dp" >
     </ListView>
 

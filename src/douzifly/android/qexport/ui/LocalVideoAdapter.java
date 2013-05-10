@@ -99,11 +99,9 @@ public class LocalVideoAdapter extends BaseAdapter{
 		    tag.textSize.setText(parseFileSize(v.mergeSize, true)+ "/" + parseFileSize(v.size, true));
 			tag.textProgress.setVisibility(View.VISIBLE);
 			tag.textProgress.setText(parseFileSize(v.mergeSpeed, true)+"/s");
-			tag.container.setBackgroundResource(R.drawable.item_bg);
 		}else{
 		    tag.textSize.setText(parseFileSize(v.size, true));
 			tag.textProgress.setVisibility(View.GONE);
-			tag.container.setBackgroundColor(Color.TRANSPARENT);
 		}
 	}
 	
