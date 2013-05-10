@@ -7,7 +7,7 @@
     <FrameLayout
         android:id="@+id/bottom_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/bottom_contain"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:background="@drawable/bg_black_bottom"
@@ -20,7 +20,9 @@
             android:layout_gravity="center"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
-            android:text="换一换" />
+            android:background="@drawable/btn_refresh_bottom"
+            android:textColor="#fff"
+            android:text="换一批" />
     </FrameLayout>
 
     <ListView

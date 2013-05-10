@@ -23,6 +23,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
@@ -48,7 +49,10 @@ public class LocalVideoFragment extends BaseFragment implements OnItemClickListe
 	String             exportFolder = LocalVideoHelper.EXPORT_FOLDER;
 	LocalVideoAdapter  mLocalAdapter;
 	List<Integer>      mMergeing = new ArrayList<Integer>();
-	GridProgressBar    mProgress;
+//	GridProgressBar    mProgress;
+	ProgressBar		   mProgress1;
+	ProgressBar		   mProgress2;
+	View			   mProgressContainer;
 	
 	int blue = 0xff0099cc;
 	int black = 0xff434343;
@@ -77,10 +81,14 @@ public class LocalVideoFragment extends BaseFragment implements OnItemClickListe
 		View root = inflater.inflate(R.layout.local_video, null);
 				
 		mListView = (ListView) root.findViewById(R.id.listResult);
-		mProgress = (GridProgressBar) root.findViewById(R.id.progressBar);
-		mProgress.setNormalColor(yellow);
-		mProgress.setCoverColor(blue);
-		mProgress.setVisibility(View.GONE);
+//		mProgress = (GridProgressBar) root.findViewById(R.id.progressBar);
+//		mProgress.setNormalColor(yellow);
+//		mProgress.setCoverColor(blue);
+//		mProgress.setVisibility(View.GONE);
+		
+		mProgress1 = (ProgressBar) root.findViewById(R.id.progressBar1);
+		mProgress2 = (ProgressBar) root.findViewById(R.id.progressBar2);
+		mProgressContainer = root.findViewById(R.id.bottom);
 		
 		mLocalAdapter = new LocalVideoAdapter(getActivity());
 		mListView.setAdapter(mLocalAdapter);
@@ -143,7 +151,7 @@ public class LocalVideoFragment extends BaseFragment implements OnItemClickListe
 			
 			@Override
 			public void run() {
-				mProgress.setVisibility(View.GONE);
+				mProgressContainer.setVisibility(View.GONE);
 				if(!sucess){
 					new AlertDialog.Builder(getActivity()).setTitle("节操没了").setCancelable(false)
 					.setMessage("合体:" + v.name + " 失败")
@@ -166,12 +174,15 @@ public class LocalVideoFragment extends BaseFragment implements OnItemClickListe
 			public void run() {
 				Log.d("debug","updateProgress:" + progress + " " + v.name);
 				mLocalAdapter.updateProgress(v.postion, progress, speed, writed);
-				if(mProgress.getVisibility() != View.VISIBLE){
-					mProgress.setVisibility(View.VISIBLE);
+				if(mProgressContainer.getVisibility() != View.VISIBLE){
+					mProgressContainer.setVisibility(View.VISIBLE);
 				}
-				mProgress.setProgress(progress);
+				
+				mProgress1.setProgress(progress);
+				mProgress2.setProgress(progress - 50);
+				
 				if(progress == 100){
-					mProgress.setVisibility(View.GONE);
+					mProgressContainer.setVisibility(View.GONE);
 				}
 			}
 		});
