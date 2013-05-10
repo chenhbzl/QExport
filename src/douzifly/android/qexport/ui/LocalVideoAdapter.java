@@ -75,6 +75,7 @@ public class LocalVideoAdapter extends BaseAdapter{
 			holder.textSize = (TextView)v.findViewById(R.id.txtSize);
 			holder.textProgress = (TextView) v.findViewById(R.id.txtProgress);
 			holder.progressBar = (ProgressBar) v.findViewById(R.id.progressBar);
+			holder.mergeOk = v.findViewById(R.id.icon_ok);
 			holder.container = v;
 			v.setTag(holder);
 			tag = holder;
@@ -93,6 +94,7 @@ public class LocalVideoAdapter extends BaseAdapter{
 		public TextView textProgress;
 		public View container;
 		public ProgressBar progressBar;
+		public View		mergeOk;
 	}
 
 	private void updateTag(ViewHolder tag, int pos){
@@ -108,6 +110,11 @@ public class LocalVideoAdapter extends BaseAdapter{
 		    tag.textSize.setText(parseFileSize(v.size, true));
 			tag.textProgress.setVisibility(View.GONE);
 			tag.progressBar.setVisibility(View.GONE);
+		}
+		if(v.progress == 100){
+			tag.textProgress.setVisibility(View.GONE);
+			tag.progressBar.setVisibility(View.GONE);
+			tag.mergeOk.setVisibility(View.VISIBLE);
 		}
 	}
 	
