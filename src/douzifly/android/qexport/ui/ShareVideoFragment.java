@@ -67,6 +67,7 @@ public class ShareVideoFragment extends BaseFragment implements OnItemClickListe
 	View setupView(LayoutInflater inflater){
 		View v = inflater.inflate(R.layout.share_video, null);
 		mListView = (ListView) v.findViewById(R.id.listView);
+		mListView.setOnItemClickListener(this);
 		mBtnChange = (Button) v.findViewById(R.id.btn_change);
 		mListView.setAdapter(new SharedVideoAdapter(getActivity()));
 		

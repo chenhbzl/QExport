@@ -170,7 +170,7 @@ public class MainActivity extends SherlockFragmentActivity
             new AlertDialog.Builder(this)
                     .setTitle("退出")
                     .setMessage("确定吗?")
-                    .setPositiveButton("好",
+                    .setPositiveButton("确定",
                             new DialogInterface.OnClickListener() {
 
                                 @Override
@@ -178,7 +178,7 @@ public class MainActivity extends SherlockFragmentActivity
                                         int which) {
                                     finish();
                                 }
-                            }).setNegativeButton("先不", null ).show();
+                            }).setNegativeButton("取消", null ).show();
             return true;
 	    }
 	    return super.onKeyDown(keyCode, event);
