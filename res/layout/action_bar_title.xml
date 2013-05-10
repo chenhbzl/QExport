@@ -7,22 +7,46 @@
         style="@style/QExportActionBar.Text"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_marginLeft="8dp"
         android:layout_alignParentLeft="true"
+        android:layout_marginLeft="8dp"
         android:gravity="center_vertical"
         android:orientation="vertical"
         android:text="快播合体助手" >
     </TextView>
-    
-    <ImageButton android:id="@+id/btn_refresh"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
+
+    <FrameLayout
+        android:id="@+id/refresh_container"
+        android:layout_width="?android:attr/actionBarSize"
+        android:layout_height="?android:attr/actionBarSize"
         android:layout_alignParentRight="true"
-        android:src="@drawable/ic_refresh"
-        android:background="@null"
-        android:visibility="gone"
-        android:layout_marginRight="8dp"
-        />
+        android:layout_centerVertical="true"
+        android:background="@drawable/btn_refresh" >
+
+        <ImageButton
+            android:id="@+id/btn_refresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@null"
+            android:scaleType="center"
+            android:src="@drawable/ic_refresh" />
+    </FrameLayout>
+
+    <View
+        android:id="@+id/divider0"
+        android:layout_width="1dp"
+        android:layout_height="30dp"
+        android:layout_centerVertical="true"
+        android:background="#FA6130"
+        android:layout_marginRight="1dp"
+        android:layout_alignLeft="@id/refresh_container" >
+    </View>
+    <View
+        android:layout_width="1dp"
+        android:layout_height="30dp"
+        android:layout_centerVertical="true"
+        android:background="#FD450A"
+        android:layout_toLeftOf="@id/divider0" >
+    </View>
 
 </RelativeLayout>

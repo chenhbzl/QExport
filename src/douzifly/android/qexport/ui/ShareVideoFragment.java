@@ -44,7 +44,7 @@ public class ShareVideoFragment extends BaseFragment implements OnItemClickListe
 	
 	@Override
 	public String getTitle() {
-		return "大家的分享";
+		return "大家的合体";
 	}
 	
 	@Override
@@ -153,5 +153,10 @@ public class ShareVideoFragment extends BaseFragment implements OnItemClickListe
 		super.onDestroyView();
 		mViewDestoryed = true;
 		Log.d(TAG, "onDestroyView");
+	}
+	
+	@Override
+	public void onRefreshPressed() {
+		scanSharedVideo();
 	}
 }

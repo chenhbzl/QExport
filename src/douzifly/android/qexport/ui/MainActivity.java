@@ -10,11 +10,13 @@ import android.os.Handler;
 import android.os.Process;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -86,7 +88,17 @@ public class MainActivity extends SherlockFragmentActivity
 		View customActionView = getLayoutInflater().inflate(R.layout.action_bar_title, null);
 		bar.setCustomView(customActionView);
 		mBtnRefresh = (ImageButton) customActionView.findViewById(R.id.btn_refresh);
+		final View refreshContainer = customActionView.findViewById(R.id.refresh_container);
 		mBtnRefresh.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Log.d(TAG, "btnRefresh Clicked, currentfragment:" + mCurrentFragment);
+				refreshContainer.performClick();
+			}
+		});
+		
+		refreshContainer.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
@@ -96,6 +108,7 @@ public class MainActivity extends SherlockFragmentActivity
 			}
 		});
 		
+		
 		initFragments();
 	}
 	
@@ -103,22 +116,19 @@ public class MainActivity extends SherlockFragmentActivity
 		MainPagerAdapter adapter = (MainPagerAdapter) mPager.getAdapter();
 		mFragments.add(new LocalVideoFragment().setIActivity(this));
 		mFragments.add(new ShareVideoFragment().setIActivity(this));
-		mFragments.add(new LocalVideoFragment().setIActivity(this));
-		mFragments.add(new LocalVideoFragment().setIActivity(this));
-		mFragments.add(new LocalVideoFragment().setIActivity(this));
 		adapter.setFragments(mFragments);
 		mIndicator.setViewPager(mPager);
 		mCurrentFragment = mFragments.get(0);
 	}
 	
 	void updatePageState(BaseFragment current){
-		invalidateOptionsMenu();
+//		invalidateOptionsMenu();
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		boolean showRefresh = mCurrentFragment.showRefreshButton();
-		menu.add(0, REFRESH_ID, 0, "刷新").setIcon(R.drawable.ic_refresh).setVisible(showRefresh).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+//		boolean showRefresh = mCurrentFragment.showRefreshButton();
+//		menu.add(0, REFRESH_ID, 0, "刷新").setIcon(R.drawable.ic_refresh).setVisible(showRefresh).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 		menu.add(0, ABOUT_ID, 0, "关于");
 		return true;
 	}
@@ -184,12 +194,31 @@ public class MainActivity extends SherlockFragmentActivity
 
 	@Override
 	public void showProgressOnActionBar() {
-		setProgressBarIndeterminateVisibility(true);
+//		setProgressBarIndeterminateVisibility(true);
+		Log.d(TAG, "showProgressOnActionBar");
+		if(mRefreshRotateAnim == null){
+			mRefreshRotateAnim = AnimationUtils.loadAnimation(this, R.anim.anim_rotate);
+		}
+		if(mBtnRefresh.getAnimation() != null){
+			Log.d(TAG, "animating..");
+			return;
+		}
+		mBtnRefresh.startAnimation(mRefreshRotateAnim);
 	}
 
 	@Override
 	public void hideProgressOnActionBar() {
-		setProgressBarIndeterminateVisibility(false);
+		Log.d(TAG, "hideProgressOnActionBar");
+//		setProgressBarIndeterminateVisibility(false);
+		mHandler.postDelayed(new Runnable() {
+			
+			@Override
+			public void run() {
+				mBtnRefresh.clearAnimation();
+				mBtnRefresh.setAnimation(null);
+			}
+		}, 800);
+		
 	}
 
 }

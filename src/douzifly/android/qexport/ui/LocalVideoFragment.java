@@ -61,7 +61,6 @@ public class LocalVideoFragment extends BaseFragment implements OnItemClickListe
 	
 	@Override
 	public void onRefreshPressed() {
-		super.onRefreshPressed();
 		scanLocal();
 	}
 	
