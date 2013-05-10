@@ -6,6 +6,7 @@ import java.util.List;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Process;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
@@ -13,6 +14,8 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
+import android.view.animation.Animation;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
@@ -30,6 +33,8 @@ public class MainActivity extends SherlockFragmentActivity
 	
 	TabPageIndicator	mIndicator;
 	ViewPager			mPager;
+	ImageButton			mBtnRefresh;
+	Handler 			mHandler = new Handler();
 	
 	final static int REFRESH_ID = 101;
 	final static int ABOUT_ID = 102;
@@ -78,7 +83,19 @@ public class MainActivity extends SherlockFragmentActivity
 		ActionBar bar = getSupportActionBar();
 		bar.setTitle("快播合体助手");
 		bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-		bar.setCustomView(R.layout.action_bar_title);
+		View customActionView = getLayoutInflater().inflate(R.layout.action_bar_title, null);
+		bar.setCustomView(customActionView);
+		mBtnRefresh = (ImageButton) customActionView.findViewById(R.id.btn_refresh);
+		mBtnRefresh.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				if(mCurrentFragment != null){
+		    		mCurrentFragment.onRefreshPressed();
+		    	}
+			}
+		});
+		
 		initFragments();
 	}
 	
@@ -118,9 +135,7 @@ public class MainActivity extends SherlockFragmentActivity
 	    if(item.getItemId() == android.R.id.home){
 	        Toast.makeText(this, "douzifly@gmail.com", Toast.LENGTH_SHORT).show();
 	    }else if(item.getItemId() == REFRESH_ID){
-	    	if(mCurrentFragment != null){
-	    		mCurrentFragment.onRefreshPressed();
-	    	}
+	    	
 	    }else if(item.getItemId() == ABOUT_ID){
 	    	Toast.makeText(MainActivity.this, "Dev:Leo Design:Jack", Toast.LENGTH_SHORT).show();
 	    }
@@ -164,6 +179,8 @@ public class MainActivity extends SherlockFragmentActivity
 	    super.onDestroy();
 	    android.os.Process.killProcess(Process.myPid());
 	}
+	
+	Animation mRefreshRotateAnim;
 
 	@Override
 	public void showProgressOnActionBar() {

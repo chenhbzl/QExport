@@ -19,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 /**
@@ -73,6 +74,7 @@ public class LocalVideoAdapter extends BaseAdapter{
 			holder.textName = (TextView)v.findViewById(R.id.txtName);
 			holder.textSize = (TextView)v.findViewById(R.id.txtSize);
 			holder.textProgress = (TextView) v.findViewById(R.id.txtProgress);
+			holder.progressBar = (ProgressBar) v.findViewById(R.id.progressBar);
 			holder.container = v;
 			v.setTag(holder);
 			tag = holder;
@@ -90,6 +92,7 @@ public class LocalVideoAdapter extends BaseAdapter{
 		public TextView textSize;
 		public TextView textProgress;
 		public View container;
+		public ProgressBar progressBar;
 	}
 
 	private void updateTag(ViewHolder tag, int pos){
@@ -98,10 +101,13 @@ public class LocalVideoAdapter extends BaseAdapter{
 		if(v.progress > 0 && v.progress < 100){
 		    tag.textSize.setText(parseFileSize(v.mergeSize, true)+ "/" + parseFileSize(v.size, true));
 			tag.textProgress.setVisibility(View.VISIBLE);
-			tag.textProgress.setText(parseFileSize(v.mergeSpeed, true)+"/s");
+			//tag.textProgress.setText(parseFileSize(v.mergeSpeed, true)+"/s");
+			tag.textProgress.setText(String.format("%02d%%", v.progress));
+			tag.progressBar.setVisibility(View.VISIBLE);
 		}else{
 		    tag.textSize.setText(parseFileSize(v.size, true));
 			tag.textProgress.setVisibility(View.GONE);
+			tag.progressBar.setVisibility(View.GONE);
 		}
 	}
 	
