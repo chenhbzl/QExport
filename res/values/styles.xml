@@ -3,6 +3,20 @@
 
     <style name="QExportActionBar" parent="Widget.Sherlock.ActionBar">
         <item name="android:background">@drawable/bg_action_bar</item>
+        <item name="android:titleTextStyle">@style/QExportActionBar.Text</item>
+        <item name="android:displayOptions">showTitle</item>
+        <item name="displayOptions">showTitle</item>
+        <item name="android:icon">@null</item>
+    </style>
+
+    <style name="QExportActionBar.Text">
+        <item name="android:textColor">#F9F9F9</item>
+        <item name="android:shadowColor">#9e5438</item>
+        <item name="android:shadowDx">1</item>
+        <item name="android:shadowDy">1</item>
+        <item name="android:shadowRadius">1</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="QExportActionBar.TabView" parent="Widget.Sherlock.ActionBar.TabView">

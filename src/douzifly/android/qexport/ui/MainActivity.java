@@ -7,7 +7,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Process;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.KeyEvent;
@@ -17,9 +16,6 @@ import android.view.Window;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.ActionBar.OnNavigationListener;
-import com.actionbarsherlock.app.ActionBar.Tab;
-import com.actionbarsherlock.app.ActionBar.TabListener;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
@@ -28,12 +24,9 @@ import com.viewpagerindicator.TabPageIndicator;
 import douzi.android.qexport.R;
 
 public class MainActivity extends SherlockFragmentActivity 
-       implements IActivity, OnClickListener, OnNavigationListener, TabListener {
+       implements IActivity, OnClickListener {
 	
 	static String 			TAG = "MainActivity";
-	String[]		   		mNavigations = new String[]{"我的合体", "大家的合体"};
-	int				   		mCurNaviPos = 0;
-	
 	
 	TabPageIndicator	mIndicator;
 	ViewPager			mPager;
@@ -83,16 +76,9 @@ public class MainActivity extends SherlockFragmentActivity
 		mPager.setAdapter(new MainPagerAdapter(getSupportFragmentManager()));
 		
 		ActionBar bar = getSupportActionBar();
-		bar.setHomeButtonEnabled(false);
-//		bar.setTitle(mNavigations[0]);
-		bar.setTitle(":)");
-		bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE);
-		// set navigation mode
-		bar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-		//bar.setListNavigationCallbacks(new ArrayAdapter<String>(this, R.layout.navigation_text, mNavigations), this);
-//		bar.addTab(bar.newTab().setText(mNavigations[0]).setTabListener(this), true);
-//		bar.addTab(bar.newTab().setText(mNavigations[1]).setTabListener(this));
-		
+		bar.setTitle("快播合体助手");
+		bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+		bar.setCustomView(R.layout.action_bar_title);
 		initFragments();
 	}
 	
@@ -174,47 +160,6 @@ public class MainActivity extends SherlockFragmentActivity
 	protected void onDestroy() {
 	    super.onDestroy();
 	    android.os.Process.killProcess(Process.myPid());
-	}
-
-	@Override
-	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
-		if(itemPosition == mCurNaviPos){
-			return true;
-		}
-		mCurNaviPos = itemPosition;
-		if (itemPosition == 0){
-			// 加载本地视频
-		}else if(itemPosition == 1){
-			// 加载共享视频
-//			scanSharedVideo();
-		}
-		return true;
-	}
-
-	@Override
-	public void onTabSelected(Tab tab, FragmentTransaction ft) {
-		int itemPosition = tab.getPosition();
-		if(itemPosition == mCurNaviPos){
-			return;
-		}
-		getSupportActionBar().setTitle(mNavigations[itemPosition]);
-		mCurNaviPos = itemPosition;
-		if (itemPosition == 0){
-			// 加载本地视频
-		}else if(itemPosition == 1){
-			// 加载共享视频
-//			scanSharedVideo();
-		}
-	}
-
-	@Override
-	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
-		
-	}
-
-	@Override
-	public void onTabReselected(Tab tab, FragmentTransaction ft) {
-		
 	}
 
 	@Override
