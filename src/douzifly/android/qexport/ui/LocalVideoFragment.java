@@ -44,8 +44,8 @@ public class LocalVideoFragment extends BaseFragment implements OnItemClickListe
 	
 	QExport            mQExport;
 	ListView           mListView;
-	String             cacheFolder = "p2pcache";
-	String             exportFolder = "p2pMerged";
+	String             cacheFolder = LocalVideoHelper.P2P_CACHE_FOLDER;;
+	String             exportFolder = LocalVideoHelper.EXPORT_FOLDER;
 	LocalVideoAdapter  mLocalAdapter;
 	List<Integer>      mMergeing = new ArrayList<Integer>();
 	GridProgressBar    mProgress;
@@ -195,8 +195,7 @@ public class LocalVideoFragment extends BaseFragment implements OnItemClickListe
 		
 		final String target = Environment.getExternalStorageDirectory() + "/" + exportFolder + "/" + v.name;
 	    String msg = target;
-		File f = new File(target);
-		if(f.exists() && f.length() == v.size){
+		if(LocalVideoHelper.isVideoMerged(v.name, v.size, exportFolder)){
 			 new AlertDialog.Builder(getActivity()).setTitle("已经合体啦")
 				.setMessage("马上播放?")
 				.setPositiveButton("播放", new DialogInterface.OnClickListener() {

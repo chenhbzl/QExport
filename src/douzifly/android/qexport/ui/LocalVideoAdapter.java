@@ -107,16 +107,20 @@ public class LocalVideoAdapter extends BaseAdapter{
 			tag.textProgress.setText(String.format("%02d%%", v.progress));
 			tag.progressBar.setVisibility(View.VISIBLE);
 			tag.mergeOk.setVisibility(View.GONE);
+		}else if(LocalVideoHelper.isVideoMerged(v.name, v.size, LocalVideoHelper.EXPORT_FOLDER)){
+			tag.textProgress.setVisibility(View.GONE);
+			tag.progressBar.setVisibility(View.GONE);
+			tag.mergeOk.setVisibility(View.VISIBLE);
 		}else{
 		    tag.textSize.setText(parseFileSize(v.size, true));
 			tag.textProgress.setVisibility(View.GONE);
 			tag.progressBar.setVisibility(View.GONE);
 		}
-		if(v.progress == 100){
-			tag.textProgress.setVisibility(View.GONE);
-			tag.progressBar.setVisibility(View.GONE);
-			tag.mergeOk.setVisibility(View.VISIBLE);
-		}
+//		if(v.progress == 100){
+//			tag.textProgress.setVisibility(View.GONE);
+//			tag.progressBar.setVisibility(View.GONE);
+//			tag.mergeOk.setVisibility(View.VISIBLE);
+//		}
 	}
 	
 	public void updateProgress(int pos, int progress, int speed, int size){
