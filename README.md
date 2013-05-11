@@ -1,2 +1,4 @@
 merge videos download from android qvod player.
-# ÑÏ½ûÓÃÓÚÉÌÒµÓÃÍ¾
+
+# æ­¤é¡¹ç›®ä¸èƒ½ç”¨äºå•†ä¸šç”¨é€”ã€‚
+# copyright douzifly
