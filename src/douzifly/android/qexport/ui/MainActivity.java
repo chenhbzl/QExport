@@ -85,6 +85,7 @@ public class MainActivity extends SherlockFragmentActivity
 		ActionBar bar = getSupportActionBar();
 		bar.setTitle("快播合体助手");
 		bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+		bar.setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_action_bar));
 		View customActionView = getLayoutInflater().inflate(R.layout.action_bar_title, null);
 		bar.setCustomView(customActionView);
 		mBtnRefresh = (ImageButton) customActionView.findViewById(R.id.btn_refresh);
