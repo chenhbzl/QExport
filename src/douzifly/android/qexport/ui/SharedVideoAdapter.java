@@ -15,8 +15,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 import douzi.android.qexport.R;
-import douzi.android.qexport.R.id;
-import douzi.android.qexport.R.layout;
 import douzifly.android.qexport.model.SharedVideoInfo;
 
 /**

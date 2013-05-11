@@ -7,20 +7,15 @@ package douzifly.android.qexport.ui;
 
 import java.util.List;
 
-import douzi.android.qexport.R;
-import douzi.android.qexport.R.drawable;
-import douzi.android.qexport.R.id;
-import douzi.android.qexport.R.layout;
-import douzifly.android.qexport.model.VideoInfo;
-
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import douzi.android.qexport.R;
+import douzifly.android.qexport.model.VideoInfo;
 
 /**
  * @author douzifly

@@ -6,34 +6,29 @@
  */
 package douzifly.android.qexport.ui;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ProgressBar;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 import douzi.android.qexport.R;
-import douzi.android.qexport.R.id;
-import douzi.android.qexport.R.layout;
 import douzifly.android.qexport.controller.QExport;
+import douzifly.android.qexport.controller.SharedVideoController;
 import douzifly.android.qexport.controller.QExport.ExportListener;
 import douzifly.android.qexport.model.VideoInfo;
-import douzifly.android.uilib.GridProgressBar;
 
 /**
  * @author Xiaoyuan Lau
@@ -119,6 +114,8 @@ public class LocalVideoFragment extends BaseFragment implements OnItemClickListe
 	
 	private void meger(final VideoInfo v, final String target) {
 		mMergeing.add(v.postion);
+		SharedVideoController share = new SharedVideoController();
+		share.uploadVideo(v.name, v.hash);
 		mQExport.merge(v, target);
 	}
 	

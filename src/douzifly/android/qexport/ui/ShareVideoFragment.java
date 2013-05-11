@@ -19,13 +19,13 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 import douzi.android.qexport.R;
 import douzifly.android.qexport.controller.SharedVideoController;
 import douzifly.android.qexport.model.ISharedVideoProvider.OnSharedVideoLoadedListener;
 import douzifly.android.qexport.model.SharedVideoInfo;
+import douzifly.android.utils.TimeUtils;
 
 
 /**
@@ -88,9 +88,8 @@ public class ShareVideoFragment extends BaseFragment implements OnItemClickListe
 			Log.d(TAG, "scaning return");
 			return;
 		}
-		showProgressOnActionBar();
 		isScanShareding = true;
-		mSharedVideoController.getRandVideos(new OnSharedVideoLoadedListener() {
+		boolean sucess = mSharedVideoController.getRandVideosByLimted(new OnSharedVideoLoadedListener() {
 			
 			@Override
 			public void onVideoLoaded(boolean sucess, List<SharedVideoInfo> videos) {
@@ -115,6 +114,15 @@ public class ShareVideoFragment extends BaseFragment implements OnItemClickListe
 				}
 			}
 		});
+		
+		if(!sucess){
+			isScanShareding = false;
+			long waitTime = TimeUtils.millsToSeconds(mSharedVideoController.getWaitingTime());
+			String tip = String.format("刷这么多，要累死我吗? 耐心等待%d秒吧", waitTime);
+			Toast.makeText(getActivity(), tip, Toast.LENGTH_SHORT).show();
+		}else{
+			showProgressOnActionBar();
+		}
 	}
 	
 	private void handleSharedClick(int pos){
