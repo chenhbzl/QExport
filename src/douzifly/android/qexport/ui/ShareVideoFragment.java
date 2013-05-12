@@ -15,6 +15,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -23,7 +24,10 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.FrameLayout.LayoutParams;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 import douzi.android.qexport.R;
 import douzifly.android.qexport.controller.SharedVideoController;
@@ -86,7 +90,7 @@ public class ShareVideoFragment extends BaseFragment implements
 			@Override
 			public void onClick(View v) {
 				
-				if(((SharedVideoAdapter)mListView.getAdapter()).isEditMode()){
+				if(((SharedVideoAdapter)mListView.getAdapter()).isTipOffMode()){
 					toggleTipOffMode();
 				}else{
 					scanSharedVideo();
@@ -110,6 +114,7 @@ public class ShareVideoFragment extends BaseFragment implements
 			public void onVideoLoaded(boolean sucess, List<SharedVideoInfo> videos) {
 				isScanShareding = false;
 				hideProgressOnActionBar();
+				hideCenterProgress();
 				if(sucess){
 					if(videos == null || videos.size() == 0){
 						Toast.makeText(getActivity(), "暂时木有分享", Toast.LENGTH_SHORT).show();
@@ -140,6 +145,7 @@ public class ShareVideoFragment extends BaseFragment implements
 			Toast.makeText(getActivity(), tip, Toast.LENGTH_SHORT).show();
 		}else{
 			showProgressOnActionBar();
+			showCenterProgress();
 		}
 	}
 	
@@ -154,6 +160,7 @@ public class ShareVideoFragment extends BaseFragment implements
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         try{
         	startActivity(i);
+        	checkAndCloseTipOffMode();
         	UMengHelper.logPlayShare(getActivity(), v.id);
         }catch(Exception e){
         	Toast.makeText(getActivity(), "先装个快播再播放吧",  Toast.LENGTH_SHORT).show();
@@ -174,6 +181,12 @@ public class ShareVideoFragment extends BaseFragment implements
 			scanSharedVideo();
 			firstInto = false;
 		}
+	}
+	
+	@Override
+	public void onLeave() {
+		super.onLeave();
+		checkAndCloseTipOffMode();
 	}
 	
 	@Override
@@ -210,11 +223,24 @@ public class ShareVideoFragment extends BaseFragment implements
 	
 	private void toggleTipOffMode(){
 		SharedVideoAdapter adapter = (SharedVideoAdapter) mListView.getAdapter();
-		adapter.toggleEditMode();
-		if(adapter.isEditMode()){
+		adapter.toggleTipOffMode();
+		if(adapter.isTipOffMode()){
 			mBtnChange.setText("取消");
 		}else{
 			mBtnChange.setText("换一批");
+		}
+	}
+	
+	boolean isTipOffMode(){
+		if(mListView == null) return false;
+		SharedVideoAdapter adapter = (SharedVideoAdapter) mListView.getAdapter();
+		if(adapter == null) return false;
+		return adapter.isTipOffMode();
+	}
+	
+	void checkAndCloseTipOffMode(){
+		if(isTipOffMode()){
+			toggleTipOffMode();
 		}
 	}
 
@@ -230,5 +256,20 @@ public class ShareVideoFragment extends BaseFragment implements
 	@Override
 	public boolean showTipOffButton() {
 		return true;
+	}
+	
+	
+	ProgressBar mPbCenter;
+	void showCenterProgress(){
+		if(mPbCenter == null){
+			mPbCenter = (ProgressBar)getActivity().getLayoutInflater().inflate(R.layout.progress_yellow, null);
+		}
+		FrameLayout decor = (FrameLayout)getActivity().getWindow().getDecorView();
+		decor.addView(mPbCenter, new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, Gravity.CENTER));
+	}
+	
+	void hideCenterProgress(){
+		FrameLayout decor = (FrameLayout)getActivity().getWindow().getDecorView();
+		decor.removeView(mPbCenter);
 	}
 }

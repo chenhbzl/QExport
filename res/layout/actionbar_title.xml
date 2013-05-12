@@ -52,6 +52,11 @@
             android:src="@drawable/ic_tip_off" />
     </FrameLayout>
 
+     <include layout="@layout/actionbar_divider"
+         android:layout_width="wrap_content"
+         android:layout_height="match_parent"
+         android:layout_toLeftOf="@+id/tip_off_container"
+         />
    
 
 </RelativeLayout>

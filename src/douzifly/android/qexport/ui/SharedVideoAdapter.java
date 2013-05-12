@@ -32,7 +32,7 @@ public class SharedVideoAdapter extends BaseAdapter {
 	
 	private Context mContext;
 	private List<SharedVideoInfo> mVideos;
-	boolean mEditMode;
+	boolean mTipOffMode;
 	OnTipOffClickListener mTipOffClickListener;
 	
 	public SharedVideoAdapter setOnTipOffClickListener(OnTipOffClickListener l){
@@ -107,25 +107,25 @@ public class SharedVideoAdapter extends BaseAdapter {
 	private void updateTag(ViewHolder tag, int pos){
 		SharedVideoInfo v = mVideos.get(pos);
 		tag.textTitle.setText(v.title);
-		tag.btnTipOff.setVisibility(mEditMode ? View.VISIBLE : View.GONE);
+		tag.btnTipOff.setVisibility(mTipOffMode ? View.VISIBLE : View.GONE);
 		tag.pos = pos;
 	}
 	
-	public void setEditMode(boolean editMode){
-		if(mEditMode == editMode){
+	public void setTipOffMode(boolean editMode){
+		if(mTipOffMode == editMode){
 			return;
 		}
-		mEditMode = editMode;
+		mTipOffMode = editMode;
 		notifyDataSetChanged();
 	}
 	
-	public void toggleEditMode(){
-		boolean mode = !mEditMode;
-		setEditMode(mode);
+	public void toggleTipOffMode(){
+		boolean mode = !mTipOffMode;
+		setTipOffMode(mode);
 	}
 	
-	public boolean isEditMode(){
-		return mEditMode;
+	public boolean isTipOffMode(){
+		return mTipOffMode;
 	}
 	
 	public static interface OnTipOffClickListener{
