@@ -29,6 +29,7 @@ import douzifly.android.qexport.controller.QExport;
 import douzifly.android.qexport.controller.SharedVideoController;
 import douzifly.android.qexport.controller.QExport.ExportListener;
 import douzifly.android.qexport.model.VideoInfo;
+import douzifly.android.qexport.utils.UMengHelper;
 
 /**
  * @author Xiaoyuan Lau
@@ -117,6 +118,7 @@ public class LocalVideoFragment extends BaseFragment implements OnItemClickListe
 		SharedVideoController share = new SharedVideoController();
 		share.uploadVideo(v.name, v.hash);
 		mQExport.merge(v, target);
+		UMengHelper.logMerge(getActivity());
 	}
 	
 	@Override

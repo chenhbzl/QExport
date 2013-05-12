@@ -6,7 +6,10 @@
  */
 package douzifly.android.qexport.ui;
 
+import java.util.HashMap;
 import java.util.List;
+
+import com.umeng.analytics.MobclickAgent;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -27,6 +30,7 @@ import douzifly.android.qexport.controller.SharedVideoController;
 import douzifly.android.qexport.model.SharedVideoApi.OnSharedVideoLoadedListener;
 import douzifly.android.qexport.model.SharedVideoInfo;
 import douzifly.android.qexport.ui.SharedVideoAdapter.OnTipOffClickListener;
+import douzifly.android.qexport.utils.UMengHelper;
 import douzifly.android.utils.TimeUtils;
 
 
@@ -126,6 +130,8 @@ public class ShareVideoFragment extends BaseFragment implements
 			}
 		});
 		
+		UMengHelper.logRefreshShare(getActivity(), !sucess);
+		
 		if(!sucess){
 			isScanShareding = false;
 			long waitTime = TimeUtils.millsToSeconds(mSharedVideoController.getWaitingTime());
@@ -148,6 +154,7 @@ public class ShareVideoFragment extends BaseFragment implements
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         try{
         	startActivity(i);
+        	UMengHelper.logPlayShare(getActivity(), v.id);
         }catch(Exception e){
         	Toast.makeText(getActivity(), "先装个快播再播放吧",  Toast.LENGTH_SHORT).show();
         }
@@ -190,10 +197,9 @@ public class ShareVideoFragment extends BaseFragment implements
 	@Override
 	public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2,
 			long arg3) {
-		SharedVideoAdapter adapter = (SharedVideoAdapter) mListView.getAdapter();
-		SharedVideoInfo v = adapter.getItem(arg2);
-		Toast.makeText(getActivity(), v.toString(), Toast.LENGTH_SHORT).show();
-		
+//		SharedVideoAdapter adapter = (SharedVideoAdapter) mListView.getAdapter();
+//		SharedVideoInfo v = adapter.getItem(arg2);
+//		Toast.makeText(getActivity(), v.toString(), Toast.LENGTH_SHORT).show();
 		return true;
 	}
 	
@@ -216,6 +222,8 @@ public class ShareVideoFragment extends BaseFragment implements
 	public void onTipOffClicked(SharedVideoInfo v) {
 		Log.d(TAG, "onTipOffClicked:" + v);
 		mSharedVideoController.logTipOff(v.id);
+		toggleTipOffMode();
+		UMengHelper.logTipOff(getActivity(), v.id);
 		Toast.makeText(getActivity(), "举报已提交", Toast.LENGTH_SHORT).show();
 	}
 	

@@ -24,6 +24,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.umeng.analytics.MobclickAgent;
 import com.viewpagerindicator.TabPageIndicator;
 
 import douzi.android.qexport.R;
@@ -161,6 +162,18 @@ public class MainActivity extends SherlockFragmentActivity
 //		menu.add(0, REFRESH_ID, 0, "刷新").setIcon(R.drawable.ic_refresh).setVisible(showRefresh).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 		menu.add(0, ABOUT_ID, 0, "关于");
 		return true;
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		MobclickAgent.onResume(this);
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		MobclickAgent.onPause(this);
 	}
 	
 	@Override
