@@ -11,6 +11,8 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -65,6 +67,8 @@ public class LocalVideoAdapter extends BaseAdapter{
 			LayoutInflater lf = (LayoutInflater) mContext.
 					getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			v = lf.inflate(R.layout.list_result_item, null);
+			int height = arg2.getResources().getDimensionPixelSize(R.dimen.list_item_height);
+			v.setLayoutParams(new AbsListView.LayoutParams(LayoutParams.MATCH_PARENT, height));
 			ViewHolder holder = new ViewHolder();
 			holder.textName = (TextView)v.findViewById(R.id.txtName);
 			holder.textSize = (TextView)v.findViewById(R.id.txtSize);

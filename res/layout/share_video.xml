@@ -34,7 +34,7 @@
         android:divider="@color/list_divider"
         android:cacheColorHint="#000"
         android:scrollingCache="false"
-        android:dividerHeight="1dp" >
+        android:dividerHeight="0dp" >
     </ListView>
 
 </RelativeLayout>

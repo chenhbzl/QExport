@@ -3,4 +3,5 @@
     <color name="list_divider">#c5c6c8</color>
     <color name="list_item_main">#2f2f2f</color>
     <color name="list_item_file_size">#959CA2</color>
+    <color name="list_item_pressed_color">#FA6130</color>
 </resources>

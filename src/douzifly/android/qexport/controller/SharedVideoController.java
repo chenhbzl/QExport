@@ -9,11 +9,9 @@ package douzifly.android.qexport.controller;
 import java.util.List;
 
 import android.util.Log;
-
-import douzifly.android.qexport.model.ISharedVideoProvider;
 import douzifly.android.qexport.model.SharedVideoInfo;
-import douzifly.android.qexport.model.ISharedVideoProvider.OnSharedVideoLoadedListener;
-import douzifly.android.qexport.model.web.SharedVideoWebProvider;
+import douzifly.android.qexport.model.SharedVideoApi;
+import douzifly.android.qexport.model.SharedVideoApi.OnSharedVideoLoadedListener;
 
 /**
  * @author Xiaoyuan Lau
@@ -24,7 +22,7 @@ public class SharedVideoController {
 	final static String TAG = "SharedVideoController"; 
 	
 	/** 默认的请求限制次数 */
-	final static int DEFAULT_REQUEST_RAND_MAX = 10;
+	final static int DEFAULT_REQUEST_RAND_MAX = 20;
 	
 	/** 默认的刷新限制时间 */
 	final static long DEFAULT_LIMTIED_PERID = 30 * 1000;
@@ -35,8 +33,7 @@ public class SharedVideoController {
 	long 	mLimitedPerid = DEFAULT_LIMTIED_PERID;
 	
 	public void getRandVideos(OnSharedVideoLoadedListener l){
-		ISharedVideoProvider provider = new SharedVideoWebProvider();
-		provider.getVideos(l);
+		SharedVideoApi.getVideos(l);
 	}
 	
 	/**
@@ -80,11 +77,31 @@ public class SharedVideoController {
 		if(title == null || hash == null){
 			return;
 		}
-		ISharedVideoProvider provider = new SharedVideoWebProvider();
 		SharedVideoInfo v = new SharedVideoInfo();
 		v.title = title;
 		v.hash = hash;
-		provider.updateVideo(v);
+		SharedVideoApi.updateVideo(v);
+	}
+	
+	/**
+	 * 记录举报
+	 */
+	public void logTipOff(int id){
+		SharedVideoApi.increaseFiledValue(SharedVideoApi.FILED_TIP_OFF, id);
+	}
+	
+	/**
+	 * 记录收藏
+	 */
+	public void logCollection(int id){
+		SharedVideoApi.increaseFiledValue(SharedVideoApi.FILED_COLLECTION, id);
+	}
+	
+	/**
+	 * 记录播放
+	 */
+	public void logPlayCount(int id){
+		SharedVideoApi.increaseFiledValue(SharedVideoApi.FILED_PLAY_COUNT, id);
 	}
 	
 }

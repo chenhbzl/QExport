@@ -44,4 +44,10 @@ public class BaseFragment extends Fragment {
 	public void onLeave(){}
 	
 	public void onRefreshPressed(){}
+	
+	public void onTipOffPressed(){}
+	
+	public boolean showTipOffButton(){
+		return false;
+	}
 }

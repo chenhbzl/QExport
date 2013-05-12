@@ -18,13 +18,15 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 import douzi.android.qexport.R;
 import douzifly.android.qexport.controller.SharedVideoController;
-import douzifly.android.qexport.model.ISharedVideoProvider.OnSharedVideoLoadedListener;
+import douzifly.android.qexport.model.SharedVideoApi.OnSharedVideoLoadedListener;
 import douzifly.android.qexport.model.SharedVideoInfo;
+import douzifly.android.qexport.ui.SharedVideoAdapter.OnTipOffClickListener;
 import douzifly.android.utils.TimeUtils;
 
 
@@ -32,7 +34,10 @@ import douzifly.android.utils.TimeUtils;
  * @author Xiaoyuan Lau
  *
  */
-public class ShareVideoFragment extends BaseFragment implements OnItemClickListener{
+public class ShareVideoFragment extends BaseFragment implements 
+	OnItemClickListener, 
+	OnItemLongClickListener,
+	OnTipOffClickListener{
 	
 	final static String TAG = "ShareVideoFragment";
 	
@@ -68,14 +73,20 @@ public class ShareVideoFragment extends BaseFragment implements OnItemClickListe
 		View v = inflater.inflate(R.layout.share_video, null);
 		mListView = (ListView) v.findViewById(R.id.listView);
 		mListView.setOnItemClickListener(this);
+		mListView.setOnItemLongClickListener(this);
 		mBtnChange = (Button) v.findViewById(R.id.btn_change);
-		mListView.setAdapter(new SharedVideoAdapter(getActivity()));
+		mListView.setAdapter(new SharedVideoAdapter(getActivity()).setOnTipOffClickListener(this));
 		
 		mBtnChange.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				scanSharedVideo();
+				
+				if(((SharedVideoAdapter)mListView.getAdapter()).isEditMode()){
+					toggleTipOffMode();
+				}else{
+					scanSharedVideo();
+				}
 			}
 		});
 		return v;
@@ -118,6 +129,7 @@ public class ShareVideoFragment extends BaseFragment implements OnItemClickListe
 		if(!sucess){
 			isScanShareding = false;
 			long waitTime = TimeUtils.millsToSeconds(mSharedVideoController.getWaitingTime());
+			if(waitTime == 0) waitTime = 1;
 			String tip = String.format("刷这么多，要累死我吗? 耐心等待%d秒吧", waitTime);
 			Toast.makeText(getActivity(), tip, Toast.LENGTH_SHORT).show();
 		}else{
@@ -173,5 +185,42 @@ public class ShareVideoFragment extends BaseFragment implements OnItemClickListe
 	@Override
 	public void onRefreshPressed() {
 		scanSharedVideo();
+	}
+
+	@Override
+	public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2,
+			long arg3) {
+		SharedVideoAdapter adapter = (SharedVideoAdapter) mListView.getAdapter();
+		SharedVideoInfo v = adapter.getItem(arg2);
+		Toast.makeText(getActivity(), v.toString(), Toast.LENGTH_SHORT).show();
+		
+		return true;
+	}
+	
+	@Override
+	public void onTipOffPressed() {
+		toggleTipOffMode();
+	}
+	
+	private void toggleTipOffMode(){
+		SharedVideoAdapter adapter = (SharedVideoAdapter) mListView.getAdapter();
+		adapter.toggleEditMode();
+		if(adapter.isEditMode()){
+			mBtnChange.setText("取消");
+		}else{
+			mBtnChange.setText("换一批");
+		}
+	}
+
+	@Override
+	public void onTipOffClicked(SharedVideoInfo v) {
+		Log.d(TAG, "onTipOffClicked:" + v);
+		mSharedVideoController.logTipOff(v.id);
+		Toast.makeText(getActivity(), "举报已提交", Toast.LENGTH_SHORT).show();
+	}
+	
+	@Override
+	public boolean showTipOffButton() {
+		return true;
 	}
 }

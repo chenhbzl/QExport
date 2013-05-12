@@ -37,6 +37,8 @@ public class MainActivity extends SherlockFragmentActivity
 	ViewPager			mPager;
 	ImageButton			mBtnRefresh;
 	Handler 			mHandler = new Handler();
+	ImageButton			mBtnTipOff;
+	View				mBtnTipOffContainer;
 	
 	final static int REFRESH_ID = 101;
 	final static int ABOUT_ID = 102;
@@ -67,7 +69,7 @@ public class MainActivity extends SherlockFragmentActivity
 				mCurrentFragment.onLeave();
 				fragment.onInto();
 				mCurrentFragment = fragment;
-				updatePageState(mCurrentFragment);
+				updatePageState();
 			}
 			
 			@Override
@@ -86,7 +88,7 @@ public class MainActivity extends SherlockFragmentActivity
 		bar.setTitle("快播合体助手");
 		bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 		bar.setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_action_bar));
-		View customActionView = getLayoutInflater().inflate(R.layout.action_bar_title, null);
+		View customActionView = getLayoutInflater().inflate(R.layout.actionbar_title, null);
 		bar.setCustomView(customActionView);
 		mBtnRefresh = (ImageButton) customActionView.findViewById(R.id.btn_refresh);
 		final View refreshContainer = customActionView.findViewById(R.id.refresh_container);
@@ -109,8 +111,31 @@ public class MainActivity extends SherlockFragmentActivity
 			}
 		});
 		
+		mBtnTipOffContainer = customActionView.findViewById(R.id.tip_off_container);
+		mBtnTipOff = (ImageButton) customActionView.findViewById(R.id.btn_tip_off);
+		
+		mBtnTipOff.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Log.d(TAG, "mBtnTipOff Clicked, currentfragment:" + mCurrentFragment);
+				mBtnTipOffContainer.performClick();
+			}
+		});
+		
+		mBtnTipOffContainer.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				if(mCurrentFragment != null){
+		    		mCurrentFragment.onTipOffPressed();
+		    	}
+			}
+		});
+		
 		
 		initFragments();
+		updatePageState();
 	}
 	
 	private void initFragments(){
@@ -122,8 +147,12 @@ public class MainActivity extends SherlockFragmentActivity
 		mCurrentFragment = mFragments.get(0);
 	}
 	
-	void updatePageState(BaseFragment current){
+	void updatePageState(){
 //		invalidateOptionsMenu();
+		if(mCurrentFragment == null){
+			return;
+		}
+		mBtnTipOffContainer.setVisibility(mCurrentFragment.showTipOffButton() ? View.VISIBLE : View.GONE);
 	}
 
 	@Override

@@ -1,16 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingTop="20dp"
-    android:paddingBottom="20dp"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp"
-    android:textSize="@dimen/list_local_text_size"
-    android:id="@+id/txt_title"
-    android:maxLines="2"
-    android:textColor="@color/list_item_main"
-    >
-    
+    android:background="@drawable/selector_list_item"
+    android:descendantFocusability="blocksDescendants"
+    android:layout_height="@dimen/list_item_height" >
 
-</TextView>
+    <TextView
+        android:id="@+id/txt_title"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:maxLines="2"
+        android:textColor="@color/list_item_main"
+        android:text="test"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/list_text_padding_left"
+        android:textSize="@dimen/list_local_text_size" >
+    </TextView>
+    
+    <Button android:id="@+id/list_item_btn_tip_off"
+        android:text="举报"
+        android:layout_weight="0"
+        android:background="@drawable/btn_tip_off"
+        android:layout_width="@dimen/btn_tip_off_width"
+        android:textColor="#fff"
+        android:layout_height="match_parent"/>
+
+</LinearLayout>
