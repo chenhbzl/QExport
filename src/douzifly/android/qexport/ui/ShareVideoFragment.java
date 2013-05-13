@@ -261,15 +261,23 @@ public class ShareVideoFragment extends BaseFragment implements
 	
 	ProgressBar mPbCenter;
 	void showCenterProgress(){
-		if(mPbCenter == null){
-			mPbCenter = (ProgressBar)getActivity().getLayoutInflater().inflate(R.layout.progress_yellow, null);
-		}
-		FrameLayout decor = (FrameLayout)getActivity().getWindow().getDecorView();
-		decor.addView(mPbCenter, new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, Gravity.CENTER));
+	    try{
+	        if(mPbCenter == null){
+	            mPbCenter = (ProgressBar)getActivity().getLayoutInflater().inflate(R.layout.progress_yellow, null);
+	        }
+	        FrameLayout decor = (FrameLayout)getActivity().getWindow().getDecorView();
+	        decor.addView(mPbCenter, new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, Gravity.CENTER));
+	    }catch(Exception e){
+	        
+	    }
 	}
 	
 	void hideCenterProgress(){
-		FrameLayout decor = (FrameLayout)getActivity().getWindow().getDecorView();
-		decor.removeView(mPbCenter);
+	    try{
+	        FrameLayout decor = (FrameLayout)getActivity().getWindow().getDecorView();
+	        decor.removeView(mPbCenter);
+	    }catch(Exception e){
+	        
+	    }
 	}
 }
