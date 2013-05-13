@@ -9,6 +9,7 @@ package douzifly.android.qexport.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -124,7 +125,11 @@ public class LocalVideoFragment extends BaseFragment implements OnItemClickListe
 	@Override
 	public void onScanOk() {
 		Log.d(TAG,"onScanOk");
-		getActivity().runOnUiThread(new Runnable() {
+		Activity activity = getActivity();
+		if(activity == null){
+		    return;
+		}
+		activity.runOnUiThread(new Runnable() {
 			
 			@Override
 			public void run() {

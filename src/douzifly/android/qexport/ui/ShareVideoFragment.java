@@ -222,6 +222,9 @@ public class ShareVideoFragment extends BaseFragment implements
 	}
 	
 	private void toggleTipOffMode(){
+	    if(mListView == null){
+	        return;
+	    }
 		SharedVideoAdapter adapter = (SharedVideoAdapter) mListView.getAdapter();
 		adapter.toggleTipOffMode();
 		if(adapter.isTipOffMode()){
