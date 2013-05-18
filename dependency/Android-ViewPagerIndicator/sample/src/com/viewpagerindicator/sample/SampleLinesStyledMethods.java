@@ -12,10 +12,10 @@ public class SampleLinesStyledMethods extends BaseSampleActivity {
 
         mAdapter = new TestFragmentAdapter(getSupportFragmentManager());
 
-        mPager = (ViewPager)findViewById(R.id.pager);
+        mPager = (ViewPager) findViewById(R.id.pager);
         mPager.setAdapter(mAdapter);
 
-        LinePageIndicator indicator = (LinePageIndicator)findViewById(R.id.indicator);
+        LinePageIndicator indicator = (LinePageIndicator) findViewById(R.id.indicator);
         mIndicator = indicator;
         indicator.setViewPager(mPager);
 

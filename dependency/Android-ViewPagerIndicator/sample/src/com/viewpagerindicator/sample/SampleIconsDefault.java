@@ -12,10 +12,10 @@ public class SampleIconsDefault extends BaseSampleActivity {
 
         mAdapter = new TestFragmentAdapter(getSupportFragmentManager());
 
-        mPager = (ViewPager)findViewById(R.id.pager);
+        mPager = (ViewPager) findViewById(R.id.pager);
         mPager.setAdapter(mAdapter);
 
-        mIndicator = (IconPageIndicator)findViewById(R.id.indicator);
+        mIndicator = (IconPageIndicator) findViewById(R.id.indicator);
         mIndicator.setViewPager(mPager);
     }
 }

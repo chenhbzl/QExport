@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="bin">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/dependency/ActionBarSherlock/ActionBar/bin/library.jar!/" />
+      <root url="jar://$PROJECT_DIR$/dependency/ActionBarSherlock/ActionBar/bin/actionbar.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -14,10 +14,10 @@ public class SampleTitlesStyledMethods extends BaseSampleActivity {
 
         mAdapter = new TestFragmentAdapter(getSupportFragmentManager());
 
-        mPager = (ViewPager)findViewById(R.id.pager);
+        mPager = (ViewPager) findViewById(R.id.pager);
         mPager.setAdapter(mAdapter);
 
-        TitlePageIndicator indicator = (TitlePageIndicator)findViewById(R.id.indicator);
+        TitlePageIndicator indicator = (TitlePageIndicator) findViewById(R.id.indicator);
         mIndicator = indicator;
         indicator.setViewPager(mPager);
 

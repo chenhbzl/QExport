@@ -10,8 +10,8 @@ import com.viewpagerindicator.IconPagerAdapter;
 import com.viewpagerindicator.TabPageIndicator;
 
 public class SampleTabsWithIcons extends FragmentActivity {
-    private static final String[] CONTENT = new String[] { "Calendar", "Camera", "Alarms", "Location" };
-    private static final int[] ICONS = new int[] {
+    private static final String[] CONTENT = new String[]{"Calendar", "Camera", "Alarms", "Location"};
+    private static final int[] ICONS = new int[]{
             R.drawable.perm_group_calendar,
             R.drawable.perm_group_camera,
             R.drawable.perm_group_device_alarms,
@@ -25,10 +25,10 @@ public class SampleTabsWithIcons extends FragmentActivity {
 
         FragmentPagerAdapter adapter = new GoogleMusicAdapter(getSupportFragmentManager());
 
-        ViewPager pager = (ViewPager)findViewById(R.id.pager);
+        ViewPager pager = (ViewPager) findViewById(R.id.pager);
         pager.setAdapter(adapter);
 
-        TabPageIndicator indicator = (TabPageIndicator)findViewById(R.id.indicator);
+        TabPageIndicator indicator = (TabPageIndicator) findViewById(R.id.indicator);
         indicator.setViewPager(pager);
     }
 
@@ -47,13 +47,14 @@ public class SampleTabsWithIcons extends FragmentActivity {
             return CONTENT[position % CONTENT.length].toUpperCase();
         }
 
-        @Override public int getIconResId(int index) {
-          return ICONS[index];
+        @Override
+        public int getIconResId(int index) {
+            return ICONS[index];
         }
 
-      @Override
+        @Override
         public int getCount() {
-          return CONTENT.length;
+            return CONTENT.length;
         }
     }
 }

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/dependency/ActionBarSherlock/ActionBar/ActionBar.iml" filepath="$PROJECT_DIR$/dependency/ActionBarSherlock/ActionBar/ActionBar.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dependency/Android-ViewPagerIndicator/PageIndicator/PageIndicator.iml" filepath="$PROJECT_DIR$/dependency/Android-ViewPagerIndicator/PageIndicator/PageIndicator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/QExport.iml" filepath="$PROJECT_DIR$/QExport.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../android-async-http/android-async-http.iml" filepath="$PROJECT_DIR$/../android-async-http/android-async-http.iml" />
+    </modules>
+  </component>
+</project>
+

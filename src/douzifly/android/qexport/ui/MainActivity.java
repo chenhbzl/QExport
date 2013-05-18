@@ -178,8 +178,8 @@ public class MainActivity extends SherlockFragmentActivity
 	
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		boolean showRefresh = mCurrentFragment.showRefreshButton();
-		menu.getItem(0).setVisible(showRefresh);
+//		boolean showRefresh = mCurrentFragment.showRefreshButton();
+//		menu.getItem(0).setVisible(showRefresh);
 		return super.onPrepareOptionsMenu(menu);
 	}
 	
