@@ -1,2 +1,6 @@
 /bin/
 /gen/
+/.idea/
+/out/
+/build/
+/.settings/
