@@ -68,6 +68,7 @@ public class FaveFragment extends BaseFragment{
     }
 
     void loadVideo(){
+        showProgressOnActionBar();
         try{
             CacheManager<SharedVideoInfo> cache = new CacheManager<SharedVideoInfo>(new VideoCache());
             mVideos = cache.load(getActivity());
@@ -76,6 +77,7 @@ public class FaveFragment extends BaseFragment{
         } catch (Exception e){
             Log.d(TAG, "loadVideo exp:" + e.getMessage());
         }
+        hideProgressOnActionBar();
     }
 }
 
