@@ -20,7 +20,8 @@ public class SharedVideoInfo {
 	
 	@Override
 	public String toString() {
-		return "id:" + id + " tip_off:" + tipOffCount + " collection:" + collectionCount 
-				+ " playCount:" + playCount;
-	}
+//		return "id:" + id + " tip_off:" + tipOffCount + " collection:" + collectionCount
+//				+ " playCount:" + playCount;
+	    return title;
+    }
 }

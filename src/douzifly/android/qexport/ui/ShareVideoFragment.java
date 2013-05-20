@@ -6,6 +6,7 @@
  */
 package douzifly.android.qexport.ui;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -33,6 +34,8 @@ import douzi.android.qexport.R;
 import douzifly.android.qexport.controller.SharedVideoController;
 import douzifly.android.qexport.model.SharedVideoApi.OnSharedVideoLoadedListener;
 import douzifly.android.qexport.model.SharedVideoInfo;
+import douzifly.android.qexport.model.db.CacheManager;
+import douzifly.android.qexport.model.db.VideoCache;
 import douzifly.android.qexport.ui.SharedVideoAdapter.OnTipOffClickListener;
 import douzifly.android.qexport.utils.UMengHelper;
 import douzifly.android.utils.TimeUtils;
@@ -210,9 +213,16 @@ public class ShareVideoFragment extends BaseFragment implements
 	@Override
 	public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2,
 			long arg3) {
-//		SharedVideoAdapter adapter = (SharedVideoAdapter) mListView.getAdapter();
-//		SharedVideoInfo v = adapter.getItem(arg2);
-//		Toast.makeText(getActivity(), v.toString(), Toast.LENGTH_SHORT).show();
+        try{
+            CacheManager<SharedVideoInfo> cache = new CacheManager<SharedVideoInfo>(new VideoCache());
+            List<SharedVideoInfo> videos = new ArrayList<SharedVideoInfo>();
+            videos.add(mVideos.get(arg2));
+            cache.save(getActivity(), videos);
+            Toast.makeText(getActivity(), "收藏成功", Toast.LENGTH_SHORT).show();
+        }catch(Exception e){
+            Log.d(TAG, "store exp:" + e.getMessage());
+        }
+
 		return true;
 	}
 	
