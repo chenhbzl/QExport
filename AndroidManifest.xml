@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="douzi.android.qexport"
-    android:versionCode="130513"
-    android:versionName="2.1.3" >
+    android:versionCode="130606"
+    android:versionName="2.1.4" >
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -27,8 +27,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="AboutActivity" android:screenOrientation="portrait"></activity>
-        
+
         <meta-data android:value="518f859656240bb21c01c023" android:name="UMENG_APPKEY"></meta-data>
 		<meta-data android:value="PlayStore" android:name="UMENG_CHANNEL"/>
     </application>

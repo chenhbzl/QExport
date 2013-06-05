@@ -28,6 +28,7 @@ import com.loopj.android.http.RequestParams;
 public class SharedVideoApi {
 	
 	public final static String URL_RAND = "http://dzsvr.sinaapp.com/rand";
+    public final static String URL_RAND_LAND = "http://dzsvr.sinaapp.com/rand_land";
 	public final static String URL_UPLOAD = "http://dzsvr.sinaapp.com/add";
 	public final static String URL_UPDATE = "http://dzsvr.sinaapp.com/update";
 	public final static String TAG = "VideoWebProvider";
@@ -39,7 +40,7 @@ public class SharedVideoApi {
 	
 	public static void getVideos(final OnSharedVideoLoadedListener l) {
 		AsyncHttpClient client = new AsyncHttpClient();
-		client.get(URL_RAND, new JsonHttpResponseHandler(){
+		client.get(URL_RAND_LAND, new JsonHttpResponseHandler(){
 			
 			@Override
 			public void onSuccess(JSONArray response) {
@@ -136,5 +137,5 @@ public class SharedVideoApi {
 	public static interface OnSharedVideoLoadedListener{
 		void onVideoLoaded(boolean sucess, List<SharedVideoInfo> videos);
 	}
-	
+
 }

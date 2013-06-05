@@ -143,7 +143,8 @@ public class MainActivity extends SherlockFragmentActivity
 		MainPagerAdapter adapter = (MainPagerAdapter) mPager.getAdapter();
 		mFragments.add(new LocalVideoFragment().setIActivity(this));
 		mFragments.add(new ShareVideoFragment().setIActivity(this));
-        mFragments.add(new FaveFragment().setIActivity(this));
+        // favorite function is not ready
+        // mFragments.add(new FaveFragment().setIActivity(this));
 
 		adapter.setFragments(mFragments);
 		mIndicator.setViewPager(mPager);
