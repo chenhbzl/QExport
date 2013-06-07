@@ -7,11 +7,10 @@
 package douzifly.android.qexport.ui;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-import com.umeng.analytics.MobclickAgent;
-
+import net.youmi.android.banner.AdSize;
+import net.youmi.android.banner.AdView;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -28,6 +27,7 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.FrameLayout.LayoutParams;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -41,6 +41,7 @@ import douzifly.android.qexport.settings.ShareSetting;
 import douzifly.android.qexport.ui.AnnouncementFragment.OnAnnouncementChooseListner;
 import douzifly.android.qexport.ui.SharedVideoAdapter.OnTipOffClickListener;
 import douzifly.android.qexport.utils.UMengHelper;
+import douzifly.android.qexport.utils.YoumiHelper;
 import douzifly.android.utils.TimeUtils;
 
 
@@ -61,6 +62,7 @@ public class ShareVideoFragment extends BaseFragment implements
 	boolean  mViewDestoryed = false;
 	List<SharedVideoInfo> mVideos;
 	View mBottomContainer;
+	 ViewGroup adLayout;
 	
 	
 	@Override
@@ -107,8 +109,22 @@ public class ShareVideoFragment extends BaseFragment implements
 				}
 			}
 		});
+		
+		//实例化广告条
+	    AdView adView = new AdView(getActivity(), AdSize.SIZE_320x50);
+	    //获取要嵌入广告条的布局
+	    adLayout =(ViewGroup)v.findViewById(R.id.adLayout);
+	    //将广告条加入到布局中
+	    adLayout.addView(adView);
+		setAdLayoutVisibility(false);
 		return v;
 	}
+	
+	void setAdLayoutVisibility(boolean visible){
+	    if(adLayout == null) return;
+	    adLayout.setVisibility(visible ? View.VISIBLE : View.GONE);
+	}
+	
 	
 	boolean isScanShareding = false;
 	private synchronized void scanSharedVideo(){
@@ -121,12 +137,17 @@ public class ShareVideoFragment extends BaseFragment implements
                 public void onAnnouncementClosed(boolean agree) {
                     ShareSetting.setAgreeShare(getActivity(), agree);
                     if(!agree){
+                        setAdLayoutVisibility(false);
                         return;
+                    }else{
+                        scanSharedVideo();
                     }
                 }
             });
 		    return;
 		}
+		
+		setAdLayoutVisibility(true);
 		
 		if(isScanShareding){
 			Log.d(TAG, "scaning return");
@@ -257,6 +278,7 @@ public class ShareVideoFragment extends BaseFragment implements
             videos.add(mVideos.get(arg2));
             cache.save(getActivity(), videos);
             Toast.makeText(getActivity(), "收藏成功", Toast.LENGTH_SHORT).show();
+            UMengHelper.logCollection(getActivity(), mVideos.get(arg2).id);
         }catch(Exception e){
             Log.d(TAG, "store exp:" + e.getMessage());
         }

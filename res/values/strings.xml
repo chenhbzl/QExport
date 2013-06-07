@@ -10,7 +10,7 @@
     
     <string name="delete_sucess">删除成功</string>
     
-    <string name="announcement">大家的合体功能所有的数据都来源于用户匿名贡献，如果您发现任何低质量内容，欢迎举报，我们将在第一时间处理。谢谢合作！</string>
+    <string name="announcement">    大家的合体功能所有的数据都来源于用户匿名贡献，如果您发现任何低质量内容，欢迎举报，我们将在第一时间处理。谢谢合作！</string>
     <string name="announcementTitle">声明</string>
     <string name="agreeshare">同意匿名分享我的合体</string>
     <string name="confirm">确定</string>

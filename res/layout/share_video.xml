@@ -21,20 +21,31 @@
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:background="@drawable/btn_refresh_bottom"
-            android:textColor="#fff"
-            android:text="换一批" />
+            android:text="换一批"
+            android:textColor="#fff" />
     </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/adLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:orientation="vertical"
+        android:gravity="center_horizontal" >
+    </LinearLayout>
 
     <ListView
         android:id="@+id/listView"
+        android:layout_below = "@+id/adLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/bottom_container"
-        android:layout_alignParentTop="true"
-        android:divider="@color/list_divider"
         android:cacheColorHint="#000"
-        android:scrollingCache="false"
-        android:dividerHeight="0dp" >
+        android:divider="@color/list_divider"
+        android:dividerHeight="0dp"
+        android:scrollingCache="false" >
     </ListView>
 
 </RelativeLayout>

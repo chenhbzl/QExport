@@ -5,6 +5,7 @@
  */
 package douzifly.android.qexport.settings;
 
+import douzifly.android.qexport.utils.UMengHelper;
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -24,7 +25,14 @@ public class ShareSetting {
     }
     
     public static void setAgreeShare(Context ctx, boolean agree){
+        boolean current = isAgreeShare(ctx);
+        if(current == agree){
+            return;
+        }
         SharedPreferences sp = ctx.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         sp.edit().putBoolean(KEY_AGREE_SHARE, agree).commit();
+        if(!agree){
+            UMengHelper.logRefuseShare(ctx);
+        }
     }
 }

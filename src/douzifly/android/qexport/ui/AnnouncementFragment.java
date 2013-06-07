@@ -15,6 +15,7 @@ import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.widget.CheckBox;
 import douzi.android.qexport.R;
+import douzifly.android.qexport.settings.ShareSetting;
 
 /**
  * @author douzifly
@@ -35,6 +36,7 @@ public class AnnouncementFragment extends DialogFragment{
         AlertDialog.Builder b = new AlertDialog.Builder(getActivity());
         View v = getActivity().getLayoutInflater().inflate(R.layout.announcement, null);
         mChbAgreeShare = (CheckBox) v.findViewById(R.id.announcementCboxAgree);
+        mChbAgreeShare.setChecked(ShareSetting.isAgreeShare(getActivity()));
         Dialog d = b.setView(v).setTitle(R.string.announcementTitle).setPositiveButton(R.string.confirm, new OnClickListener() {
             
             @Override

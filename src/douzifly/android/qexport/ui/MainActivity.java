@@ -30,6 +30,7 @@ import com.viewpagerindicator.TabPageIndicator;
 import douzi.android.qexport.R;
 import douzifly.android.qexport.settings.ShareSetting;
 import douzifly.android.qexport.ui.AnnouncementFragment.OnAnnouncementChooseListner;
+import douzifly.android.qexport.utils.YoumiHelper;
 
 public class MainActivity extends SherlockFragmentActivity 
        implements IActivity, OnClickListener {
@@ -55,6 +56,7 @@ public class MainActivity extends SherlockFragmentActivity
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.activity_main);
 		setupView();
+		YoumiHelper.init(this);
 	}
 	
 	private void setupView(){

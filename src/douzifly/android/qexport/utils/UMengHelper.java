@@ -16,6 +16,7 @@ public class UMengHelper {
 	public static final String EVENT_REFRESH_SHARE = "refreshShare";
 	public static final String EVENT_COLLECTION = "collection";
 	public static final String EVENT_MERGE = "merge";
+	public static final String EVENT_REFUSE_SHARE = "refuseshare";
 	
 	public static void logTipOff(Context ctx, int videoId){
 		HashMap<String, String> map = new HashMap<String, String>();
@@ -41,6 +42,10 @@ public class UMengHelper {
 		map.put("videoId", "" + videoId);
 		MobclickAgent.onEvent(ctx, UMengHelper.EVENT_COLLECTION, map);
 	}
+	
+	public static void logRefuseShare(Context ctx){
+        MobclickAgent.onEvent(ctx, UMengHelper.EVENT_REFUSE_SHARE);
+    }
 	
 	public static void logMerge(Context ctx){
 		MobclickAgent.onEvent(ctx, UMengHelper.EVENT_MERGE);
