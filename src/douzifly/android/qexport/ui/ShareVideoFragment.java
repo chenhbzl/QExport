@@ -21,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
@@ -36,6 +37,8 @@ import douzifly.android.qexport.model.SharedVideoApi.OnSharedVideoLoadedListener
 import douzifly.android.qexport.model.SharedVideoInfo;
 import douzifly.android.qexport.model.db.CacheManager;
 import douzifly.android.qexport.model.db.VideoCache;
+import douzifly.android.qexport.settings.ShareSetting;
+import douzifly.android.qexport.ui.AnnouncementFragment.OnAnnouncementChooseListner;
 import douzifly.android.qexport.ui.SharedVideoAdapter.OnTipOffClickListener;
 import douzifly.android.qexport.utils.UMengHelper;
 import douzifly.android.utils.TimeUtils;
@@ -57,6 +60,8 @@ public class ShareVideoFragment extends BaseFragment implements
 	SharedVideoController mSharedVideoController = new SharedVideoController();
 	boolean  mViewDestoryed = false;
 	List<SharedVideoInfo> mVideos;
+	View mBottomContainer;
+	
 	
 	@Override
 	public String getTitle() {
@@ -84,9 +89,10 @@ public class ShareVideoFragment extends BaseFragment implements
 		View v = inflater.inflate(R.layout.share_video, null);
 		mListView = (ListView) v.findViewById(R.id.listView);
 		mListView.setOnItemClickListener(this);
-        // favorite function is not ready
-//		mListView.setOnItemLongClickListener(this);
+		mListView.setOnItemLongClickListener(this);
 		mBtnChange = (Button) v.findViewById(R.id.btn_change);
+		mBottomContainer = v.findViewById(R.id.bottom_container);
+		mBottomContainer.setVisibility(View.GONE);
 		mListView.setAdapter(new SharedVideoAdapter(getActivity()).setOnTipOffClickListener(this));
 		
 		mBtnChange.setOnClickListener(new OnClickListener() {
@@ -107,6 +113,21 @@ public class ShareVideoFragment extends BaseFragment implements
 	boolean isScanShareding = false;
 	private synchronized void scanSharedVideo(){
 		Log.d(TAG, "scanSharedVideo");
+		boolean agree = ShareSetting.isAgreeShare(getActivity());
+		if(!agree){
+		    AnnouncementFragment.showAnnouncement(getFragmentManager(), new OnAnnouncementChooseListner() {
+                
+                @Override
+                public void onAnnouncementClosed(boolean agree) {
+                    ShareSetting.setAgreeShare(getActivity(), agree);
+                    if(!agree){
+                        return;
+                    }
+                }
+            });
+		    return;
+		}
+		
 		if(isScanShareding){
 			Log.d(TAG, "scaning return");
 			return;
@@ -185,12 +206,28 @@ public class ShareVideoFragment extends BaseFragment implements
 			scanSharedVideo();
 			firstInto = false;
 		}
+		showBottomContainer();
 	}
+	
+	
+	
 	
 	@Override
 	public void onLeave() {
 		super.onLeave();
 		checkAndCloseTipOffMode();
+		hideBottomContainer();
+	}
+	
+	void hideBottomContainer(){
+	    if(mBottomContainer == null) return;
+	    mBottomContainer.setVisibility(View.INVISIBLE);
+	    mBottomContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.slide_out_to_bottom));
+	}
+	
+	void showBottomContainer(){
+	    mBottomContainer.setVisibility(View.VISIBLE);
+	    mBottomContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.slide_in_from_bottom));
 	}
 	
 	@Override

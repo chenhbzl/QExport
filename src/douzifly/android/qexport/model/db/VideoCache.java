@@ -70,4 +70,10 @@ public class VideoCache implements Storeable<SharedVideoInfo>{
         db.execSQL(sql);
         onCreate(db);
     }
+
+    @Override
+    public void remove(SQLiteDatabase db, int id) {
+        String sql = "delete from " + TB_NAME + " where id = " + id;
+        db.execSQL(sql);
+    }
 }

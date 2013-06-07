@@ -28,5 +28,10 @@ public class CacheManager <E>{
         SQLiteDatabase db = new QEDatabaseHelper(ctx).getReadableDatabase();
         storeable.store(db, items);
     }
+    
+    public void remove(Context ctx, int id){
+        SQLiteDatabase db = new QEDatabaseHelper(ctx).getReadableDatabase();
+        storeable.remove(db, id);
+    }
 
 }

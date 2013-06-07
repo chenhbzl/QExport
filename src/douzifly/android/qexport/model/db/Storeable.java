@@ -15,5 +15,6 @@ public interface Storeable <E>{
     boolean store(SQLiteDatabase db, List<E> items);
     void onCreate(SQLiteDatabase db);
     void onUpgrade(SQLiteDatabase db, int oldVer, int newVer);
+    void remove(SQLiteDatabase db, int id);
 
 }

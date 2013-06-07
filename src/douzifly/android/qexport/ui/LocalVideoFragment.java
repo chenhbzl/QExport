@@ -51,6 +51,8 @@ public class LocalVideoFragment extends BaseFragment implements OnItemClickListe
 	ProgressBar		   mProgress2;
 	View			   mProgressContainer;
 	
+	boolean            mHasNotifyNoResource = false;
+	
 	int blue = 0xff0099cc;
 	int black = 0xff434343;
 	int yellow = 0xfffa5a16;
@@ -63,6 +65,12 @@ public class LocalVideoFragment extends BaseFragment implements OnItemClickListe
 	@Override
 	public void onRefreshPressed() {
 		scanLocal();
+	}
+	
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+	    super.onCreate(savedInstanceState);
+	    Log.d(TAG, "onCreate");
 	}
 	
 	@Override
@@ -139,8 +147,9 @@ public class LocalVideoFragment extends BaseFragment implements OnItemClickListe
 				if(orgin != null && orgin.size() > 0){
 				  copy = new ArrayList<VideoInfo>(orgin);
 				}
-				if(copy == null){
+				if(copy == null && !mHasNotifyNoResource){
 				    Toast.makeText(getActivity(), "好孩子，还没看过快播吧？", Toast.LENGTH_SHORT).show();
+				    mHasNotifyNoResource = true;
 				}
 				mLocalAdapter.setVideos(copy);
 				mListView.setAdapter(mLocalAdapter);

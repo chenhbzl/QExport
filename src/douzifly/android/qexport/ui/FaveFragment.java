@@ -1,6 +1,7 @@
 package douzifly.android.qexport.ui;
 
-import android.R;
+import java.util.List;
+
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,15 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 import douzifly.android.qexport.model.SharedVideoInfo;
 import douzifly.android.qexport.model.db.CacheManager;
 import douzifly.android.qexport.model.db.VideoCache;
 import douzifly.android.qexport.utils.UMengHelper;
-
-import java.util.List;
 
 /**
  * Created by douzifly on 13-5-20.
@@ -27,6 +26,7 @@ public class FaveFragment extends BaseFragment{
     final static String TAG = "FaveFragment";
     ListView listView;
     List<SharedVideoInfo> mVideos;
+    FaveVideoAdapter mAdapter;
 
     @Override
     public String getTitle() {
@@ -53,6 +53,25 @@ public class FaveFragment extends BaseFragment{
                 }
             }
         });
+        
+        listView.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+            @Override
+            public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+                    int arg2, long arg3) {
+                try{
+                    SharedVideoInfo v = mAdapter.getItem(arg2);
+                    CacheManager<SharedVideoInfo> cm = new CacheManager<SharedVideoInfo>(new VideoCache());
+                    cm.remove(getActivity(), v.id);
+                    Toast.makeText(getActivity(), douzi.android.qexport.R.string.delete_sucess, Toast.LENGTH_SHORT).show();
+                    loadVideo();
+                }catch(Exception e){
+                    Log.d(TAG, "onItemLongClick e:" + e.getMessage());
+                }
+                return true;
+            }
+        });
+        
         loadVideo();
         return listView;
     }
@@ -72,8 +91,11 @@ public class FaveFragment extends BaseFragment{
         try{
             CacheManager<SharedVideoInfo> cache = new CacheManager<SharedVideoInfo>(new VideoCache());
             mVideos = cache.load(getActivity());
-            ArrayAdapter<SharedVideoInfo> adapter = new ArrayAdapter<SharedVideoInfo>(getActivity(), R.layout.simple_list_item_1, mVideos);
-            listView.setAdapter(adapter);
+            if(mAdapter == null){
+                mAdapter = new FaveVideoAdapter(getActivity());
+            }
+            mAdapter.setVideos(mVideos);
+            listView.setAdapter(mAdapter);
         } catch (Exception e){
             Log.d(TAG, "loadVideo exp:" + e.getMessage());
         }

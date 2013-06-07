@@ -28,6 +28,8 @@ import com.umeng.analytics.MobclickAgent;
 import com.viewpagerindicator.TabPageIndicator;
 
 import douzi.android.qexport.R;
+import douzifly.android.qexport.settings.ShareSetting;
+import douzifly.android.qexport.ui.AnnouncementFragment.OnAnnouncementChooseListner;
 
 public class MainActivity extends SherlockFragmentActivity 
        implements IActivity, OnClickListener {
@@ -143,8 +145,7 @@ public class MainActivity extends SherlockFragmentActivity
 		MainPagerAdapter adapter = (MainPagerAdapter) mPager.getAdapter();
 		mFragments.add(new LocalVideoFragment().setIActivity(this));
 		mFragments.add(new ShareVideoFragment().setIActivity(this));
-        // favorite function is not ready
-        // mFragments.add(new FaveFragment().setIActivity(this));
+        mFragments.add(new FaveFragment().setIActivity(this));
 
 		adapter.setFragments(mFragments);
 		mIndicator.setViewPager(mPager);
@@ -193,7 +194,14 @@ public class MainActivity extends SherlockFragmentActivity
 	    }else if(item.getItemId() == REFRESH_ID){
 	    	
 	    }else if(item.getItemId() == ABOUT_ID){
-	    	Toast.makeText(MainActivity.this, "Dev:Leo Design:Jack", Toast.LENGTH_SHORT).show();
+	        //Toast.makeText(MainActivity.this, "Dev:Leo Design:Jack", Toast.LENGTH_SHORT).show();
+	        AnnouncementFragment.showAnnouncement(getSupportFragmentManager(), new OnAnnouncementChooseListner() {
+                
+                @Override
+                public void onAnnouncementClosed(boolean agree) {
+                    ShareSetting.setAgreeShare(MainActivity.this, agree);
+                }
+            });
 	    }
 	    return super.onOptionsItemSelected(item);
 	}
