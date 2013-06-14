@@ -11,6 +11,7 @@ import java.util.List;
 
 import net.youmi.android.banner.AdSize;
 import net.youmi.android.banner.AdView;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -27,7 +28,6 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.FrameLayout.LayoutParams;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -41,7 +41,6 @@ import douzifly.android.qexport.settings.ShareSetting;
 import douzifly.android.qexport.ui.AnnouncementFragment.OnAnnouncementChooseListner;
 import douzifly.android.qexport.ui.SharedVideoAdapter.OnTipOffClickListener;
 import douzifly.android.qexport.utils.UMengHelper;
-import douzifly.android.qexport.utils.YoumiHelper;
 import douzifly.android.utils.TimeUtils;
 
 
@@ -128,14 +127,19 @@ public class ShareVideoFragment extends BaseFragment implements
 	
 	boolean isScanShareding = false;
 	private synchronized void scanSharedVideo(){
+	    
+	    final Context ctx = getActivity();
+	    if(ctx == null){
+	        return;
+	    }
 		Log.d(TAG, "scanSharedVideo");
-		boolean agree = ShareSetting.isAgreeShare(getActivity());
+		boolean agree = ShareSetting.isAgreeShare(ctx);
 		if(!agree){
 		    AnnouncementFragment.showAnnouncement(getFragmentManager(), new OnAnnouncementChooseListner() {
                 
                 @Override
                 public void onAnnouncementClosed(boolean agree) {
-                    ShareSetting.setAgreeShare(getActivity(), agree);
+                    ShareSetting.setAgreeShare(ctx, agree);
                     if(!agree){
                         setAdLayoutVisibility(false);
                         return;
