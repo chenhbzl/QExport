@@ -29,6 +29,7 @@ public class SharedVideoApi {
 	
 	public final static String URL_RAND = "http://dzsvr.sinaapp.com/rand";
     public final static String URL_RAND_LAND = "http://dzsvr.sinaapp.com/rand_land";
+    public final static String URL_RAND_KV = "http://dzsvr.sinaapp.com/kv";
 	public final static String URL_UPLOAD = "http://dzsvr.sinaapp.com/add";
 	public final static String URL_UPDATE = "http://dzsvr.sinaapp.com/update";
 	public final static String TAG = "VideoWebProvider";
@@ -69,14 +70,15 @@ public class SharedVideoApi {
 			public void onFailure(Throwable e, JSONObject errorResponse) {
 				// TODO Auto-generated method stub
 				super.onFailure(e, errorResponse);
-				Log.d(TAG, "onFailure json");
+				Log.e(TAG, "onFailure json" + " e:" + e + " errorResponse:" + errorResponse);
 				l.onVideoLoaded(false, null);
 			}
 			
 			@Override
 			public void onFailure(Throwable error, String content) {
 				super.onFailure(error, content);
-				Log.d(TAG, "onFailure content:" + content);
+				Log.d(TAG, "onFailure content:" + content );
+				Log.e(TAG, " err:" + error);
 				l.onVideoLoaded(false, null);
 			}
 			

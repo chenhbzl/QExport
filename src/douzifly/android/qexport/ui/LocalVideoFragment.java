@@ -26,9 +26,10 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 import douzi.android.qexport.R;
-import douzifly.android.qexport.controller.QExport;
+import douzifly.android.qexport.controller.QExportManager;
+import douzifly.android.qexport.controller.QExportManager.ExportListener;
+import douzifly.android.qexport.controller.QvodExport;
 import douzifly.android.qexport.controller.SharedVideoController;
-import douzifly.android.qexport.controller.QExport.ExportListener;
 import douzifly.android.qexport.model.VideoInfo;
 import douzifly.android.qexport.utils.UMengHelper;
 
@@ -40,9 +41,9 @@ public class LocalVideoFragment extends BaseFragment implements OnItemClickListe
 
 	final static String TAG = "LocalVideoFragment";
 	
-	QExport            mQExport;
+	QExportManager            mQExport;
 	ListView           mListView;
-	String             cacheFolder = LocalVideoHelper.P2P_CACHE_FOLDER;;
+
 	String             exportFolder = LocalVideoHelper.EXPORT_FOLDER;
 	LocalVideoAdapter  mLocalAdapter;
 	List<Integer>      mMergeing = new ArrayList<Integer>();
@@ -109,12 +110,12 @@ public class LocalVideoFragment extends BaseFragment implements OnItemClickListe
 	
 	private void scanLocal(){
 		if(mQExport == null){
-			mQExport = new QExport();
+			mQExport = new QExportManager(new QvodExport());
 			mQExport.setExportListener(this);
 		}
 		showProgressOnActionBar();
-		String folder = Environment.getExternalStorageDirectory() + "/" + cacheFolder;
-		mQExport.scan(folder);
+		
+		mQExport.scan();
 	}
 
 	@Override
