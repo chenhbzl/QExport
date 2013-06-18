@@ -28,6 +28,7 @@ import com.umeng.analytics.MobclickAgent;
 import com.viewpagerindicator.TabPageIndicator;
 
 import douzi.android.qexport.R;
+import douzifly.android.qexport.controller.QHttpServer;
 import douzifly.android.qexport.settings.ShareSetting;
 import douzifly.android.qexport.ui.AnnouncementFragment.OnAnnouncementChooseListner;
 import douzifly.android.qexport.utils.YoumiHelper;
@@ -44,6 +45,8 @@ public class MainActivity extends SherlockFragmentActivity
 	ImageButton			mBtnTipOff;
 	View				mBtnTipOffContainer;
 	
+	QHttpServer         mServer;
+	
 	final static int REFRESH_ID = 101;
 	final static int ABOUT_ID = 102;
 	BaseFragment 		mCurrentFragment;
@@ -57,6 +60,7 @@ public class MainActivity extends SherlockFragmentActivity
 		setContentView(R.layout.activity_main);
 		setupView();
 		YoumiHelper.init(this);
+		mServer = new QHttpServer();
 	}
 	
 	private void setupView(){

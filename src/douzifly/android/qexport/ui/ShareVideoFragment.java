@@ -40,8 +40,8 @@ import douzifly.android.qexport.model.db.VideoCache;
 import douzifly.android.qexport.settings.ShareSetting;
 import douzifly.android.qexport.ui.AnnouncementFragment.OnAnnouncementChooseListner;
 import douzifly.android.qexport.ui.SharedVideoAdapter.OnTipOffClickListener;
+import douzifly.android.qexport.utils.TimeUtils;
 import douzifly.android.qexport.utils.UMengHelper;
-import douzifly.android.utils.TimeUtils;
 
 
 /**
