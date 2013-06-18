@@ -235,7 +235,7 @@ public class SimpleWebServer extends NanoHTTPD {
     }
 
     private String listDirectory(String uri, File f) {
-        String heading = "Directory " + uri;
+        String heading = "我的合体 " + uri;
         String msg = "<html><head><title>" + heading + "</title><style><!--\n"+
                 "span.dirname { font-weight: bold; }\n"+
                 "span.filesize { font-size: 75%; }\n"+

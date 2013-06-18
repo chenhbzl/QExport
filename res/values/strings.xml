@@ -14,5 +14,8 @@
     <string name="announcementTitle">声明</string>
     <string name="agreeshare">同意匿名分享我的合体</string>
     <string name="confirm">确定</string>
-
+    
+    <string name="open_transport">开启</string>
+	<string name="close_transport">关闭</string>
+	
 </resources>

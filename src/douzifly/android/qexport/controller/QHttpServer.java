@@ -8,6 +8,7 @@ package douzifly.android.qexport.controller;
 import java.io.File;
 
 import android.util.Log;
+import douzifly.android.qexport.settings.AppSetting;
 import douzifly.android.qexport.utils.NetworkUtils;
 import fi.iki.elonen.SimpleWebServer;
 
@@ -23,11 +24,16 @@ public class QHttpServer {
 
     SimpleWebServer mServer;
     
-    public synchronized void start(String wwwRoot, boolean quiet) throws Exception{
+    String mListenerAddr = "";
+    
+    public synchronized void start() throws Exception{
+        String wwwRoot = AppSetting.getExportFolder();
+        boolean quiet = false;
+        int port = 8080;
         Log.d(TAG, "start " + wwwRoot + " q:" + quiet);
         if(mServer != null){
             Log.e(TAG, "already started");
-            return;
+            return ;
         }
         String host = NetworkUtils.getLocalIP();
         if(host == null){
@@ -38,8 +44,13 @@ public class QHttpServer {
         if(!root.isDirectory() || !root.exists()){
             throw new IllegalArgumentException("wwwRoot is not directory or not exists");
         }
-        mServer = new SimpleWebServer(host, 80, root, quiet);
+        mListenerAddr = host + ":" + port;
+        mServer = new SimpleWebServer(host, port, root, quiet);
         mServer.start();
+    }
+    
+    public String getListenAddr(){
+        return mListenerAddr;
     }
     
     public synchronized void stop(){

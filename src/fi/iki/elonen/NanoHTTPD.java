@@ -10,6 +10,8 @@ import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import android.util.Log;
+
 /**
  * A simple, tiny, nicely embeddable HTTP server in Java
  * <p/>
@@ -55,6 +57,9 @@ import java.util.*;
  * See the separate "LICENSE.md" file for the distribution license (Modified BSD licence)
  */
 public abstract class NanoHTTPD {
+    
+    final static String TAG = "NanoHTTPD";
+    
     /**
      * Common mime type for dynamic content: plain text
      */
@@ -100,13 +105,14 @@ public abstract class NanoHTTPD {
     public void start() throws IOException {
         myServerSocket = new ServerSocket();
         myServerSocket.bind((hostname != null) ? new InetSocketAddress(hostname, myPort) : new InetSocketAddress(myPort));
-
+        Log.d(TAG, "bind scucess");
         myThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 do {
                     try {
                         final Socket finalAccept = myServerSocket.accept();
+                        Log.d(TAG, "accpeted");
                         final InputStream inputStream = finalAccept.getInputStream();
                         if (inputStream == null) {
                             safeClose(finalAccept);
