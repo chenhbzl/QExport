@@ -11,6 +11,7 @@ import java.util.List;
 
 import net.youmi.android.banner.AdSize;
 import net.youmi.android.banner.AdView;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -126,7 +127,8 @@ public class ShareVideoFragment extends BaseFragment implements
 	
 	
 	boolean isScanShareding = false;
-	private synchronized void scanSharedVideo(){
+	@SuppressLint("DefaultLocale")
+    private synchronized void scanSharedVideo(){
 	    
 	    final Context ctx = getActivity();
 	    if(ctx == null){

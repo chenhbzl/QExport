@@ -5,10 +5,21 @@
  */
 package douzifly.android.qexport.utils;
 
+import android.os.Environment;
+
 /**
  * @author douzifly
  *
  */
 public class SdcardUtils {
-
+    
+    public static String getRootPath(){
+        return Environment.getExternalStorageDirectory().toString();
+    }
+    
+    // TODO return multiple sdcard root path
+    public static String[] getRootPaths(){
+        return null;
+    }
+    
 }

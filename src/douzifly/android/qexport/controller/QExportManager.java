@@ -10,6 +10,7 @@ import java.util.List;
 import android.util.Log;
 import douzifly.android.qexport.controller.IQExport.OnMergeProgressChangedListener;
 import douzifly.android.qexport.model.VideoInfo;
+import douzifly.android.qexport.settings.AppSetting;
 
 /**
  * @author douzifly
@@ -62,7 +63,9 @@ public class QExportManager{
 		return mQExport.getVideos();
 	}
 	
-	public void merge(final VideoInfo v,final String outputPath){
+	public void merge(final VideoInfo v){
+	    
+	    final String outputPath = AppSetting.getExportFolder() + "/" + v.name;
 		new Thread(new Runnable() {
 			
 			@Override

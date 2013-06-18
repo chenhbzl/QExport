@@ -15,7 +15,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +30,7 @@ import douzifly.android.qexport.controller.QExportManager.ExportListener;
 import douzifly.android.qexport.controller.QvodExport;
 import douzifly.android.qexport.controller.SharedVideoController;
 import douzifly.android.qexport.model.VideoInfo;
+import douzifly.android.qexport.settings.AppSetting;
 import douzifly.android.qexport.utils.UMengHelper;
 
 /**
@@ -44,7 +44,6 @@ public class LocalVideoFragment extends BaseFragment implements OnItemClickListe
 	QExportManager            mQExport;
 	ListView           mListView;
 
-	String             exportFolder = LocalVideoHelper.EXPORT_FOLDER;
 	LocalVideoAdapter  mLocalAdapter;
 	List<Integer>      mMergeing = new ArrayList<Integer>();
 //	GridProgressBar    mProgress;
@@ -127,7 +126,7 @@ public class LocalVideoFragment extends BaseFragment implements OnItemClickListe
 		mMergeing.add(v.postion);
 		SharedVideoController share = new SharedVideoController();
 		share.uploadVideo(v.name, v.hash);
-		mQExport.merge(v, target);
+		mQExport.merge(v);
 		UMengHelper.logMerge(getActivity());
 	}
 	
@@ -217,9 +216,15 @@ public class LocalVideoFragment extends BaseFragment implements OnItemClickListe
 			return;
 		}
 		
-		final String target = Environment.getExternalStorageDirectory() + "/" + exportFolder + "/" + v.name;
-	    String msg = target;
-		if(LocalVideoHelper.isVideoMerged(v.name, v.size, exportFolder)){
+		String exportFolder;
+		try{
+		    exportFolder = AppSetting.getExportFolder() + "/" + v.name;
+		}catch(Exception e){
+		    Toast.makeText(getActivity(), "没有sd卡", Toast.LENGTH_SHORT).show();
+		    return;
+		}
+		final String target = exportFolder;
+		if(LocalVideoHelper.isVideoMerged(v.name, v.size)){
 			 new AlertDialog.Builder(getActivity()).setTitle("已经合体啦")
 				.setMessage("马上播放?")
 				.setPositiveButton("播放", new DialogInterface.OnClickListener() {
@@ -248,7 +253,7 @@ public class LocalVideoFragment extends BaseFragment implements OnItemClickListe
 			return;
 		}
 	    new AlertDialog.Builder(getActivity()).setTitle("保存到:")
-	    							.setMessage(msg)
+	    							.setMessage(target)
 	    							.setPositiveButton("合体", new DialogInterface.OnClickListener() {
 					
 					@Override

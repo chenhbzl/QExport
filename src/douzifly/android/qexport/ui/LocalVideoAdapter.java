@@ -106,7 +106,7 @@ public class LocalVideoAdapter extends BaseAdapter{
 			tag.textProgress.setText(String.format("%02d%%", v.progress));
 			tag.progressBar.setVisibility(View.VISIBLE);
 			tag.mergeOk.setVisibility(View.GONE);
-		}else if(LocalVideoHelper.isVideoMerged(v.name, v.size, LocalVideoHelper.EXPORT_FOLDER)){
+		}else if(LocalVideoHelper.isVideoMerged(v.name, v.size)){
 			tag.textProgress.setVisibility(View.GONE);
 			tag.progressBar.setVisibility(View.GONE);
 			tag.mergeOk.setVisibility(View.VISIBLE);

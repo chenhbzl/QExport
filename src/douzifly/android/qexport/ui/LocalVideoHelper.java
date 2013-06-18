@@ -8,7 +8,7 @@ package douzifly.android.qexport.ui;
 
 import java.io.File;
 
-import android.os.Environment;
+import douzifly.android.qexport.settings.AppSetting;
 
 /**
  * @author Xiaoyuan Lau
@@ -16,13 +16,14 @@ import android.os.Environment;
  */
 public class LocalVideoHelper {
 	
-	public final static String P2P_CACHE_FOLDER = "p2pcache";
-	public final static String EXPORT_FOLDER = "p2pMerged";
-	
-	public static boolean isVideoMerged(String videoName, long videoSize, String exportFolder){
-		final String target = Environment.getExternalStorageDirectory() + "/" + exportFolder + "/" + videoName;
-		File f = new File(target);
-		return f.exists() && f.length() == videoSize ? true : false;
+	public static boolean isVideoMerged(String videoName, long videoSize){
+	    try{
+	        final String target = AppSetting.getExportFolder() + "/" + videoName;
+	        File f = new File(target);
+	        return f.exists() && f.length() == videoSize ? true : false;
+	    }catch(Exception e){
+	        return false;
+	    }
 	}
 	
 	

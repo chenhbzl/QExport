@@ -11,11 +11,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-import android.os.Environment;
-
 import douzifly.android.qexport.model.CacheDir;
 import douzifly.android.qexport.model.VideoInfo;
-import douzifly.android.qexport.ui.LocalVideoHelper;
+import douzifly.android.qexport.settings.AppSetting;
 
 /**
  * @author douzifly
@@ -24,11 +22,10 @@ import douzifly.android.qexport.ui.LocalVideoHelper;
 public class QvodExport implements IQExport {
 
     private CacheDir mCacheDir = new CacheDir();
-    private String cacheFolder = LocalVideoHelper.P2P_CACHE_FOLDER;
     
     @Override
     public List<VideoInfo> scan() {
-        String folder = Environment.getExternalStorageDirectory() + "/" + cacheFolder;
+        String folder = AppSetting.getQVODCacheFolder();
         mCacheDir.setRootDir(folder);
         mCacheDir.scan();
         return mCacheDir.getVideos();
