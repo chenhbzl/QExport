@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.umeng.common.Log;
+
 import douzifly.android.qexport.model.VideoInfo;
 import douzifly.android.qexport.settings.AppSetting;
 
@@ -68,7 +70,7 @@ public class BaiduExport implements IQExport {
 		info.paths = BaiduExportUtil.getCacheSubFilePaths(file);
 		info.size = BaiduExportUtil.getFolderTotalSize(info.paths);
 //		Log.d(TAG, "getVideoInfo paths length: " + info.paths.length);
-//		Log.d(TAG, "getVideoInfo real name: " + name + " info.size: " + info.size);
+		Log.d(TAG, "getVideoInfo real name: " + name + " info.size: " + info.size);
 		return info;
 	}
 
