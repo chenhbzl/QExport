@@ -27,6 +27,7 @@ import android.widget.Toast;
 import douzi.android.qexport.R;
 import douzifly.android.qexport.controller.QExportManager;
 import douzifly.android.qexport.controller.QExportManager.ExportListener;
+import douzifly.android.qexport.controller.BaiduExport;
 import douzifly.android.qexport.controller.QvodExport;
 import douzifly.android.qexport.controller.SharedVideoController;
 import douzifly.android.qexport.model.VideoInfo;
@@ -109,7 +110,10 @@ public class LocalVideoFragment extends BaseFragment implements OnItemClickListe
 	
 	private void scanLocal(){
 		if(mQExport == null){
+			// 快播
 			mQExport = new QExportManager(new QvodExport());
+			// 百度
+//			mQExport = new QExportManager(new BaiduExport());
 			mQExport.setExportListener(this);
 		}
 		showProgressOnActionBar();

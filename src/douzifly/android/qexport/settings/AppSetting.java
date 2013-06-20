@@ -14,12 +14,21 @@ import douzifly.android.qexport.utils.SdcardUtils;
 public class AppSetting {
     
     final static String P2PCACHE_FOLDER_NAME = "p2pcache";
+    final static String BAIDU_CACHE_FOLDER_PATH = "baidu/video/file";
     final static String EXPORT_FOLDER_NAME = "p2pMerged";
     
+    static String BAIDU_CACHE_FOLDER;
     static String QVOD_CACHE_FOLDER;
     static String EXPORT_FOLDER;
     
-    // TODO detect which is real qvod cache folder
+    // TODO detect which is real baidu cache folder
+    public static String getBaiduCacheFolder(){
+        if(BAIDU_CACHE_FOLDER == null){
+        	BAIDU_CACHE_FOLDER =  SdcardUtils.getRootPath() + "/" + BAIDU_CACHE_FOLDER_PATH; 
+        }
+        return BAIDU_CACHE_FOLDER;
+    }
+    
     public static String getQVODCacheFolder(){
         if(QVOD_CACHE_FOLDER == null){
            QVOD_CACHE_FOLDER =  SdcardUtils.getRootPath() + "/" + P2PCACHE_FOLDER_NAME; 
