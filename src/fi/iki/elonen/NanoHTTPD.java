@@ -11,6 +11,8 @@ import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import android.util.Log;
+
 /**
  * A simple, tiny, nicely embeddable HTTP server in Java
  * <p/>
@@ -148,9 +150,12 @@ public abstract class NanoHTTPD {
      */
     public void stop() {
         try {
+            Log.d("Nano", "stop");
             safeClose(myServerSocket);
             myThread.join();
+            Log.d("Nano", "stop ok");
         } catch (Exception e) {
+            Log.d("Nano", "stop e:" + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -1089,6 +1094,7 @@ public abstract class NanoHTTPD {
                 serverSocket.close();
             }
             catch(IOException e) {
+                Log.d("Nano", "safeClose e:" + e.getMessage());
             }
         }
     }

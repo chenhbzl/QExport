@@ -59,5 +59,6 @@ public class QHttpServer {
             return;
         }
         mServer.stop();
+        mServer = null;
     }
 }
