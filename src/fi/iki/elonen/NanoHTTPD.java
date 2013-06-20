@@ -4,13 +4,12 @@ import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.URLDecoder;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.*;
-
-import android.util.Log;
 
 /**
  * A simple, tiny, nicely embeddable HTTP server in Java
@@ -57,9 +56,6 @@ import android.util.Log;
  * See the separate "LICENSE.md" file for the distribution license (Modified BSD licence)
  */
 public abstract class NanoHTTPD {
-    
-    final static String TAG = "NanoHTTPD";
-    
     /**
      * Common mime type for dynamic content: plain text
      */
@@ -105,14 +101,13 @@ public abstract class NanoHTTPD {
     public void start() throws IOException {
         myServerSocket = new ServerSocket();
         myServerSocket.bind((hostname != null) ? new InetSocketAddress(hostname, myPort) : new InetSocketAddress(myPort));
-        Log.d(TAG, "bind scucess");
+
         myThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 do {
                     try {
                         final Socket finalAccept = myServerSocket.accept();
-                        Log.d(TAG, "accpeted");
                         final InputStream inputStream = finalAccept.getInputStream();
                         if (inputStream == null) {
                             safeClose(finalAccept);
@@ -651,7 +646,7 @@ public abstract class NanoHTTPD {
             this.outputStream = outputStream;
         }
 
-        public void execute() {
+        public void execute() throws IOException {
             try {
                 // Read the first 8192 bytes.
                 // The full header should fit in here.
@@ -662,6 +657,10 @@ public abstract class NanoHTTPD {
                 rlen = 0;
                 {
                     int read = inputStream.read(buf, 0, BUFSIZE);
+                    if(read == -1){
+                        // socket was been closed
+                        throw new SocketException();
+                    }
                     while (read > 0) {
                         rlen += read;
                         splitbyte = findHeaderEnd(buf, rlen);
@@ -702,6 +701,9 @@ public abstract class NanoHTTPD {
                     r.setRequestMethod(method);
                     r.send(outputStream);
                 }
+            } catch(SocketException e) {
+                // throw it out to close socket object (finalAccept)
+                throw e;
             } catch (IOException ioe) {
                 Response r = new Response(Response.Status.INTERNAL_ERROR, MIME_PLAINTEXT, "SERVER INTERNAL ERROR: IOException: " + ioe.getMessage());
                 r.send(outputStream);
