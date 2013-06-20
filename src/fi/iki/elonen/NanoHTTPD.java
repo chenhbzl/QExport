@@ -58,6 +58,9 @@ import android.util.Log;
  * See the separate "LICENSE.md" file for the distribution license (Modified BSD licence)
  */
 public abstract class NanoHTTPD {
+    
+    final static String TAG = "NanoHTTPD";
+    
     /**
      * Common mime type for dynamic content: plain text
      */
@@ -103,7 +106,7 @@ public abstract class NanoHTTPD {
     public void start() throws IOException {
         myServerSocket = new ServerSocket();
         myServerSocket.bind((hostname != null) ? new InetSocketAddress(hostname, myPort) : new InetSocketAddress(myPort));
-
+        Log.d(TAG, "myServersocket:" + myServerSocket.hashCode());
         myThread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -150,12 +153,12 @@ public abstract class NanoHTTPD {
      */
     public void stop() {
         try {
-            Log.d("Nano", "stop");
+            Log.d(TAG, "stop myServerSocket:" + myServerSocket.hashCode());
             safeClose(myServerSocket);
             myThread.join();
-            Log.d("Nano", "stop ok");
+            Log.d(TAG, "stop ok");
         } catch (Exception e) {
-            Log.d("Nano", "stop e:" + e.getMessage());
+            Log.d(TAG, "stop e:" + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -1091,6 +1094,7 @@ public abstract class NanoHTTPD {
     private static final void safeClose(ServerSocket serverSocket) {
         if (serverSocket != null) {
             try {
+                Log.d(TAG, "serverSocket close:" + serverSocket);
                 serverSocket.close();
             }
             catch(IOException e) {

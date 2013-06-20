@@ -54,7 +54,14 @@ public class TransportFragment extends BaseFragment{
             
             @Override
             public void onClick(View v) {
-                toggleTransport();
+                new Thread(new Runnable() {
+                    
+                    @Override
+                    public void run() {
+                        toggleTransport();
+                    }
+                }).start();
+               
             } 
         });
         updateUI();
@@ -65,15 +72,30 @@ public class TransportFragment extends BaseFragment{
        if(mTransportEnable){
            try {
             mServer.start();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
-            Toast.makeText(getActivity(), "开启失败:"+e.getMessage(), Toast.LENGTH_SHORT).show();
+            getActivity().runOnUiThread(new Runnable() {
+                
+                @Override
+                public void run() {
+                    Toast.makeText(getActivity(), "开启失败:"+ e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+           
             mTransportEnable = false;
         }
        }else{
            mServer.stop();
        }
-       updateUI();
+       
+       getActivity().runOnUiThread(new Runnable() {
+        
+        @Override
+        public void run() {
+            updateUI();
+        }
+       });
+       
     }
     
     private void updateUI(){
