@@ -42,7 +42,7 @@ public class LocalVideoFragment extends BaseFragment implements OnItemClickListe
 
 	final static String TAG = "LocalVideoFragment";
 	
-	QExportManager            mQExport;
+	QExportManager     mQExport;
 	ListView           mListView;
 
 	LocalVideoAdapter  mLocalAdapter;
