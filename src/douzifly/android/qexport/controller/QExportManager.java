@@ -5,7 +5,11 @@
  */
 package douzifly.android.qexport.controller;
 
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 
 import android.util.Log;
 import douzifly.android.qexport.controller.IQExport.OnMergeProgressChangedListener;
@@ -24,14 +28,14 @@ public class QExportManager{
 	}
 	
 	
-	private IQExport mQExport;
+	// key:VIDEO_SOURCE 
+	private Hashtable<Integer, IQExport> mQExports = new Hashtable<Integer, IQExport>();
 	private ExportListener mListener;
 	private Thread mScanThread;
 	
-	public QExportManager(IQExport export){
-	    mQExport = export;
+	public void addExport(int videoSource, IQExport qexp){
+	    mQExports.put(videoSource, qexp);
 	}
-	
 		
 	public synchronized void scan(){
 		if(mScanThread != null){
@@ -42,10 +46,24 @@ public class QExportManager{
 			
 			@Override
 			public void run() {
-				mQExport.scan();
-				if(mListener != null){
-					mListener.onScanOk();
-				}
+			    
+			    Iterator<Entry<Integer, IQExport>> exps = mQExports.entrySet().iterator();
+			    List<VideoInfo> allVideos = new ArrayList<VideoInfo>();
+			    while(exps.hasNext()){
+			        IQExport q = exps.next().getValue();
+			        Log.d(TAG, "scan use :" + q);
+			        q.scan();
+			        List<VideoInfo> videos = q.getVideos();
+			        Log.d(TAG, "scan ok videos count:" + (videos == null ? 0 : videos.size()));
+			        if(videos != null && videos.size() > 0){
+			            allVideos.addAll(videos);
+			        }
+			    }
+			    
+			    if(mListener != null){
+                    mListener.onScanOk(allVideos);
+                }
+			    
 				mScanThread = null;
 			}
 		});
@@ -56,41 +74,46 @@ public class QExportManager{
 		mListener = l;
 	}
 	
-	public List<VideoInfo> getVideos(){
-		if(mQExport == null){
-			return null;
-		}
-		return mQExport.getVideos();
-	}
 	
 	public void merge(final VideoInfo v){
 	    
 	    final String outputPath = AppSetting.getExportFolder() + "/" + v.name;
+	    Log.d(TAG, "merge video:" + v + " outpath:" + outputPath);
+	    final IQExport qexp = mQExports.get(v.source);
+	    if(qexp == null){
+	        Log.d(TAG, "cant find merge instance");
+	        if(mListener != null){
+	            mListener.onMergeOk(v, false);
+	        }
+	        return;
+	    }
+	    
+	    Log.d(TAG, "begin merge use:" + qexp);
+	    
 		new Thread(new Runnable() {
 			
 			@Override
 			public void run() {
-			    if(mQExport != null){
-			        boolean success = mQExport.merge(v, outputPath, new OnMergeProgressChangedListener() {
-                        
-                        @Override
-                        public void onMergeProgressChanged(VideoInfo v, int progress,
-                                int mergeSpeed, int mergeSize) {
-                            if(mListener != null){
-                                mListener.onMergeProgress(v, progress, mergeSpeed, mergeSize);
-                            }
+		        boolean success = qexp.merge(v, outputPath, new OnMergeProgressChangedListener() {
+
+                    
+                    @Override
+                    public void onMergeProgressChanged(VideoInfo v, int progress,
+                            int mergeSpeed, int mergeSize) {
+                        if(mListener != null){
+                            mListener.onMergeProgress(v, progress, mergeSpeed, mergeSize);
                         }
-                    });
-			        if(mListener != null){
-			            mListener.onMergeOk(v, success);
-			        }
-			    }
+                    }
+                });
+		        if(mListener != null){
+		            mListener.onMergeOk(v, success);
+		        }
 			}
 		}).start();
 	}
 		
 	public static interface ExportListener{
-	    public void onScanOk();
+	    public void onScanOk(List<VideoInfo> videos);
 	    public void onMergeOk(VideoInfo v, boolean success);
 	    public void onMergeProgress(VideoInfo v, int progress, int mergeSpeed, int mergeSize);
 	}

@@ -75,6 +75,7 @@ public class LocalVideoAdapter extends BaseAdapter{
 			holder.textProgress = (TextView) v.findViewById(R.id.txtProgress);
 			holder.progressBar = (ProgressBar) v.findViewById(R.id.progressBar);
 			holder.mergeOk = v.findViewById(R.id.icon_ok);
+			holder.textSource = (TextView)v.findViewById(R.id.txtSource);
 			holder.container = v;
 			v.setTag(holder);
 			tag = holder;
@@ -94,6 +95,7 @@ public class LocalVideoAdapter extends BaseAdapter{
 		public View container;
 		public ProgressBar progressBar;
 		public View		mergeOk;
+		public TextView textSource;
 	}
 
 	private void updateTag(ViewHolder tag, int pos){
@@ -117,6 +119,13 @@ public class LocalVideoAdapter extends BaseAdapter{
 			tag.progressBar.setVisibility(View.GONE);
 			tag.mergeOk.setVisibility(View.GONE);
 		}
+		
+		if(v.source == VideoInfo.SOURCE_QVOD){
+		    tag.textSource.setText("来自:快播");
+		}else if(v.source == VideoInfo.SOURCE_BAIDU){
+		    tag.textSource.setText("来自:百度视频");
+		}
+		
 //		if(v.progress == 100){
 //			tag.textProgress.setVisibility(View.GONE);
 //			tag.progressBar.setVisibility(View.GONE);

@@ -63,6 +63,7 @@ public class BaiduExport extends AbsExport {
 		}
 		String name = BaiduExportUtil.getRealNameFromFolder(folderName);
 		VideoInfo info = new VideoInfo();
+		info.source = VideoInfo.SOURCE_BAIDU;
 		info.name = name;
 		info.paths = BaiduExportUtil.getCacheSubFilePaths(file);
 		info.size = BaiduExportUtil.getFolderTotalSize(info.paths);

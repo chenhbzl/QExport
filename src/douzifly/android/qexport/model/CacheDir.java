@@ -83,6 +83,7 @@ public class CacheDir {
 			return null;
 		}
 		VideoInfo v = new VideoInfo();
+		v.source = VideoInfo.SOURCE_QVOD;
 		String[] files =  f.list(new FilenameFilter() {
 			
 			@Override

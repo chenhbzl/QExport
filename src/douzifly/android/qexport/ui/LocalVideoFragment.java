@@ -111,9 +111,10 @@ public class LocalVideoFragment extends BaseFragment implements OnItemClickListe
 	private void scanLocal(){
 		if(mQExport == null){
 			// 快播
-			mQExport = new QExportManager(new QvodExport());
+			mQExport = new QExportManager();
+			mQExport.addExport(VideoInfo.SOURCE_QVOD, new QvodExport());
+			mQExport.addExport(VideoInfo.SOURCE_BAIDU, new BaiduExport());
 			// 百度
-//			mQExport = new QExportManager(new BaiduExport());
 			mQExport.setExportListener(this);
 		}
 		showProgressOnActionBar();
@@ -135,7 +136,7 @@ public class LocalVideoFragment extends BaseFragment implements OnItemClickListe
 	}
 	
 	@Override
-	public void onScanOk() {
+	public void onScanOk(final List<VideoInfo> videos) {
 		Log.d(TAG,"onScanOk");
 		Activity activity = getActivity();
 		if(activity == null){
@@ -146,7 +147,7 @@ public class LocalVideoFragment extends BaseFragment implements OnItemClickListe
 			@Override
 			public void run() {
 				hideProgressOnActionBar();
-				List<VideoInfo> orgin = mQExport.getVideos();
+				List<VideoInfo> orgin = videos;
 				List<VideoInfo> copy = null;
 				if(orgin != null && orgin.size() > 0){
 				  copy = new ArrayList<VideoInfo>(orgin);

@@ -61,9 +61,22 @@
         android:layout_toLeftOf="@id/txtSize"
         android:layout_toRightOf="@+id/item_left_icon_container"
         android:gravity="center_vertical"
-        android:maxLines="2"
+        android:maxLines="1"
         android:text="Name"
         android:textSize="@dimen/list_local_text_size"
         android:textColor="@color/list_item_main" />
+    
+    <TextView
+        android:id="@+id/txtSource"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/list_item_file_size"
+        android:layout_alignLeft="@id/txtName"
+        android:layout_below="@id/txtName"
+        android:layout_centerVertical="true"
+        android:gravity="left|center_vertical"
+        android:textSize="@dimen/list_local_text_size"
+        android:layout_marginRight="10dp"
+        android:text="qvod" />
 
 </RelativeLayout>
