@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="list_local_text_size">14sp</dimen>
+    <dimen name="list_local_text_size">15sp</dimen>
+    <dimen name="list_sub_text_size">10sp</dimen>
     <dimen name="bottom_contain">60dp</dimen>
     <dimen name="list_item_height">66dp</dimen>
     <dimen name="list_text_padding_left">10dp</dimen>
