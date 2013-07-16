@@ -43,6 +43,10 @@ public class MainActivity extends SherlockFragmentActivity
 	Handler 			mHandler = new Handler();
 	ImageButton			mBtnTipOff;
 	View				mBtnTipOffContainer;
+	View                mRefreshContainer;
+	View                mBtnTool;
+	View                mBtnToolContainer;
+	
 	
 	final static int REFRESH_ID = 101;
 	final static int ABOUT_ID = 102;
@@ -96,48 +100,18 @@ public class MainActivity extends SherlockFragmentActivity
 		View customActionView = getLayoutInflater().inflate(R.layout.actionbar_title, null);
 		bar.setCustomView(customActionView);
 		mBtnRefresh = (ImageButton) customActionView.findViewById(R.id.btn_refresh);
-		final View refreshContainer = customActionView.findViewById(R.id.refresh_container);
-		mBtnRefresh.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				Log.d(TAG, "btnRefresh Clicked, currentfragment:" + mCurrentFragment);
-				refreshContainer.performClick();
-			}
-		});
-		
-		refreshContainer.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				if(mCurrentFragment != null){
-		    		mCurrentFragment.onRefreshPressed();
-		    	}
-			}
-		});
-		
+		mRefreshContainer = customActionView.findViewById(R.id.refresh_container);
 		mBtnTipOffContainer = customActionView.findViewById(R.id.tip_off_container);
 		mBtnTipOff = (ImageButton) customActionView.findViewById(R.id.btn_tip_off);
+		mBtnTool = findViewById(R.id.btnTool);
+		mBtnToolContainer = findViewById(R.id.btnToolContainer);
 		
-		mBtnTipOff.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				Log.d(TAG, "mBtnTipOff Clicked, currentfragment:" + mCurrentFragment);
-				mBtnTipOffContainer.performClick();
-			}
-		});
-		
-		mBtnTipOffContainer.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				if(mCurrentFragment != null){
-		    		mCurrentFragment.onTipOffPressed();
-		    	}
-			}
-		});
-		
+		mBtnTool.setOnClickListener(this);
+		mBtnToolContainer.setOnClickListener(this);
+		mBtnTipOff.setOnClickListener(this);
+        mBtnTipOffContainer.setOnClickListener(this);
+        mBtnRefresh.setOnClickListener(this);
+        mRefreshContainer.setOnClickListener(this);
 		
 		initFragments();
 		updatePageState();
@@ -147,8 +121,8 @@ public class MainActivity extends SherlockFragmentActivity
 		MainPagerAdapter adapter = (MainPagerAdapter) mPager.getAdapter();
 		mFragments.add(new LocalVideoFragment().setIActivity(this));
 		mFragments.add(new ShareVideoFragment().setIActivity(this));
-        mFragments.add(new FaveFragment().setIActivity(this));
-        mFragments.add(new TransportFragment().setIActivity(this));
+//        mFragments.add(new FaveFragment().setIActivity(this));
+//        mFragments.add(new TransportFragment().setIActivity(this));
 		adapter.setFragments(mFragments);
 		mIndicator.setViewPager(mPager);
 		mCurrentFragment = mFragments.get(0);
@@ -213,7 +187,30 @@ public class MainActivity extends SherlockFragmentActivity
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-
+		case R.id.btn_refresh:
+		    Log.d(TAG, "btnRefresh Clicked, currentfragment:" + mCurrentFragment);
+		    mRefreshContainer.performClick();
+		    break;
+		case R.id.refresh_container:
+		    if(mCurrentFragment != null){
+                mCurrentFragment.onRefreshPressed();
+            }
+		    break;
+		case R.id.btn_tip_off:
+		    Log.d(TAG, "mBtnTipOff Clicked, currentfragment:" + mCurrentFragment);
+            mBtnTipOffContainer.performClick();
+		    break;
+		case R.id.tip_off_container:
+		    if(mCurrentFragment != null){
+                mCurrentFragment.onTipOffPressed();
+            }
+		    break;
+		case R.id.btnTool:
+		    mBtnToolContainer.performClick();
+		    break;
+		case R.id.btnToolContainer:
+		    Toast.makeText(MainActivity.this, "tool", Toast.LENGTH_SHORT).show();
+		    break;
 		default:
 			break;
 		}

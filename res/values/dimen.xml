@@ -6,4 +6,5 @@
     <dimen name="list_item_height">66dp</dimen>
     <dimen name="list_text_padding_left">10dp</dimen>
     <dimen name="btn_tip_off_width">60dp</dimen>
+    <dimen name="action_bar_icon_w">30dp</dimen>
 </resources>
