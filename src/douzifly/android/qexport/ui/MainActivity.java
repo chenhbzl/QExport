@@ -40,15 +40,16 @@ public class MainActivity extends SherlockFragmentActivity
 	
 	static String 			TAG = "MainActivity";
 	
-	TabPageIndicator	mIndicator;
-	ViewPager			mPager;
-	ImageButton			mBtnRefresh;
-	Handler 			mHandler = new Handler();
-	View				mBtnTipOffContainer;
-	View                mRefreshContainer;
-	View                mBtnToolContainer;
+	TabPageIndicator   mIndicator;
+	ViewPager          mPager;
+	ImageButton        mBtnRefresh;
+	Handler            mHandler = new Handler();
+	View               mBtnTipOffContainer;
+	View               mRefreshContainer;
+	View               mBtnToolContainer;
+	ImageButton        mBtnTool;
 	
-	View                mContentContianer;
+	View               mContentContianer;
 	
 	
 	final static int REFRESH_ID = 101;
@@ -107,6 +108,7 @@ public class MainActivity extends SherlockFragmentActivity
 		mBtnTipOffContainer = customActionView.findViewById(R.id.tip_off_container);
 		mBtnToolContainer = findViewById(R.id.btnToolContainer);
 		mContentContianer = findViewById(R.id.contentContainer);
+		mBtnTool = (ImageButton) findViewById(R.id.btnTool);
 		
 		mBtnToolContainer.setOnClickListener(this);
         mBtnTipOffContainer.setOnClickListener(this);
@@ -121,8 +123,6 @@ public class MainActivity extends SherlockFragmentActivity
 	    mPagerAdapter = (MainPagerAdapter) mPager.getAdapter();
 		mFragments.add(new LocalVideoFragment().setIActivity(this));
 		mFragments.add(new ShareVideoFragment().setIActivity(this));
-//        mFragments.add(new FaveFragment().setIActivity(this));
-//        mFragments.add(new TransportFragment().setIActivity(this));
 		mPagerAdapter.setFragments(mFragments);
 		mIndicator.setViewPager(mPager);
 		mCurrentFragment = mFragments.get(0);
@@ -133,6 +133,7 @@ public class MainActivity extends SherlockFragmentActivity
 			return;
 		}
 		mBtnTipOffContainer.setVisibility(mCurrentFragment.showTipOffButton() ? View.VISIBLE : View.GONE);
+		mRefreshContainer.setVisibility(mCurrentFragment.showRefreshButton() ? View.VISIBLE : View.GONE);
 	}
 
 	@Override
@@ -260,50 +261,85 @@ public class MainActivity extends SherlockFragmentActivity
 	
 	Animation mHideContentAnim;
 	Animation mShowContentAnim;
-	FaveFragment mFaveFragment;
-	void showToolPanel() {
+	ToolBoxFragment mToolBoxFragment;
+	
+	void setToolButtonImage(boolean toolPanelVisible) {
+	    mBtnTool.setImageResource(toolPanelVisible ? R.drawable.btn_close : R.drawable.btn_tool);
+	}
+	
+	
+	boolean showToolPanel() {
+	    
+	    if(mHideContentAnim != null && !mHideContentAnim.hasEnded() || (mShowContentAnim != null && !mShowContentAnim.hasEnded())){
+	        return false;
+	    }
+	    
 	   if(mHideContentAnim == null) {
 	       mHideContentAnim = AnimationUtils.loadAnimation(this, R.anim.slide_out_to_bottom);
+	       mHideContentAnim.setAnimationListener(new AnimationListener() {
+            
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+            
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+            
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                mPager.setVisibility(View.GONE);
+            }
+        });
 	   }
 	   mContentContianer.startAnimation(mHideContentAnim);
 	   loadToolFragment();
 	   mCurrentFragment.onLeave();
-	   mCurrentFragment = mFaveFragment;
+	   mCurrentFragment = mToolBoxFragment;
 	   mCurrentFragment.onInto();
-	   mPager.setVisibility(View.GONE);
 	   updatePageState();
+	   setToolButtonImage(true);
+	   return true;
 	}
 	
 	void loadToolFragment(){  
-	    if(mFaveFragment == null) {
+	    if(mToolBoxFragment == null) {
 	        FragmentManager fm = getSupportFragmentManager();
 	        FragmentTransaction tran = fm.beginTransaction();
-	        mFaveFragment = new FaveFragment();
-	        mFaveFragment.setIActivity(this);
-	        tran.add(R.id.toolBoxContainer, mFaveFragment);
+	        mToolBoxFragment = new ToolBoxFragment();
+	        mToolBoxFragment.setIActivity(this);
+	        tran.add(R.id.toolBoxContainer, mToolBoxFragment);
 	        tran.commit();
 	    }
 	    
 	}
 	
-	void hideToolPanel() {
-	       if(mShowContentAnim == null) {
-	           mShowContentAnim = AnimationUtils.loadAnimation(this, R.anim.slide_in_from_bottom);
-	       }
-	       mContentContianer.startAnimation(mShowContentAnim);
-	       mPager.setVisibility(View.VISIBLE);
-	       mCurrentFragment = mPagerAdapter.getItem(mPager.getCurrentItem());
-	       updatePageState();
+	boolean hideToolPanel() {
+	        
+	    if(mShowContentAnim != null && !mShowContentAnim.hasEnded() || (mHideContentAnim != null && !mHideContentAnim.hasEnded())) {
+	        return false;
+	    }
+	    
+	    
+       if(mShowContentAnim == null) {
+           mShowContentAnim = AnimationUtils.loadAnimation(this, R.anim.slide_in_from_bottom);
+       }
+       mContentContianer.startAnimation(mShowContentAnim);
+       mPager.setVisibility(View.VISIBLE);
+       mCurrentFragment = mPagerAdapter.getItem(mPager.getCurrentItem());
+       updatePageState();
+       setToolButtonImage(false);
+       return true;
 	}
 	
 	boolean mIsShowToolPanel = false;
 	
 	void toggleTooPanel() {
-	    mIsShowToolPanel = !mIsShowToolPanel;
-	    if(mIsShowToolPanel) {
-	        showToolPanel();
+	    boolean showPanel = !mIsShowToolPanel;
+	    if(showPanel) {
+	        mIsShowToolPanel = showToolPanel() ? showPanel : mIsShowToolPanel;
 	    }else {
-	        hideToolPanel();
+	        mIsShowToolPanel = hideToolPanel() ? showPanel : mIsShowToolPanel;
 	    }
 	}
 

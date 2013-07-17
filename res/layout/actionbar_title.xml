@@ -43,6 +43,7 @@
         android:layout_marginRight="2dp"
         android:layout_toLeftOf="@+id/refresh_container"
         android:background="@drawable/btn_refresh"
+        android:layout_alignWithParentIfMissing="true"
         android:descendantFocusability="blocksDescendants" >
 
         <ImageButton

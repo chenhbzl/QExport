@@ -26,7 +26,7 @@ public class BaseFragment extends Fragment {
 	}
 	
 	public boolean showRefreshButton(){
-		return false;
+		return true;
 	}
 	
 	public void showProgressOnActionBar(){
