@@ -8,6 +8,8 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Process;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
@@ -16,6 +18,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -41,11 +44,11 @@ public class MainActivity extends SherlockFragmentActivity
 	ViewPager			mPager;
 	ImageButton			mBtnRefresh;
 	Handler 			mHandler = new Handler();
-	ImageButton			mBtnTipOff;
 	View				mBtnTipOffContainer;
 	View                mRefreshContainer;
-	View                mBtnTool;
 	View                mBtnToolContainer;
+	
+	View                mContentContianer;
 	
 	
 	final static int REFRESH_ID = 101;
@@ -102,34 +105,30 @@ public class MainActivity extends SherlockFragmentActivity
 		mBtnRefresh = (ImageButton) customActionView.findViewById(R.id.btn_refresh);
 		mRefreshContainer = customActionView.findViewById(R.id.refresh_container);
 		mBtnTipOffContainer = customActionView.findViewById(R.id.tip_off_container);
-		mBtnTipOff = (ImageButton) customActionView.findViewById(R.id.btn_tip_off);
-		mBtnTool = findViewById(R.id.btnTool);
 		mBtnToolContainer = findViewById(R.id.btnToolContainer);
+		mContentContianer = findViewById(R.id.contentContainer);
 		
-		mBtnTool.setOnClickListener(this);
 		mBtnToolContainer.setOnClickListener(this);
-		mBtnTipOff.setOnClickListener(this);
         mBtnTipOffContainer.setOnClickListener(this);
-        mBtnRefresh.setOnClickListener(this);
         mRefreshContainer.setOnClickListener(this);
 		
 		initFragments();
 		updatePageState();
 	}
 	
+	MainPagerAdapter mPagerAdapter;
 	private void initFragments(){
-		MainPagerAdapter adapter = (MainPagerAdapter) mPager.getAdapter();
+	    mPagerAdapter = (MainPagerAdapter) mPager.getAdapter();
 		mFragments.add(new LocalVideoFragment().setIActivity(this));
 		mFragments.add(new ShareVideoFragment().setIActivity(this));
 //        mFragments.add(new FaveFragment().setIActivity(this));
 //        mFragments.add(new TransportFragment().setIActivity(this));
-		adapter.setFragments(mFragments);
+		mPagerAdapter.setFragments(mFragments);
 		mIndicator.setViewPager(mPager);
 		mCurrentFragment = mFragments.get(0);
 	}
 	
 	void updatePageState(){
-//		invalidateOptionsMenu();
 		if(mCurrentFragment == null){
 			return;
 		}
@@ -138,8 +137,6 @@ public class MainActivity extends SherlockFragmentActivity
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-//		boolean showRefresh = mCurrentFragment.showRefreshButton();
-//		menu.add(0, REFRESH_ID, 0, "刷新").setIcon(R.drawable.ic_refresh).setVisible(showRefresh).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 		menu.add(0, ABOUT_ID, 0, "关于");
 		return true;
 	}
@@ -158,8 +155,6 @@ public class MainActivity extends SherlockFragmentActivity
 	
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-//		boolean showRefresh = mCurrentFragment.showRefreshButton();
-//		menu.getItem(0).setVisible(showRefresh);
 		return super.onPrepareOptionsMenu(menu);
 	}
 	
@@ -187,29 +182,18 @@ public class MainActivity extends SherlockFragmentActivity
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-		case R.id.btn_refresh:
-		    Log.d(TAG, "btnRefresh Clicked, currentfragment:" + mCurrentFragment);
-		    mRefreshContainer.performClick();
-		    break;
 		case R.id.refresh_container:
 		    if(mCurrentFragment != null){
                 mCurrentFragment.onRefreshPressed();
             }
-		    break;
-		case R.id.btn_tip_off:
-		    Log.d(TAG, "mBtnTipOff Clicked, currentfragment:" + mCurrentFragment);
-            mBtnTipOffContainer.performClick();
 		    break;
 		case R.id.tip_off_container:
 		    if(mCurrentFragment != null){
                 mCurrentFragment.onTipOffPressed();
             }
 		    break;
-		case R.id.btnTool:
-		    mBtnToolContainer.performClick();
-		    break;
 		case R.id.btnToolContainer:
-		    Toast.makeText(MainActivity.this, "tool", Toast.LENGTH_SHORT).show();
+		    toggleTooPanel();
 		    break;
 		default:
 			break;
@@ -253,7 +237,6 @@ public class MainActivity extends SherlockFragmentActivity
 			mRefreshRotateAnim = AnimationUtils.loadAnimation(this, R.anim.anim_rotate);
 		}
 		if(mBtnRefresh.getAnimation() != null){
-			Log.d(TAG, "animating..");
 			return;
 		}
 		mBtnRefresh.startAnimation(mRefreshRotateAnim);
@@ -272,6 +255,56 @@ public class MainActivity extends SherlockFragmentActivity
 			}
 		}, 800);
 		
+	}
+	
+	
+	Animation mHideContentAnim;
+	Animation mShowContentAnim;
+	FaveFragment mFaveFragment;
+	void showToolPanel() {
+	   if(mHideContentAnim == null) {
+	       mHideContentAnim = AnimationUtils.loadAnimation(this, R.anim.slide_out_to_bottom);
+	   }
+	   mContentContianer.startAnimation(mHideContentAnim);
+	   loadToolFragment();
+	   mCurrentFragment.onLeave();
+	   mCurrentFragment = mFaveFragment;
+	   mCurrentFragment.onInto();
+	   mPager.setVisibility(View.GONE);
+	   updatePageState();
+	}
+	
+	void loadToolFragment(){  
+	    if(mFaveFragment == null) {
+	        FragmentManager fm = getSupportFragmentManager();
+	        FragmentTransaction tran = fm.beginTransaction();
+	        mFaveFragment = new FaveFragment();
+	        mFaveFragment.setIActivity(this);
+	        tran.add(R.id.toolBoxContainer, mFaveFragment);
+	        tran.commit();
+	    }
+	    
+	}
+	
+	void hideToolPanel() {
+	       if(mShowContentAnim == null) {
+	           mShowContentAnim = AnimationUtils.loadAnimation(this, R.anim.slide_in_from_bottom);
+	       }
+	       mContentContianer.startAnimation(mShowContentAnim);
+	       mPager.setVisibility(View.VISIBLE);
+	       mCurrentFragment = mPagerAdapter.getItem(mPager.getCurrentItem());
+	       updatePageState();
+	}
+	
+	boolean mIsShowToolPanel = false;
+	
+	void toggleTooPanel() {
+	    mIsShowToolPanel = !mIsShowToolPanel;
+	    if(mIsShowToolPanel) {
+	        showToolPanel();
+	    }else {
+	        hideToolPanel();
+	    }
 	}
 
 }

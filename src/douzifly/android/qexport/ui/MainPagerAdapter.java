@@ -39,7 +39,7 @@ public class MainPagerAdapter extends FragmentPagerAdapter{
 	}
 
 	@Override
-	public Fragment getItem(int arg0) {
+	public BaseFragment getItem(int arg0) {
 		return mFragments.get(arg0);
 	}
 
