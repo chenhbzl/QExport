@@ -14,7 +14,7 @@ import android.support.v4.app.Fragment;
  */
 public class BaseFragment extends Fragment {
 	
-	IActivity activity;
+	protected IActivity activity;
 	
 	public BaseFragment setIActivity(IActivity a){
 		activity = a;

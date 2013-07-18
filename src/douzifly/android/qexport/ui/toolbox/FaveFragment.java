@@ -1,4 +1,4 @@
-package douzifly.android.qexport.ui;
+package douzifly.android.qexport.ui.toolbox;
 
 import java.util.List;
 
@@ -16,6 +16,7 @@ import android.widget.Toast;
 import douzifly.android.qexport.model.SharedVideoInfo;
 import douzifly.android.qexport.model.db.CacheManager;
 import douzifly.android.qexport.model.db.VideoCache;
+import douzifly.android.qexport.ui.BaseFragment;
 import douzifly.android.qexport.utils.UMengHelper;
 
 /**

@@ -3,7 +3,7 @@
  * github.com/douzifly
  * douzifly@gmail.com
  */
-package douzifly.android.qexport.ui;
+package douzifly.android.qexport.ui.toolbox;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import douzi.android.qexport.R;
 import douzifly.android.qexport.controller.QHttpServer;
+import douzifly.android.qexport.ui.BaseFragment;
 
 /**
  * @author douzifly

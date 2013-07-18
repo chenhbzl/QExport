@@ -33,6 +33,7 @@ import com.viewpagerindicator.TabPageIndicator;
 import douzi.android.qexport.R;
 import douzifly.android.qexport.settings.ShareSetting;
 import douzifly.android.qexport.ui.AnnouncementFragment.OnAnnouncementChooseListner;
+import douzifly.android.qexport.ui.toolbox.ToolBoxFragment;
 import douzifly.android.qexport.utils.YoumiHelper;
 
 public class MainActivity extends SherlockFragmentActivity 
@@ -289,6 +290,7 @@ public class MainActivity extends SherlockFragmentActivity
             @Override
             public void onAnimationEnd(Animation animation) {
                 mPager.setVisibility(View.GONE);
+                mIndicator.setVisibility(View.GONE);
             }
         });
 	   }
@@ -326,6 +328,7 @@ public class MainActivity extends SherlockFragmentActivity
        }
        mContentContianer.startAnimation(mShowContentAnim);
        mPager.setVisibility(View.VISIBLE);
+       mIndicator.setVisibility(View.VISIBLE);
        mCurrentFragment = mPagerAdapter.getItem(mPager.getCurrentItem());
        updatePageState();
        setToolButtonImage(false);
