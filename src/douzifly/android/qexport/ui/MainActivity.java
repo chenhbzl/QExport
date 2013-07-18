@@ -21,6 +21,7 @@ import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
@@ -49,6 +50,7 @@ public class MainActivity extends SherlockFragmentActivity
 	View               mRefreshContainer;
 	View               mBtnToolContainer;
 	ImageButton        mBtnTool;
+	TextView		   mTxtActionBarTitle;
 	
 	View               mContentContianer;
 	
@@ -110,6 +112,7 @@ public class MainActivity extends SherlockFragmentActivity
 		mBtnToolContainer = findViewById(R.id.btnToolContainer);
 		mContentContianer = findViewById(R.id.contentContainer);
 		mBtnTool = (ImageButton) findViewById(R.id.btnTool);
+		mTxtActionBarTitle = (TextView) customActionView.findViewById(R.id.title);
 		
 		mBtnToolContainer.setOnClickListener(this);
         mBtnTipOffContainer.setOnClickListener(this);
@@ -206,6 +209,18 @@ public class MainActivity extends SherlockFragmentActivity
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 	    if(keyCode == KeyEvent.KEYCODE_BACK){
+	    	
+	    	
+	    	if(mCurrentFragment == mToolBoxFragment) {
+	    		if(mToolBoxFragment.onClosePressed()){
+	    			return true;
+	    		}else{
+	    			toggleTooPanel();
+	    			return true;
+	    		}
+	    	}
+	    	
+	    	
             new AlertDialog.Builder(this)
                     .setTitle("退出")
                     .setMessage("确定吗?")
@@ -332,18 +347,31 @@ public class MainActivity extends SherlockFragmentActivity
        mCurrentFragment = mPagerAdapter.getItem(mPager.getCurrentItem());
        updatePageState();
        setToolButtonImage(false);
+       setActionBarTitle("快播合体助手");
        return true;
 	}
 	
 	boolean mIsShowToolPanel = false;
 	
 	void toggleTooPanel() {
+		
+		if(mCurrentFragment == mToolBoxFragment && mCurrentFragment.onClosePressed()) {
+			return;
+		}
+		
 	    boolean showPanel = !mIsShowToolPanel;
 	    if(showPanel) {
 	        mIsShowToolPanel = showToolPanel() ? showPanel : mIsShowToolPanel;
 	    }else {
 	        mIsShowToolPanel = hideToolPanel() ? showPanel : mIsShowToolPanel;
 	    }
+	}
+
+	@Override
+	public void setActionBarTitle(String text) {
+		if(mTxtActionBarTitle != null) {
+			mTxtActionBarTitle.setText(text);
+		}
 	}
 
 }

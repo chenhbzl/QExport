@@ -47,6 +47,14 @@ public class BaseFragment extends Fragment {
 	
 	public void onTipOffPressed(){}
 	
+	/**
+	 * 如果子类处理了，返回false，那么父类不会处理
+	 * @return
+	 */
+	public boolean onClosePressed() {
+		return false;
+	}
+	
 	public boolean showTipOffButton(){
 		return false;
 	}

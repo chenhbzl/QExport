@@ -14,5 +14,5 @@ public interface IActivity {
 	
 	void showProgressOnActionBar();
 	void hideProgressOnActionBar();
-	
+	void setActionBarTitle(String text);
 }

@@ -11,9 +11,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.TextView;
 import douzi.android.qexport.R;
 import douzifly.android.qexport.ui.BaseFragment;
 import douzifly.android.qexport.ui.IActivity;
@@ -23,16 +20,12 @@ import douzifly.android.qexport.ui.toolbox.ToolBoxContentFragment.OnModuleClickL
  * @author douzifly
  *
  */
-public class ToolBoxFragment extends BaseFragment implements OnModuleClickListener, OnClickListener{
-    
-   
+public class ToolBoxFragment extends BaseFragment implements OnModuleClickListener{
     
     private BaseFragment 			mCurrentFragment;
     private FaveFragment 			mFaveFragment;
     private TransportFragment 		mTranFragment;
     private ToolBoxContentFragment mToolBoxContentFragment;
-    private TextView				mTxtToolBoxTitle;
-    private Button					mBtnBack;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -44,10 +37,6 @@ public class ToolBoxFragment extends BaseFragment implements OnModuleClickListen
     }
     
     private void setupView(View root) {
-    	mTxtToolBoxTitle = (TextView) root.findViewById(R.id.txtToolBoxTitle);
-    	mBtnBack = (Button) root.findViewById(R.id.btnToolBoxBack);
-    	
-    	mBtnBack.setOnClickListener(this);
     }
     
     @Override
@@ -85,8 +74,7 @@ public class ToolBoxFragment extends BaseFragment implements OnModuleClickListen
     private void setCurrentFragment(BaseFragment frag) {
     	mCurrentFragment = frag;
     	frag.onInto();
-    	mTxtToolBoxTitle.setText(mCurrentFragment.getTitle());
-    	checkBackButtonVisible();
+    	activity.setActionBarTitle(frag.getTitle());
     } 
     
     private void showFaveFramgent() {
@@ -143,10 +131,16 @@ public class ToolBoxFragment extends BaseFragment implements OnModuleClickListen
     			R.anim.slide_in_from_bottom_no_fill, R.anim.slide_out_to_bottom_no_fill);
     }
 
-    private void checkBackButtonVisible() {
-    	mBtnBack.setVisibility(mCurrentFragment != mToolBoxContentFragment ? View.VISIBLE : View.GONE);
+    @Override
+    public boolean onClosePressed() {
+    	if(mCurrentFragment == mToolBoxContentFragment) {
+    		return false;
+    	}
+    	
+    	showToolBoxContentFragment();
+    	return true;
     }
-
+    
 
 	@Override
 	public void onModuleClicked(int module) {
@@ -161,12 +155,6 @@ public class ToolBoxFragment extends BaseFragment implements OnModuleClickListen
 			break;
 		}
 	}
-
-	@Override
-	public void onClick(View v) {
-		if(v.getId() == R.id.btnToolBoxBack) {
-			showToolBoxContentFragment();
-		}
-	}
-    
+	
+	    
 }
