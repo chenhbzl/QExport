@@ -47,6 +47,11 @@ public class TransportFragment extends BaseFragment{
         return root;
     }
     
+    @Override
+    public boolean showRefreshButton() {
+        return false;
+    }
+    
     private void setupView(View root){
         mBtnToggle = (Button) root.findViewById(R.id.btnTransportToggle);
         mTxtInfo = (TextView) root.findViewById(R.id.txtInfo);

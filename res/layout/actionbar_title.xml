@@ -4,14 +4,46 @@
     android:layout_height="match_parent"
     android:descendantFocusability="blocksDescendants" >
 
+     <LinearLayout
+        android:id="@+id/btnBack"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:background="@drawable/btn_refresh"
+        android:layout_alignWithParentIfMissing="true"
+        android:visibility="gone"
+        android:orientation="horizontal"
+        android:descendantFocusability="blocksDescendants" >
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:background="@null"
+            android:clickable="false"
+            android:scaleType="center"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:src="@drawable/ic_ab_back" />
+        <TextView android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="#FD450A"
+            />
+        <TextView android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="#FA6130"
+            />
+    </LinearLayout>
+    
     <TextView
         android:id="@+id/title"
         style="@style/QExportActionBar.Text"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
         android:layout_marginLeft="8dp"
         android:gravity="center_vertical"
+        android:layout_toRightOf="@id/btnBack"
         android:orientation="vertical"
         android:text="快播合体助手" >
     </TextView>
@@ -44,6 +76,7 @@
         android:layout_toLeftOf="@+id/refresh_container"
         android:background="@drawable/btn_refresh"
         android:layout_alignWithParentIfMissing="true"
+        android:visibility="gone"
         android:descendantFocusability="blocksDescendants" >
 
         <ImageButton

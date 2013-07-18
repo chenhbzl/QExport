@@ -5,11 +5,16 @@
  */
 package douzifly.android.qexport.ui.toolbox;
 
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.webkit.WebView.FindListener;
+import android.widget.TextView;
 import douzi.android.qexport.R;
 import douzifly.android.qexport.ui.BaseFragment;
 
@@ -25,8 +30,9 @@ public class ToolBoxContentFragment extends BaseFragment implements
 	public final static int  MODULE_FAVE = 0;
 	public final static int  MODULE_TRAN = 1;
 
-	private View mBtnFave;
-	private View mBtnTransfer;
+	private View       mBtnFave;
+	private View       mBtnTransfer;
+	private TextView   mTxtVersion;
 	
 	private OnModuleClickListener mListener;
 	
@@ -48,6 +54,19 @@ public class ToolBoxContentFragment extends BaseFragment implements
 
 		mBtnFave.setOnClickListener(this);
 		mBtnTransfer.setOnClickListener(this);
+		mTxtVersion = (TextView) root.findViewById(R.id.txtVersion);
+		
+		setVersion();
+	}
+	
+	private void setVersion() {
+	    try{
+	        PackageManager pm = getActivity().getPackageManager();
+	        PackageInfo info = pm.getPackageInfo(getActivity().getPackageName(), 0);
+	        mTxtVersion.setText(info.versionName);
+	    }catch(Exception e) {
+	        mTxtVersion.setText("");
+	    }
 	}
 
 	@Override

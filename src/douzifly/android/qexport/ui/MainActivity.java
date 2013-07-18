@@ -34,11 +34,15 @@ import com.viewpagerindicator.TabPageIndicator;
 import douzi.android.qexport.R;
 import douzifly.android.qexport.settings.ShareSetting;
 import douzifly.android.qexport.ui.AnnouncementFragment.OnAnnouncementChooseListner;
+import douzifly.android.qexport.ui.toolbox.FaveFragment;
+import douzifly.android.qexport.ui.toolbox.ToolBoxContentFragment;
+import douzifly.android.qexport.ui.toolbox.TransportFragment;
+import douzifly.android.qexport.ui.toolbox.ToolBoxContentFragment.OnModuleClickListener;
 import douzifly.android.qexport.ui.toolbox.ToolBoxFragment;
 import douzifly.android.qexport.utils.YoumiHelper;
 
 public class MainActivity extends SherlockFragmentActivity 
-       implements IActivity, OnClickListener {
+       implements IActivity, OnClickListener, OnModuleClickListener {
 	
 	static String 			TAG = "MainActivity";
 	
@@ -51,13 +55,17 @@ public class MainActivity extends SherlockFragmentActivity
 	View               mBtnToolContainer;
 	ImageButton        mBtnTool;
 	TextView		   mTxtActionBarTitle;
-	
 	View               mContentContianer;
+	
+	FaveFragment       mFaveFragment;
+	TransportFragment  mTranFragment;
+	View               mBtnBack;
 	
 	
 	final static int REFRESH_ID = 101;
 	final static int ABOUT_ID = 102;
 	BaseFragment 		mCurrentFragment;
+	BaseFragment        mCurrentToolFragment;
 	
 	private List<BaseFragment> mFragments = new ArrayList<BaseFragment>();
 
@@ -113,10 +121,12 @@ public class MainActivity extends SherlockFragmentActivity
 		mContentContianer = findViewById(R.id.contentContainer);
 		mBtnTool = (ImageButton) findViewById(R.id.btnTool);
 		mTxtActionBarTitle = (TextView) customActionView.findViewById(R.id.title);
+		mBtnBack = customActionView.findViewById(R.id.btnBack);
 		
 		mBtnToolContainer.setOnClickListener(this);
         mBtnTipOffContainer.setOnClickListener(this);
         mRefreshContainer.setOnClickListener(this);
+        mBtnBack.setOnClickListener(this);
 		
 		initFragments();
 		updatePageState();
@@ -127,6 +137,11 @@ public class MainActivity extends SherlockFragmentActivity
 	    mPagerAdapter = (MainPagerAdapter) mPager.getAdapter();
 		mFragments.add(new LocalVideoFragment().setIActivity(this));
 		mFragments.add(new ShareVideoFragment().setIActivity(this));
+		ToolBoxFragment toolFrag = new ToolBoxFragment();
+		toolFrag.setIActivity(this);
+		toolFrag.setListener(this);
+		mFragments.add(toolFrag);
+		
 		mPagerAdapter.setFragments(mFragments);
 		mIndicator.setViewPager(mPager);
 		mCurrentFragment = mFragments.get(0);
@@ -197,8 +212,8 @@ public class MainActivity extends SherlockFragmentActivity
                 mCurrentFragment.onTipOffPressed();
             }
 		    break;
-		case R.id.btnToolContainer:
-		    toggleTooPanel();
+		case R.id.btnBack:
+		    hideToolPanel();
 		    break;
 		default:
 			break;
@@ -209,18 +224,12 @@ public class MainActivity extends SherlockFragmentActivity
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 	    if(keyCode == KeyEvent.KEYCODE_BACK){
-	    	
-	    	
-	    	if(mCurrentFragment == mToolBoxFragment) {
-	    		if(mToolBoxFragment.onClosePressed()){
-	    			return true;
-	    		}else{
-	    			toggleTooPanel();
-	    			return true;
-	    		}
-	    	}
-	    	
-	    	
+
+	        if(mCurrentFragment == mCurrentToolFragment) {
+	            hideToolPanel();
+	            return true;
+	        }
+	        
             new AlertDialog.Builder(this)
                     .setTitle("退出")
                     .setMessage("确定吗?")
@@ -277,14 +286,13 @@ public class MainActivity extends SherlockFragmentActivity
 	
 	Animation mHideContentAnim;
 	Animation mShowContentAnim;
-	ToolBoxFragment mToolBoxFragment;
 	
 	void setToolButtonImage(boolean toolPanelVisible) {
 	    mBtnTool.setImageResource(toolPanelVisible ? R.drawable.btn_close : R.drawable.btn_tool);
 	}
 	
 	
-	boolean showToolPanel() {
+	public boolean showToolPanel(BaseFragment fragment) {
 	    
 	    if(mHideContentAnim != null && !mHideContentAnim.hasEnded() || (mShowContentAnim != null && !mShowContentAnim.hasEnded())){
 	        return false;
@@ -310,28 +318,36 @@ public class MainActivity extends SherlockFragmentActivity
         });
 	   }
 	   mContentContianer.startAnimation(mHideContentAnim);
-	   loadToolFragment();
+	   loadToolFragment(fragment);
 	   mCurrentFragment.onLeave();
-	   mCurrentFragment = mToolBoxFragment;
+	   mCurrentFragment = fragment;
 	   mCurrentFragment.onInto();
 	   updatePageState();
-	   setToolButtonImage(true);
+	   setActionBarTitle(fragment.getTitle());
+	   mBtnBack.setVisibility(View.VISIBLE);
 	   return true;
 	}
 	
-	void loadToolFragment(){  
-	    if(mToolBoxFragment == null) {
-	        FragmentManager fm = getSupportFragmentManager();
-	        FragmentTransaction tran = fm.beginTransaction();
-	        mToolBoxFragment = new ToolBoxFragment();
-	        mToolBoxFragment.setIActivity(this);
-	        tran.add(R.id.toolBoxContainer, mToolBoxFragment);
-	        tran.commit();
+	void loadToolFragment(BaseFragment fragment){  
+	    if(mCurrentToolFragment == fragment) {
+	        return;
 	    }
-	    
+	    FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction tran = fm.beginTransaction();
+	    if(mCurrentToolFragment != null) {
+	       tran.hide(mCurrentToolFragment);
+	    }
+	    if(!fragment.isAdded()){
+	        Log.d(TAG, "not added:" + fragment);
+	        tran.add(R.id.toolBoxContainer, fragment);
+	    }else {
+	        tran.show(fragment);
+	    }
+	    tran.commit();
+	    mCurrentToolFragment = fragment;
 	}
 	
-	boolean hideToolPanel() {
+	public boolean hideToolPanel() {
 	        
 	    if(mShowContentAnim != null && !mShowContentAnim.hasEnded() || (mHideContentAnim != null && !mHideContentAnim.hasEnded())) {
 	        return false;
@@ -346,25 +362,9 @@ public class MainActivity extends SherlockFragmentActivity
        mIndicator.setVisibility(View.VISIBLE);
        mCurrentFragment = mPagerAdapter.getItem(mPager.getCurrentItem());
        updatePageState();
-       setToolButtonImage(false);
+       mBtnBack.setVisibility(View.GONE);
        setActionBarTitle("快播合体助手");
        return true;
-	}
-	
-	boolean mIsShowToolPanel = false;
-	
-	void toggleTooPanel() {
-		
-		if(mCurrentFragment == mToolBoxFragment && mCurrentFragment.onClosePressed()) {
-			return;
-		}
-		
-	    boolean showPanel = !mIsShowToolPanel;
-	    if(showPanel) {
-	        mIsShowToolPanel = showToolPanel() ? showPanel : mIsShowToolPanel;
-	    }else {
-	        mIsShowToolPanel = hideToolPanel() ? showPanel : mIsShowToolPanel;
-	    }
 	}
 
 	@Override
@@ -373,5 +373,22 @@ public class MainActivity extends SherlockFragmentActivity
 			mTxtActionBarTitle.setText(text);
 		}
 	}
+
+    @Override
+    public void onModuleClicked(int module) {
+        if(module == ToolBoxContentFragment.MODULE_FAVE) {
+            if(mFaveFragment == null) {
+                mFaveFragment = new FaveFragment();
+                mFaveFragment.setIActivity(this);
+            }
+            showToolPanel(mFaveFragment);
+        }else if (module == ToolBoxContentFragment.MODULE_TRAN) {
+            if(mTranFragment == null) {
+                mTranFragment = new TransportFragment();
+                mTranFragment.setIActivity(this);
+            }
+            showToolPanel(mTranFragment);
+        }
+    }
 
 }

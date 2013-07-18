@@ -8,12 +8,12 @@ package douzifly.android.qexport.ui.toolbox;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import douzi.android.qexport.R;
 import douzifly.android.qexport.ui.BaseFragment;
-import douzifly.android.qexport.ui.IActivity;
 import douzifly.android.qexport.ui.toolbox.ToolBoxContentFragment.OnModuleClickListener;
 
 /**
@@ -21,15 +21,18 @@ import douzifly.android.qexport.ui.toolbox.ToolBoxContentFragment.OnModuleClickL
  *
  */
 public class ToolBoxFragment extends BaseFragment implements OnModuleClickListener{
+    private final static String TAG = "ToolBoxFragment";
+    private ToolBoxContentFragment  mToolBoxContentFragment;
+    private OnModuleClickListener   mListener;
     
-    private BaseFragment 			mCurrentFragment;
-    private FaveFragment 			mFaveFragment;
-    private TransportFragment 		mTranFragment;
-    private ToolBoxContentFragment mToolBoxContentFragment;
-
+    public void setListener(OnModuleClickListener l) {
+        mListener = l;
+    }
+ 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
+        Log.d(TAG, "onCreateView");
     	View root = inflater.inflate(R.layout.tool_box, null);
     	setupView(root);
     	showToolBoxContentFragment();
@@ -40,11 +43,6 @@ public class ToolBoxFragment extends BaseFragment implements OnModuleClickListen
     }
     
     @Override
-    public BaseFragment setIActivity(IActivity a) {
-    	return super.setIActivity(a);
-    }
-    
-    @Override
     public String getTitle() {
     	return "我的工具箱";
     }
@@ -52,78 +50,24 @@ public class ToolBoxFragment extends BaseFragment implements OnModuleClickListen
     @Override
     public boolean showRefreshButton() {
     	// 如果没有子界面，那么不显示，如果有子界面，看字节面是否需要显示
-        return mCurrentFragment == null ? false : mCurrentFragment.showRefreshButton();
+        return false;
     }
 
     private FragmentTransaction getFragmentTran() {
     	FragmentManager fm = getFragmentManager();
     	return fm.beginTransaction();
     }
-    
-    private void hideCurrentFragment() {
-    	if(mCurrentFragment == null) {
-    		return;
-    	}
-    	
-    	FragmentTransaction tran = getFragmentTran();
-    	tran.hide(mCurrentFragment);
-    	tran.commit();
-    	mCurrentFragment.onLeave();
-    }
-    
-    private void setCurrentFragment(BaseFragment frag) {
-    	mCurrentFragment = frag;
-    	frag.onInto();
-    	activity.setActionBarTitle(frag.getTitle());
-    } 
-    
-    private void showFaveFramgent() {
-    	hideCurrentFragment();
-    	FragmentTransaction tran = getFragmentTran();
-    	if(mFaveFragment == null) {
-    		mFaveFragment = new FaveFragment();
-    		mFaveFragment.setIActivity(activity);
-    		setAnimation(tran);
-    		tran.add(R.id.toolBoxFragmentContainer, mFaveFragment);
-    	}else {
-    		setAnimation(tran);
-    		tran.show(mFaveFragment);
-    	}
-    	tran.commit();
-    	setCurrentFragment(mFaveFragment);
-    }
-    
-    private void showTransferFragment() {
-    	hideCurrentFragment();
-    	FragmentTransaction tran = getFragmentTran();
-    	if(mTranFragment == null) {
-    		mTranFragment = new TransportFragment();
-    		mTranFragment.setIActivity(activity);
-    		setAnimation(tran);
-    		tran.add(R.id.toolBoxFragmentContainer, mTranFragment);
-    	}else {
-    		setAnimation(tran);
-    		tran.show(mTranFragment);
-    	}
-    	tran.commit();
-    	setCurrentFragment(mTranFragment);
-    }
+   
     
     private void showToolBoxContentFragment() {
-    	hideCurrentFragment();
     	FragmentTransaction tran = getFragmentTran();
-    	if(mToolBoxContentFragment == null) {
-    		mToolBoxContentFragment = new ToolBoxContentFragment();
-    		mToolBoxContentFragment.setIActivity(activity);
-    		mToolBoxContentFragment.setListener(this);
-    		setAnimation(tran);
-    		tran.add(R.id.toolBoxFragmentContainer, mToolBoxContentFragment);
-    	}else {
-    		setAnimation(tran);
-    		tran.show(mToolBoxContentFragment);
-    	}
+    	Log.d(TAG, "showToolBoxContentFragment:" + mToolBoxContentFragment);
+    	mToolBoxContentFragment = new ToolBoxContentFragment();
+    	mToolBoxContentFragment.setIActivity(activity);
+    	mToolBoxContentFragment.setListener(this);
+//    		setAnimation(tran);
+    	tran.add(R.id.toolBoxFragmentContainer, mToolBoxContentFragment);
     	tran.commit();
-    	setCurrentFragment(mToolBoxContentFragment);
     }
     
     private void setAnimation(FragmentTransaction tran) {
@@ -131,30 +75,24 @@ public class ToolBoxFragment extends BaseFragment implements OnModuleClickListen
     			R.anim.slide_in_from_bottom_no_fill, R.anim.slide_out_to_bottom_no_fill);
     }
 
-    @Override
-    public boolean onClosePressed() {
-    	if(mCurrentFragment == mToolBoxContentFragment) {
-    		return false;
-    	}
-    	
-    	showToolBoxContentFragment();
-    	return true;
-    }
-    
 
 	@Override
 	public void onModuleClicked(int module) {
-		switch (module) {
-		case ToolBoxContentFragment.MODULE_FAVE:
-			showFaveFramgent();
-			break;
-		case ToolBoxContentFragment.MODULE_TRAN:
-			showTransferFragment();
-			break;
-		default:
-			break;
+		if(mListener != null) {
+		    mListener.onModuleClicked(module);
 		}
 	}
 	
+	@Override
+	public void onDetach() {
+	    super.onDetach();
+	    Log.d(TAG, "onDetach");
+	}
+	
+	@Override
+	public void onDestroy() {
+	    super.onDestroy();
+	    Log.d(TAG, "onDestory");
+	}
 	    
 }
