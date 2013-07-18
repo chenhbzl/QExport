@@ -128,7 +128,7 @@ public class TransportFragment extends BaseFragment{
        }
        mTxtTip1.setVisibility(what == WHAT_START ? View.VISIBLE : View.GONE);
        mTxtInfo.setVisibility(what == WHAT_START ? View.VISIBLE : View.GONE);
-       mTxtInfo.setText(what == WHAT_START ? mServer.getListenAddr() : "");
+       mTxtInfo.setText(what == WHAT_START ? "http://" + mServer.getListenAddr() : "");
        
     }
 }

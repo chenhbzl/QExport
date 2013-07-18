@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:textColor="#999"
             android:textSize="13sp"
-            android:text="再电脑上输入"
+            android:text="在电脑浏览器地址栏上输入"
             />
         
         <TextView
@@ -35,7 +35,7 @@
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
             android:textColor="#333"
-            android:padding="5dp"
+            android:padding="10dp"
             android:textSize="14sp"
             />
         
