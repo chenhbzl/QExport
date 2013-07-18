@@ -299,7 +299,7 @@ public class MainActivity extends SherlockFragmentActivity
 	    }
 	    
 	   if(mHideContentAnim == null) {
-	       mHideContentAnim = AnimationUtils.loadAnimation(this, R.anim.slide_out_to_bottom);
+	       mHideContentAnim = AnimationUtils.loadAnimation(this, R.anim.slide_out_to_left);
 	       mHideContentAnim.setAnimationListener(new AnimationListener() {
             
             @Override
@@ -335,7 +335,8 @@ public class MainActivity extends SherlockFragmentActivity
 	    FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction tran = fm.beginTransaction();
 	    if(mCurrentToolFragment != null) {
-	       tran.hide(mCurrentToolFragment);
+	        Log.d(TAG, "hide:" + mCurrentToolFragment);
+	        tran.hide(mCurrentToolFragment);
 	    }
 	    if(!fragment.isAdded()){
 	        Log.d(TAG, "not added:" + fragment);
@@ -355,11 +356,12 @@ public class MainActivity extends SherlockFragmentActivity
 	    
 	    
        if(mShowContentAnim == null) {
-           mShowContentAnim = AnimationUtils.loadAnimation(this, R.anim.slide_in_from_bottom);
+           mShowContentAnim = AnimationUtils.loadAnimation(this, R.anim.slide_in_from_left);
        }
        mContentContianer.startAnimation(mShowContentAnim);
        mPager.setVisibility(View.VISIBLE);
        mIndicator.setVisibility(View.VISIBLE);
+       mCurrentToolFragment.onLeave();
        mCurrentFragment = mPagerAdapter.getItem(mPager.getCurrentItem());
        updatePageState();
        mBtnBack.setVisibility(View.GONE);

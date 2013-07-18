@@ -6,11 +6,11 @@
 package douzifly.android.qexport.ui.toolbox;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import douzi.android.qexport.R;
@@ -23,20 +23,21 @@ import douzifly.android.qexport.ui.BaseFragment;
  */
 public class TransportFragment extends BaseFragment{
     
-    Button mBtnToggle;
+    final static String TAG = "TransportFragment";
+    
     TextView mTxtInfo;
-    boolean mTransportEnable = false;
     QHttpServer mServer;
+    TextView mTxtTip;
+    TextView mTxtTip1;
     
     @Override
     public String getTitle() {
-        return "传输到电脑";
+        return "关闭传输";
     }
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mServer = new QHttpServer();
     }
 
     @Override
@@ -53,59 +54,81 @@ public class TransportFragment extends BaseFragment{
     }
     
     private void setupView(View root){
-        mBtnToggle = (Button) root.findViewById(R.id.btnTransportToggle);
         mTxtInfo = (TextView) root.findViewById(R.id.txtInfo);
-        
-        mBtnToggle.setOnClickListener(new OnClickListener() {
-            
-            @Override
-            public void onClick(View v) {
-                new Thread(new Runnable() {
-                    
-                    @Override
-                    public void run() {
-                        toggleTransport();
-                    }
-                }).start();
-               
-            } 
-        });
-        updateUI();
+        mTxtTip = (TextView) root.findViewById(R.id.txtTip);
+        mTxtTip1 = (TextView) root.findViewById(R.id.txtTip1);
+        updateUI(WHAT_CLOSE);
+        start();
     }
     
-    private void toggleTransport(){
-       mTransportEnable = !mTransportEnable;
-       if(mTransportEnable){
-           try {
-            mServer.start();
-        } catch (final Exception e) {
-            e.printStackTrace();
-            getActivity().runOnUiThread(new Runnable() {
+    @Override
+    public void onInto() {
+        super.onInto();
+        if(getActivity() != null) {
+            start();
+        }
+    }
+    
+    @Override
+    public void onLeave() {
+        super.onLeave();
+        close();
+    }
+    
+    
+    private void close() {
+        if(mServer != null) {
+            Log.d(TAG, "stop");
+            new Thread(new Runnable() {
                 
                 @Override
                 public void run() {
-                    Toast.makeText(getActivity(), "开启失败:"+ e.getMessage(), Toast.LENGTH_SHORT).show();
+                    mServer.stop();
+                    mHandler.sendEmptyMessage(WHAT_CLOSE);
                 }
-            });
-           
-            mTransportEnable = false;
+            }).start();
+          
         }
-       }else{
-           mServer.stop();
-       }
-       
-       getActivity().runOnUiThread(new Runnable() {
-        
-        @Override
-        public void run() {
-            updateUI();
-        }
-       });
-       
     }
     
-    private void updateUI(){
-       mBtnToggle.setText(mTransportEnable ? R.string.close_transport : R.string.open_transport);
-       mTxtInfo.setText(mTransportEnable ? mServer.getListenAddr() : "");
+    final static int WHAT_START = 0;
+    final static int WHAT_CLOSE = 1;
+    final static int WHAT_FAILED = 2;
+    
+    Handler mHandler = new Handler(){
+        public void handleMessage(android.os.Message msg) {
+            updateUI(msg.what);
+        };
+    };
+    
+    private void start(){
+        
+        new Thread(new Runnable() {
+            
+            @Override
+            public void run() {
+                try {
+                    mServer = new QHttpServer();
+                    Log.d(TAG, "start");
+                    mServer.start();
+                    mHandler.sendEmptyMessage(WHAT_START);
+                } catch (final Exception e) {
+                    mHandler.sendEmptyMessage(WHAT_FAILED);
+                }
+            }
+        }).start();
+        
+        
+    }
+    
+    private void updateUI(int what){
+       mTxtTip.setVisibility((what == WHAT_START || what == WHAT_FAILED)? View.VISIBLE : View.GONE);
+       if(what == WHAT_FAILED){
+           mTxtTip.setText("开启失败了，确保手机已经开启wifi");
+       }
+       mTxtTip1.setVisibility(what == WHAT_START ? View.VISIBLE : View.GONE);
+       mTxtInfo.setVisibility(what == WHAT_START ? View.VISIBLE : View.GONE);
+       mTxtInfo.setText(what == WHAT_START ? mServer.getListenAddr() : "");
+       
     }
 }
