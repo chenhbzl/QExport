@@ -36,7 +36,7 @@ public class TransportFragment extends BaseFragment{
     
     @Override
     public String getTitle() {
-        return "关闭传输";
+        return "传输到电脑";
     }
     
     @Override
