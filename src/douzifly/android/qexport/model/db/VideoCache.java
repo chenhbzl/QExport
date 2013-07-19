@@ -40,6 +40,7 @@ public class VideoCache implements Storeable<SharedVideoInfo>{
             v.hash = cur.getString(cur.getColumnIndex(COL_HASH));
             videos.add(v);
         }
+        cur.close();
         return videos;
     }
 
@@ -55,6 +56,7 @@ public class VideoCache implements Storeable<SharedVideoInfo>{
         }
         long ret = db.insert(TB_NAME, null, values);
         Log.d(TAG, "insert video, return : " + ret);
+        db.close();
         return ret > 0 ? true : false;
     }
 

@@ -105,6 +105,7 @@ public abstract class NanoHTTPD {
      */
     public void start() throws IOException {
         myServerSocket = new ServerSocket();
+        myServerSocket.setReuseAddress(true);
         myServerSocket.bind((hostname != null) ? new InetSocketAddress(hostname, myPort) : new InetSocketAddress(myPort));
         Log.d(TAG, "myServersocket:" + myServerSocket.hashCode());
         myThread = new Thread(new Runnable() {
@@ -129,6 +130,7 @@ public abstract class NanoHTTPD {
                                             session.execute();
                                         }
                                     } catch (IOException e) {
+                                    	Log.e(TAG, "IOExp:" + e.getMessage());
                                         e.printStackTrace();
                                     } finally {
                                         safeClose(outputStream);
@@ -139,6 +141,7 @@ public abstract class NanoHTTPD {
                             });
                         }
                     } catch (IOException e) {
+                    	Log.e(TAG, "IOExp:" + e.getMessage());
                     }
                 } while (!myServerSocket.isClosed());
             }
@@ -155,7 +158,13 @@ public abstract class NanoHTTPD {
         try {
             Log.d(TAG, "stop myServerSocket:" + myServerSocket.hashCode());
             safeClose(myServerSocket);
-            myThread.join();
+//            myThread.join();
+            try{
+            	myThread.interrupt();
+            }catch(Exception e) {
+            	
+            }
+         
             Log.d(TAG, "stop ok");
         } catch (Exception e) {
             Log.d(TAG, "stop e:" + e.getMessage());

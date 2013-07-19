@@ -28,6 +28,10 @@ public class QHttpServer {
     
     public synchronized void start() throws Exception{
         String wwwRoot = AppSetting.getExportFolder();
+        File f = new File(wwwRoot);
+        if(!f.exists()) {
+        	f.mkdirs();
+        }
         boolean quiet = false;
         int port = 8080;
         Log.d(TAG, "start " + wwwRoot + " q:" + quiet);

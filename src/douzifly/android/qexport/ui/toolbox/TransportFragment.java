@@ -114,6 +114,7 @@ public class TransportFragment extends BaseFragment{
                     mHandler.sendEmptyMessage(WHAT_START);
                 } catch (final Exception e) {
                     mHandler.sendEmptyMessage(WHAT_FAILED);
+                    Log.e(TAG, "Exception:" + e.getMessage());
                 }
             }
         }).start();
