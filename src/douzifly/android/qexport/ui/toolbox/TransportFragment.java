@@ -5,11 +5,15 @@
  */
 package douzifly.android.qexport.ui.toolbox;
 
+import android.content.ClipData;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.ClipboardManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,6 +61,22 @@ public class TransportFragment extends BaseFragment{
         mTxtInfo = (TextView) root.findViewById(R.id.txtInfo);
         mTxtTip = (TextView) root.findViewById(R.id.txtTip);
         mTxtTip1 = (TextView) root.findViewById(R.id.txtTip1);
+        
+        mTxtInfo.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				String content = "http://" + mServer.getListenAddr() ;
+				try {
+					ClipboardManager clip = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+					clip.setText(content);
+					Toast.makeText(getActivity(), "已复制:"+ content, Toast.LENGTH_SHORT).show();
+				}catch(Exception e) {
+					
+				}
+			}
+		});
+        
         updateUI(WHAT_CLOSE);
         start();
     }

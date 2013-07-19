@@ -158,13 +158,7 @@ public abstract class NanoHTTPD {
         try {
             Log.d(TAG, "stop myServerSocket:" + myServerSocket.hashCode());
             safeClose(myServerSocket);
-//            myThread.join();
-            try{
-            	myThread.interrupt();
-            }catch(Exception e) {
-            	
-            }
-         
+            myThread.join(5000);
             Log.d(TAG, "stop ok");
         } catch (Exception e) {
             Log.d(TAG, "stop e:" + e.getMessage());
