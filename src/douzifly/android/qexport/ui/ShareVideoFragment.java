@@ -195,15 +195,9 @@ public class ShareVideoFragment extends BaseFragment implements
 					Toast.makeText(getActivity(), "貌似网络不给力", Toast.LENGTH_SHORT).show();
 				}
 				
-				getActivity().runOnUiThread(new Runnable() {
-					
-					@Override
-					public void run() {
-						if(mPullListView.isRefreshing()){
-							mPullListView.onRefreshComplete();
-						}
-					}
-				});
+				if(mPullListView.isRefreshing()){
+					mPullListView.onRefreshComplete();
+				}
 			}
 		});
 		
@@ -242,7 +236,9 @@ public class ShareVideoFragment extends BaseFragment implements
 
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-		handleSharedClick(arg2);
+		// 这是下拉刷新列表的bug，暂时还未找到原因
+		// 列表中元素的下标从1开始而不是从0开始
+		handleSharedClick(arg2 - 1);
 	}
 	
 	boolean firstInto = true;

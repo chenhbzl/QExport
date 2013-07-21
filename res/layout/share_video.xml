@@ -48,7 +48,7 @@
         android:divider="@color/list_divider"
         android:dividerHeight="0dp"
         android:fadingEdge="none"
-        android:scrollingCache="false" 
-        ptr:ptrAnimationStyle="flip"/>
+        android:scrollingCache="false"
+        ptr:ptrAnimationStyle="flip" />
 
 </RelativeLayout>
