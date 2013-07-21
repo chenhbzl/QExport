@@ -9,6 +9,10 @@ package douzifly.android.qexport.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
+
 import net.youmi.android.banner.AdSize;
 import net.youmi.android.banner.AdView;
 import android.annotation.SuppressLint;
@@ -52,17 +56,20 @@ import douzifly.android.qexport.utils.UMengHelper;
 public class ShareVideoFragment extends BaseFragment implements 
 	OnItemClickListener, 
 	OnItemLongClickListener,
-	OnTipOffClickListener{
+	OnTipOffClickListener,
+	OnRefreshListener<ListView>{
 	
 	final static String TAG = "ShareVideoFragment";
 	
 	ListView mListView;
-	Button	 mBtnChange;
+	PullToRefreshListView mPullListView;
+	SharedVideoAdapter mAdapter;
+//	Button	 mBtnChange;
 	SharedVideoController mSharedVideoController = new SharedVideoController();
 	boolean  mViewDestoryed = false;
 	List<SharedVideoInfo> mVideos;
-	View mBottomContainer;
-	 ViewGroup adLayout;
+//	View mBottomContainer;
+	ViewGroup adLayout;
 	
 	
 	@Override
@@ -83,32 +90,35 @@ public class ShareVideoFragment extends BaseFragment implements
 		if(mViewDestoryed){
 			Log.d(TAG, "mViewDestoryed == true reloadData");
 			mViewDestoryed = false;
-			((SharedVideoAdapter)mListView.getAdapter()).setVideos(mVideos);
+			mAdapter.setVideos(mVideos);
 		}
 	};
 	
 	View setupView(LayoutInflater inflater){
 		View v = inflater.inflate(R.layout.share_video, null);
-		mListView = (ListView) v.findViewById(R.id.listView);
+		mPullListView = (PullToRefreshListView) v.findViewById(R.id.listView);
+		mPullListView.setOnRefreshListener(this);
+		mListView = mPullListView.getRefreshableView();
 		mListView.setOnItemClickListener(this);
 		mListView.setOnItemLongClickListener(this);
-		mBtnChange = (Button) v.findViewById(R.id.btn_change);
-		mBottomContainer = v.findViewById(R.id.bottom_container);
-		mBottomContainer.setVisibility(View.GONE);
-		mListView.setAdapter(new SharedVideoAdapter(getActivity()).setOnTipOffClickListener(this));
+//		mBtnChange = (Button) v.findViewById(R.id.btn_change);
+//		mBottomContainer = v.findViewById(R.id.bottom_container);
+//		mBottomContainer.setVisibility(View.GONE);
+		mAdapter = new SharedVideoAdapter(getActivity()).setOnTipOffClickListener(this);
+		mListView.setAdapter(mAdapter);
 		
-		mBtnChange.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				
-				if(((SharedVideoAdapter)mListView.getAdapter()).isTipOffMode()){
-					toggleTipOffMode();
-				}else{
-					scanSharedVideo();
-				}
-			}
-		});
+//		mBtnChange.setOnClickListener(new OnClickListener() {
+//			
+//			@Override
+//			public void onClick(View v) {
+//				
+//				if(mAdapter.isTipOffMode()){
+//					toggleTipOffMode();
+//				}else{
+//					scanSharedVideo();
+//				}
+//			}
+//		});
 		
 		//实例化广告条
 	    AdView adView = new AdView(getActivity(), AdSize.SIZE_320x50);
@@ -174,7 +184,7 @@ public class ShareVideoFragment extends BaseFragment implements
 						if(mListView == null){
 							return;
 						}
-						SharedVideoAdapter adapter = (SharedVideoAdapter) mListView.getAdapter();
+						SharedVideoAdapter adapter = mAdapter;
 						mVideos = videos;
 						if(adapter == null){
 							return;
@@ -184,6 +194,16 @@ public class ShareVideoFragment extends BaseFragment implements
 				}else{
 					Toast.makeText(getActivity(), "貌似网络不给力", Toast.LENGTH_SHORT).show();
 				}
+				
+				getActivity().runOnUiThread(new Runnable() {
+					
+					@Override
+					public void run() {
+						if(mPullListView.isRefreshing()){
+							mPullListView.onRefreshComplete();
+						}
+					}
+				});
 			}
 		});
 		
@@ -202,7 +222,7 @@ public class ShareVideoFragment extends BaseFragment implements
 	}
 	
 	private void handleSharedClick(int pos){
-		SharedVideoAdapter adapter = (SharedVideoAdapter) mListView.getAdapter();
+		SharedVideoAdapter adapter = mAdapter;
 		SharedVideoInfo v = adapter.getItem(pos);
 		Log.d(TAG, "click v hash:" + v.hash);
 		Intent i = new Intent("QvodPlayer.VIDEO_PLAY_ACTION");
@@ -233,7 +253,7 @@ public class ShareVideoFragment extends BaseFragment implements
 			scanSharedVideo();
 			firstInto = false;
 		}
-		showBottomContainer();
+//		showBottomContainer();
 	}
 	
 	
@@ -243,19 +263,19 @@ public class ShareVideoFragment extends BaseFragment implements
 	public void onLeave() {
 		super.onLeave();
 		checkAndCloseTipOffMode();
-		hideBottomContainer();
+//		hideBottomContainer();
 	}
 	
-	void hideBottomContainer(){
-	    if(mBottomContainer == null) return;
-	    mBottomContainer.setVisibility(View.INVISIBLE);
-	    mBottomContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.slide_out_to_bottom));
-	}
-	
-	void showBottomContainer(){
-	    mBottomContainer.setVisibility(View.VISIBLE);
-	    mBottomContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.slide_in_from_bottom));
-	}
+//	void hideBottomContainer(){
+//	    if(mBottomContainer == null) return;
+//	    mBottomContainer.setVisibility(View.INVISIBLE);
+//	    mBottomContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.slide_out_to_bottom));
+//	}
+//	
+//	void showBottomContainer(){
+//	    mBottomContainer.setVisibility(View.VISIBLE);
+//	    mBottomContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.slide_in_from_bottom));
+//	}
 	
 	@Override
 	public void onDestroy() {
@@ -301,18 +321,18 @@ public class ShareVideoFragment extends BaseFragment implements
 	    if(mListView == null){
 	        return;
 	    }
-		SharedVideoAdapter adapter = (SharedVideoAdapter) mListView.getAdapter();
+		SharedVideoAdapter adapter = mAdapter;
 		adapter.toggleTipOffMode();
-		if(adapter.isTipOffMode()){
-			mBtnChange.setText("取消");
-		}else{
-			mBtnChange.setText("换一批");
-		}
+//		if(adapter.isTipOffMode()){
+//			mBtnChange.setText("取消");
+//		}else{
+//			mBtnChange.setText("换一批");
+//		}
 	}
 	
 	boolean isTipOffMode(){
 		if(mListView == null) return false;
-		SharedVideoAdapter adapter = (SharedVideoAdapter) mListView.getAdapter();
+		SharedVideoAdapter adapter = mAdapter;
 		if(adapter == null) return false;
 		return adapter.isTipOffMode();
 	}
@@ -358,5 +378,12 @@ public class ShareVideoFragment extends BaseFragment implements
 	    }catch(Exception e){
 	        
 	    }
+	}
+
+	@Override
+	public void onRefresh(PullToRefreshBase<ListView> refreshView) {
+//		String label = getString(R.string.refreshing);
+//		refreshView.getLoadingLayoutProxy().setLastUpdatedLabel(label);
+		scanSharedVideo();
 	}
 }

@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
+    <!-- 
     <FrameLayout
         android:id="@+id/bottom_container"
         android:layout_width="match_parent"
@@ -24,29 +25,30 @@
             android:text="换一批"
             android:textColor="#fff" />
     </FrameLayout>
-
+ -->
+ 
     <LinearLayout
         android:id="@+id/adLayout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:orientation="vertical"
-        android:gravity="center_horizontal" >
+        android:layout_alignParentTop="true"
+        android:gravity="center_horizontal"
+        android:orientation="vertical" >
     </LinearLayout>
 
-    <ListView
+    <com.handmark.pulltorefresh.library.PullToRefreshListView
+        xmlns:ptr="http://schemas.android.com/apk/res-auto"
         android:id="@+id/listView"
-        android:layout_below = "@+id/adLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/bottom_container"
+        android:layout_below="@+id/adLayout"
         android:cacheColorHint="#000"
         android:divider="@color/list_divider"
         android:dividerHeight="0dp"
         android:fadingEdge="none"
-        android:scrollingCache="false" >
-    </ListView>
+        android:scrollingCache="false" 
+        ptr:ptrAnimationStyle="flip"/>
 
 </RelativeLayout>
