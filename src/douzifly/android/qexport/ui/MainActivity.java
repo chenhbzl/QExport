@@ -257,7 +257,6 @@ public class MainActivity extends SherlockFragmentActivity
 
 	@Override
 	public void showProgressOnActionBar() {
-//		setProgressBarIndeterminateVisibility(true);
 		Log.d(TAG, "showProgressOnActionBar");
 		if(mRefreshRotateAnim == null){
 			mRefreshRotateAnim = AnimationUtils.loadAnimation(this, R.anim.anim_rotate);
@@ -271,7 +270,6 @@ public class MainActivity extends SherlockFragmentActivity
 	@Override
 	public void hideProgressOnActionBar() {
 		Log.d(TAG, "hideProgressOnActionBar");
-//		setProgressBarIndeterminateVisibility(false);
 		mHandler.postDelayed(new Runnable() {
 			
 			@Override
