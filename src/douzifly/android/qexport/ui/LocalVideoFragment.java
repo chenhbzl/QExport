@@ -71,7 +71,7 @@ public class LocalVideoFragment extends BaseFragment implements
 	
 	@Override
 	public void onRefreshPressed() {
-		scanLocal();
+		scanLocal(true);
 	}
 	
 	@Override
@@ -84,7 +84,7 @@ public class LocalVideoFragment extends BaseFragment implements
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View v = setupView(inflater);
-		scanLocal();
+		scanLocal(true);
 		return v;
 	}
 	
@@ -116,7 +116,7 @@ public class LocalVideoFragment extends BaseFragment implements
 		return "我的合体";
 	}
 	
-	private void scanLocal(){
+	private void scanLocal(boolean pullDown){
 		if(mQExport == null){
 			// 快播
 			mQExport = new QExportManager();
@@ -126,6 +126,10 @@ public class LocalVideoFragment extends BaseFragment implements
 			mQExport.setExportListener(this);
 		}
 		showProgressOnActionBar();
+		
+		if(pullDown) {
+			mPullListView.setRefreshing();
+		}
 		
 		mQExport.scan();
 	}
@@ -285,6 +289,6 @@ public class LocalVideoFragment extends BaseFragment implements
 
 	@Override
 	public void onRefresh(PullToRefreshBase<ListView> refreshView) {
-		scanLocal();
+		scanLocal(false);
 	}
 }

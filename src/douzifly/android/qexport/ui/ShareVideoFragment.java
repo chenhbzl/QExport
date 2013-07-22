@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 
@@ -138,7 +139,7 @@ public class ShareVideoFragment extends BaseFragment implements
 	
 	boolean isScanShareding = false;
 	@SuppressLint("DefaultLocale")
-    private synchronized void scanSharedVideo(){
+    private synchronized void scanSharedVideo(boolean pullDown){
 	    
 	    final Context ctx = getActivity();
 	    if(ctx == null){
@@ -156,11 +157,15 @@ public class ShareVideoFragment extends BaseFragment implements
                         setAdLayoutVisibility(false);
                         return;
                     }else{
-                        scanSharedVideo();
+                        scanSharedVideo(false);
                     }
                 }
             });
 		    return;
+		}
+		
+		if(pullDown) { 
+			mPullListView.setRefreshing();
 		}
 		
 		setAdLayoutVisibility(true);
@@ -246,7 +251,7 @@ public class ShareVideoFragment extends BaseFragment implements
 	public void onInto() {
 		super.onInto();
 		if(firstInto){
-			scanSharedVideo();
+			scanSharedVideo(true);
 			firstInto = false;
 		}
 //		showBottomContainer();
@@ -288,7 +293,7 @@ public class ShareVideoFragment extends BaseFragment implements
 	
 	@Override
 	public void onRefreshPressed() {
-		scanSharedVideo();
+		scanSharedVideo(true);
 	}
 
 	@Override
@@ -380,6 +385,6 @@ public class ShareVideoFragment extends BaseFragment implements
 	public void onRefresh(PullToRefreshBase<ListView> refreshView) {
 //		String label = getString(R.string.refreshing);
 //		refreshView.getLoadingLayoutProxy().setLastUpdatedLabel(label);
-		scanSharedVideo();
+		scanSharedVideo(false);
 	}
 }
