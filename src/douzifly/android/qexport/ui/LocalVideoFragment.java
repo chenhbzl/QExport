@@ -9,6 +9,10 @@ package douzifly.android.qexport.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -38,12 +42,14 @@ import douzifly.android.qexport.utils.UMengHelper;
  * @author Xiaoyuan Lau
  *
  */
-public class LocalVideoFragment extends BaseFragment implements OnItemClickListener, ExportListener{
+public class LocalVideoFragment extends BaseFragment implements 
+		OnItemClickListener, ExportListener, OnRefreshListener<ListView>{
 
 	final static String TAG = "LocalVideoFragment";
 	
 	QExportManager     mQExport;
 	ListView           mListView;
+	PullToRefreshListView mPullListView;
 
 	LocalVideoAdapter  mLocalAdapter;
 	List<Integer>      mMergeing = new ArrayList<Integer>();
@@ -85,8 +91,10 @@ public class LocalVideoFragment extends BaseFragment implements OnItemClickListe
 	View setupView(LayoutInflater inflater){
 		
 		View root = inflater.inflate(R.layout.local_video, null);
-				
-		mListView = (ListView) root.findViewById(R.id.listResult);
+		mPullListView = (PullToRefreshListView) root.findViewById(R.id.listResult);		
+		mPullListView.setOnRefreshListener(this);
+		mListView = mPullListView.getRefreshableView();
+//		mListView = (ListView) root.findViewById(R.id.listResult);	
 //		mProgress = (GridProgressBar) root.findViewById(R.id.progressBar);
 //		mProgress.setNormalColor(yellow);
 //		mProgress.setCoverColor(blue);
@@ -124,7 +132,9 @@ public class LocalVideoFragment extends BaseFragment implements OnItemClickListe
 
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-		handleLocalClick(arg2);
+		// 这是下拉刷新列表的bug，暂时还未找到原因
+		// 列表中元素的下标从1开始而不是从0开始
+		handleLocalClick(arg2 -1);
 	}
 	
 	private void meger(final VideoInfo v, final String target) {
@@ -158,6 +168,9 @@ public class LocalVideoFragment extends BaseFragment implements OnItemClickListe
 				}
 				mLocalAdapter.setVideos(copy);
 				mListView.setAdapter(mLocalAdapter);
+				if(mPullListView.isRefreshing()){
+					mPullListView.onRefreshComplete();
+				}
 			}
 		});
 	}
@@ -268,5 +281,10 @@ public class LocalVideoFragment extends BaseFragment implements OnItemClickListe
 					
 	    		}).setNegativeButton("算了", null)
 	    		.show();
+	}
+
+	@Override
+	public void onRefresh(PullToRefreshBase<ListView> refreshView) {
+		scanLocal();
 	}
 }

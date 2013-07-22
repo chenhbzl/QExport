@@ -17,5 +17,5 @@
     
     <string name="open_transport">开启</string>
 	<string name="close_transport">关闭</string>
-	
+	<string name="refreshing">正在刷新...</string>
 </resources>
