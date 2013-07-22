@@ -214,6 +214,9 @@ public class ShareVideoFragment extends BaseFragment implements
 			if(waitTime == 0) waitTime = 1;
 			String tip = String.format("刷这么多，要累死我吗? 耐心等待%d秒吧", waitTime);
 			Toast.makeText(getActivity(), tip, Toast.LENGTH_SHORT).show();
+			if(mPullListView.isRefreshing()) {
+			    mPullListView.onRefreshComplete();
+			}
 		}else{
 			showProgressOnActionBar();
 			showCenterProgress();
