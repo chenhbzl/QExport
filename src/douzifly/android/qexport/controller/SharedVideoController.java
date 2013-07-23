@@ -22,7 +22,7 @@ public class SharedVideoController {
 	final static String TAG = "SharedVideoController"; 
 	
 	/** 默认的请求限制次数 */
-	final static int DEFAULT_REQUEST_RAND_MAX = 30;
+	final static int DEFAULT_REQUEST_RAND_MAX = 20;
 	
 	/** 默认的刷新限制时间 */
 	final static long DEFAULT_LIMTIED_PERID = 10 * 1000;

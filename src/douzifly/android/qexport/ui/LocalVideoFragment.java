@@ -137,9 +137,7 @@ public class LocalVideoFragment extends BaseFragment implements
 
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-		// 这是下拉刷新列表的bug，暂时还未找到原因
-		// 列表中元素的下标从1开始而不是从0开始
-		handleLocalClick(arg2 -1);
+		handleLocalClick(arg2);
 	}
 	
 	private void setMergeingPos(int pos){

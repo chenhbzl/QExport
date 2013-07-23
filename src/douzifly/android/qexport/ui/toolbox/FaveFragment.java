@@ -97,6 +97,10 @@ public class FaveFragment extends BaseFragment{
             }
             mAdapter.setVideos(mVideos);
             listView.setAdapter(mAdapter);
+            
+            if(mVideos == null || mVideos.size() == 0) {
+                Toast.makeText(getActivity(), "到大家的合体，长按吧", Toast.LENGTH_SHORT).show();
+            }
         } catch (Exception e){
             Log.d(TAG, "loadVideo exp:" + e.getMessage());
         }

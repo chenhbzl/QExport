@@ -61,6 +61,7 @@
         android:scrollingCache="false"
         android:fadingEdge="none"
         android:dividerHeight="0dp" 
+        ptr:ptrListViewExtrasEnabled="false"
         ptr:ptrAnimationStyle="flip" />
 
 </RelativeLayout>

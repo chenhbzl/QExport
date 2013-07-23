@@ -9,11 +9,6 @@ package douzifly.android.qexport.ui;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
-
 import net.youmi.android.banner.AdSize;
 import net.youmi.android.banner.AdView;
 import android.annotation.SuppressLint;
@@ -22,21 +17,24 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.FrameLayout.LayoutParams;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
+
 import douzi.android.qexport.R;
 import douzifly.android.qexport.controller.SharedVideoController;
 import douzifly.android.qexport.model.SharedVideoApi.OnSharedVideoLoadedListener;
@@ -58,7 +56,8 @@ public class ShareVideoFragment extends BaseFragment implements
 	OnItemClickListener, 
 	OnItemLongClickListener,
 	OnTipOffClickListener,
-	OnRefreshListener<ListView>{
+	OnRefreshListener<ListView>, 
+	OnClickListener{
 	
 	final static String TAG = "ShareVideoFragment";
 	
@@ -71,6 +70,8 @@ public class ShareVideoFragment extends BaseFragment implements
 	List<SharedVideoInfo> mVideos;
 //	View mBottomContainer;
 	ViewGroup adLayout;
+	ImageButton mBtnCloseAd;
+	AdView mAdView;
 	
 	
 	@Override
@@ -98,6 +99,7 @@ public class ShareVideoFragment extends BaseFragment implements
 	View setupView(LayoutInflater inflater){
 		View v = inflater.inflate(R.layout.share_video, null);
 		mPullListView = (PullToRefreshListView) v.findViewById(R.id.listView);
+		mBtnCloseAd = (ImageButton) v.findViewById(R.id.btnCloseAd);
 		mPullListView.setOnRefreshListener(this);
 		mListView = mPullListView.getRefreshableView();
 		mListView.setOnItemClickListener(this);
@@ -122,18 +124,31 @@ public class ShareVideoFragment extends BaseFragment implements
 //		});
 		
 		//实例化广告条
-	    AdView adView = new AdView(getActivity(), AdSize.SIZE_320x50);
+		mAdView = new AdView(getActivity(), AdSize.SIZE_320x50);
 	    //获取要嵌入广告条的布局
 	    adLayout =(ViewGroup)v.findViewById(R.id.adLayout);
 	    //将广告条加入到布局中
-	    adLayout.addView(adView);
+	    adLayout.addView(mAdView);
 		setAdLayoutVisibility(false);
+		
+		mBtnCloseAd.setOnClickListener(this);
+		
+		adLayout.setOnTouchListener(new OnTouchListener() {
+            
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                Log.d(TAG, "touch");
+                return false;
+            }
+        });
+		
 		return v;
 	}
 	
 	void setAdLayoutVisibility(boolean visible){
 	    if(adLayout == null) return;
 	    adLayout.setVisibility(visible ? View.VISIBLE : View.GONE);
+	    mBtnCloseAd.setVisibility(visible ? View.VISIBLE : View.GONE);
 	}
 	
 	
@@ -200,9 +215,7 @@ public class ShareVideoFragment extends BaseFragment implements
 					Toast.makeText(getActivity(), "貌似网络不给力", Toast.LENGTH_SHORT).show();
 				}
 				
-				if(mPullListView.isRefreshing()){
-					mPullListView.onRefreshComplete();
-				}
+				mPullListView.onRefreshComplete();
 			}
 		});
 		
@@ -214,9 +227,7 @@ public class ShareVideoFragment extends BaseFragment implements
 			if(waitTime == 0) waitTime = 1;
 			String tip = String.format("刷这么多，要累死我吗? 耐心等待%d秒吧", waitTime);
 			Toast.makeText(getActivity(), tip, Toast.LENGTH_SHORT).show();
-			if(mPullListView.isRefreshing()) {
-			    mPullListView.onRefreshComplete();
-			}
+			mPullListView.onRefreshComplete();
 		}else{
 			showProgressOnActionBar();
 			showCenterProgress();
@@ -244,9 +255,7 @@ public class ShareVideoFragment extends BaseFragment implements
 
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-		// 这是下拉刷新列表的bug，暂时还未找到原因
-		// 列表中元素的下标从1开始而不是从0开始
-		handleSharedClick(arg2 - 1);
+		handleSharedClick(arg2);
 	}
 	
 	boolean firstInto = true;
@@ -390,4 +399,13 @@ public class ShareVideoFragment extends BaseFragment implements
 //		refreshView.getLoadingLayoutProxy().setLastUpdatedLabel(label);
 		scanSharedVideo(false);
 	}
+
+    @Override
+    public void onClick(View v) {
+        Log.d(TAG, "onclick v:" + v);
+        if(v.getId() == R.id.btnCloseAd) {
+            Toast.makeText(getActivity(), "ad close click", Toast.LENGTH_SHORT).show();
+            
+        }
+    }
 }

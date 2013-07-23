@@ -17,6 +17,8 @@ public class UMengHelper {
 	public static final String EVENT_COLLECTION = "collection";
 	public static final String EVENT_MERGE = "merge";
 	public static final String EVENT_REFUSE_SHARE = "refuseshare";
+	public static final String EVENT_TRAN = "tran";
+	public static final String EVENT_CLOSE_AD = "closeAd";
 	
 	public static void logTipOff(Context ctx, int videoId){
 		HashMap<String, String> map = new HashMap<String, String>();
@@ -49,6 +51,14 @@ public class UMengHelper {
 	
 	public static void logMerge(Context ctx){
 		MobclickAgent.onEvent(ctx, UMengHelper.EVENT_MERGE);
+	}
+	
+	public static void logTran(Context ctx) {
+	    MobclickAgent.onEvent(ctx, UMengHelper.EVENT_TRAN);
+	}
+	
+	public static void logCloseAd(Context ctx) {
+	    MobclickAgent.onEvent(ctx, UMengHelper.EVENT_CLOSE_AD);
 	}
 	
 }
