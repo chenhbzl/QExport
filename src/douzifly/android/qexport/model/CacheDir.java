@@ -50,7 +50,6 @@ public class CacheDir {
 			return;
 		}
 		mVideos.clear();
-		int i = 0;
 		for(File f : subs){
 			if(!f.isDirectory()){
 				log(f.getName() + " is not directory ignore");
@@ -60,7 +59,6 @@ public class CacheDir {
 			if(video == null){
 			    continue;
 			}
-			video.postion = i++;
 			if(video != null){
 				mVideos.add(video);
 			}

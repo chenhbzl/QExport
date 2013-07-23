@@ -23,7 +23,6 @@ public class VideoInfo {
 	public String[] paths;
 	public long size;
 	public String hash;
-	public int postion;
 	public int progress = -1;
 	public int mergeSpeed;
 	public int mergeSize;
@@ -32,4 +31,8 @@ public class VideoInfo {
 	 * video source  such as {@link #SOURCE_QVOD} etc...
 	 */
 	public int source;
+	/**
+	 * 是否下载完
+	 */
+	public boolean downloadComplete = false;
 }

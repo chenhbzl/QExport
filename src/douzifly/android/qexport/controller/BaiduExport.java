@@ -38,13 +38,10 @@ public class BaiduExport extends AbsExport {
 		}
 
 		List<VideoInfo> list = new ArrayList<VideoInfo>();
-		int i = 0;
 		for (File file : files) {
 			VideoInfo v = getVideoInfo(file);
 			if (v != null) {
-				v.postion = i;
 				list.add(v);
-				i++;
 			}
 		}
 
@@ -57,19 +54,7 @@ public class BaiduExport extends AbsExport {
 			return null;
 		}
 
-		String folderName = file.getName();
-		if (!BaiduExportUtil.isBaiduCacheFolder(folderName)) {
-			return null;
-		}
-		String name = BaiduExportUtil.getRealNameFromFolder(folderName);
-		VideoInfo info = new VideoInfo();
-		info.source = VideoInfo.SOURCE_BAIDU;
-		info.name = name;
-		info.paths = BaiduExportUtil.getCacheSubFilePaths(file);
-		info.size = BaiduExportUtil.getFolderTotalSize(info.paths);
-//		Log.d(TAG, "getVideoInfo paths length: " + info.paths.length);
-		Log.d(TAG, "getVideoInfo real name: " + name + " info.size: " + info.size);
-		return info;
+		return BaiduExportUtil.getVideoInfo(file);
 	}
 
 	@Override

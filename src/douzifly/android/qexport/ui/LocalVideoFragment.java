@@ -52,7 +52,8 @@ public class LocalVideoFragment extends BaseFragment implements
 	PullToRefreshListView mPullListView;
 
 	LocalVideoAdapter  mLocalAdapter;
-	List<Integer>      mMergeing = new ArrayList<Integer>();
+//	List<Integer>      mMergeing = new ArrayList<Integer>();
+	int				   mMergeingPos = -1;
 //	GridProgressBar    mProgress;
 	ProgressBar		   mProgress1;
 	ProgressBar		   mProgress2;
@@ -141,8 +142,17 @@ public class LocalVideoFragment extends BaseFragment implements
 		handleLocalClick(arg2 -1);
 	}
 	
-	private void meger(final VideoInfo v, final String target) {
-		mMergeing.add(v.postion);
+	private void setMergeingPos(int pos){
+		mMergeingPos = pos;
+	}
+	
+	private void resetMergeingPos(){
+		mMergeingPos = -1;
+	}
+	
+	private void meger(final VideoInfo v, final String target, int pos) {
+//		mMergeing.add(v.postion);
+		setMergeingPos(pos);
 		SharedVideoController share = new SharedVideoController();
 		share.uploadVideo(v.name, v.hash);
 		mQExport.merge(v);
@@ -181,11 +191,13 @@ public class LocalVideoFragment extends BaseFragment implements
 
 	@Override
 	public void onMergeOk(final VideoInfo v,final boolean sucess) {
-	    mMergeing.remove((Integer)v.postion);
+//	    mMergeing.remove((Integer)v.postion);
 		getActivity().runOnUiThread(new Runnable() {
 			
 			@Override
 			public void run() {
+				Log.d(TAG, "onMergeOk");
+				resetMergeingPos();
 				mProgressContainer.setVisibility(View.GONE);
 				if(!sucess){
 					new AlertDialog.Builder(getActivity()).setTitle("节操没了").setCancelable(false)
@@ -207,8 +219,12 @@ public class LocalVideoFragment extends BaseFragment implements
 			
 			@Override
 			public void run() {
-				Log.d("debug","updateProgress:" + progress + " " + v.name);
-				mLocalAdapter.updateProgress(v.postion, progress, speed, writed);
+				Log.d(TAG,"updateProgress:" + progress + " " + v.name);
+				if(mMergeingPos == -1 || mMergeingPos >= mLocalAdapter.getCount()){
+					return;
+				}
+				
+				mLocalAdapter.updateProgress(mMergeingPos, progress, speed, writed);
 				if(mProgressContainer.getVisibility() != View.VISIBLE){
 					mProgressContainer.setVisibility(View.VISIBLE);
 				}
@@ -223,17 +239,24 @@ public class LocalVideoFragment extends BaseFragment implements
 		});
 	}
 	
+	private void showDownloadDialog(){
+		new AlertDialog.Builder(getActivity()).setTitle("无法合体")
+		.setMessage("未下载完的百度资源无法合体，请先把任务下载完")
+		.setPositiveButton("好的，知道了", null).show();
+	}
+	
 	/**
 	 * @param pos
 	 */
-	private void handleLocalClick(int pos) {
+	private void handleLocalClick(final int pos) {
+		Log.d(TAG, "handleLocalClick pos: " + pos);
 		final VideoInfo v = mLocalAdapter.getItem(pos);
 		if(v == null){
 			Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
 			return;
 		}
 		
-		if(mMergeing.size() > 0){
+		if(mMergeingPos > -1){
 			Toast.makeText(getActivity(), "忙着呢~~", Toast.LENGTH_SHORT).show();
 			return;
 		}
@@ -245,6 +268,13 @@ public class LocalVideoFragment extends BaseFragment implements
 		    Toast.makeText(getActivity(), "没有sd卡", Toast.LENGTH_SHORT).show();
 		    return;
 		}
+		
+		// 未下载完的百度资源无法合并，提示用户
+		if(v.source == VideoInfo.SOURCE_BAIDU && !v.downloadComplete){
+			showDownloadDialog();
+			return;
+		}
+		
 		final String target = exportFolder;
 		if(LocalVideoHelper.isVideoMerged(v.name, v.size)){
 			 new AlertDialog.Builder(getActivity()).setTitle("已经合体啦")
@@ -267,7 +297,7 @@ public class LocalVideoFragment extends BaseFragment implements
                     
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        meger(v, target);
+                        meger(v, target, pos);
                     }
                 })
 				.show();
@@ -280,7 +310,7 @@ public class LocalVideoFragment extends BaseFragment implements
 					
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-					    meger(v, target);
+					    meger(v, target, pos);
 					}
 					
 	    		}).setNegativeButton("算了", null)
