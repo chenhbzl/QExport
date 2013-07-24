@@ -300,6 +300,9 @@ public abstract class LoadingLayout extends FrameLayout implements ILoadingLayou
 
 	public void setRefreshingLabel(CharSequence refreshingLabel) {
 		mRefreshingLabel = refreshingLabel;
+		if(mHeaderText != null) {
+		    mHeaderText.setText(refreshingLabel);
+		}
 	}
 
 	public void setReleaseLabel(CharSequence releaseLabel) {
@@ -324,6 +327,10 @@ public abstract class LoadingLayout extends FrameLayout implements ILoadingLayou
 		if (View.INVISIBLE == mSubHeaderText.getVisibility()) {
 			mSubHeaderText.setVisibility(View.VISIBLE);
 		}
+	}
+	
+	public void setRefrehingProgressVisible(boolean visible) {
+	    mHeaderProgress.setVisibility(visible ? View.VISIBLE : View.GONE);
 	}
 
 	/**

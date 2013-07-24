@@ -20,6 +20,7 @@ import android.widget.Toast;
 import douzi.android.qexport.R;
 import douzifly.android.qexport.controller.QHttpServer;
 import douzifly.android.qexport.ui.BaseFragment;
+import douzifly.android.qexport.utils.UMengHelper;
 
 /**
  * @author douzifly
@@ -84,6 +85,7 @@ public class TransportFragment extends BaseFragment{
     @Override
     public void onInto() {
         super.onInto();
+        UMengHelper.logTran(getActivity());
         if(getActivity() != null) {
             start();
         }

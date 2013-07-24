@@ -33,10 +33,12 @@ import android.widget.Toast;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.handmark.pulltorefresh.library.internal.LoadingLayout;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 
 import douzi.android.qexport.R;
 import douzifly.android.qexport.controller.SharedVideoController;
+import douzifly.android.qexport.controller.SharedVideoController.OnWaitListener;
 import douzifly.android.qexport.model.SharedVideoApi.OnSharedVideoLoadedListener;
 import douzifly.android.qexport.model.SharedVideoInfo;
 import douzifly.android.qexport.model.db.CacheManager;
@@ -53,11 +55,12 @@ import douzifly.android.qexport.utils.UMengHelper;
  *
  */
 public class ShareVideoFragment extends BaseFragment implements 
-	OnItemClickListener, 
+    OnItemClickListener, 
 	OnItemLongClickListener,
 	OnTipOffClickListener,
 	OnRefreshListener<ListView>, 
-	OnClickListener{
+	OnClickListener,
+	OnWaitListener{
 	
 	final static String TAG = "ShareVideoFragment";
 	
@@ -72,6 +75,13 @@ public class ShareVideoFragment extends BaseFragment implements
 	ViewGroup adLayout;
 	ImageButton mBtnCloseAd;
 	AdView mAdView;
+	// whether is showing a dialog that notice too many refresh
+	boolean mIsShowMoreTip = false;
+	String mTipRefreshing = "正在寻找下一批";
+    String mTipPull = "下拉换一批";
+    String mTipRelease = "放开换一批";
+    
+    String mTipWaiting = "点击广告，支持开发者";
 	
 	
 	@Override
@@ -84,6 +94,7 @@ public class ShareVideoFragment extends BaseFragment implements
 			Bundle savedInstanceState) {
 		Log.d(TAG, "onCreateView");
 		View v = setupView(inflater);
+		mSharedVideoController.setWaitListener(this);
 		return v;
 	}
 	
@@ -104,24 +115,15 @@ public class ShareVideoFragment extends BaseFragment implements
 		mListView = mPullListView.getRefreshableView();
 		mListView.setOnItemClickListener(this);
 		mListView.setOnItemLongClickListener(this);
-//		mBtnChange = (Button) v.findViewById(R.id.btn_change);
-//		mBottomContainer = v.findViewById(R.id.bottom_container);
-//		mBottomContainer.setVisibility(View.GONE);
 		mAdapter = new SharedVideoAdapter(getActivity()).setOnTipOffClickListener(this);
 		mListView.setAdapter(mAdapter);
 		
-//		mBtnChange.setOnClickListener(new OnClickListener() {
-//			
-//			@Override
-//			public void onClick(View v) {
-//				
-//				if(mAdapter.isTipOffMode()){
-//					toggleTipOffMode();
-//				}else{
-//					scanSharedVideo();
-//				}
-//			}
-//		});
+		// Pull Texts
+		LoadingLayout loading = mPullListView.getHeaderLayout();
+		
+		loading.setRefreshingLabel(mTipRefreshing);
+		loading.setPullLabel(mTipPull);
+		loading.setReleaseLabel(mTipRelease);
 		
 		//实例化广告条
 		mAdView = new AdView(getActivity(), AdSize.SIZE_320x50);
@@ -148,13 +150,16 @@ public class ShareVideoFragment extends BaseFragment implements
 	void setAdLayoutVisibility(boolean visible){
 	    if(adLayout == null) return;
 	    adLayout.setVisibility(visible ? View.VISIBLE : View.GONE);
-	    mBtnCloseAd.setVisibility(visible ? View.VISIBLE : View.GONE);
+//	    mBtnCloseAd.setVisibility(visible ? View.VISIBLE : View.GONE);
 	}
-	
 	
 	boolean isScanShareding = false;
 	@SuppressLint("DefaultLocale")
     private synchronized void scanSharedVideo(boolean pullDown){
+	    
+	    if(mIsShowMoreTip) {
+	        return;
+	    }
 	    
 	    final Context ctx = getActivity();
 	    if(ctx == null){
@@ -223,16 +228,18 @@ public class ShareVideoFragment extends BaseFragment implements
 		
 		if(!sucess){
 			isScanShareding = false;
-			long waitTime = TimeUtils.millsToSeconds(mSharedVideoController.getWaitingTime());
-			if(waitTime == 0) waitTime = 1;
-			String tip = String.format("刷这么多，要累死我吗? 耐心等待%d秒吧", waitTime);
-			Toast.makeText(getActivity(), tip, Toast.LENGTH_SHORT).show();
-			mPullListView.onRefreshComplete();
+//			long waitTime = TimeUtils.millsToSeconds(mSharedVideoController.getWaitingTime());
+//			if(waitTime == 0) waitTime = 1;
+//			String tip = String.format("刷这么多，要累死我吗? 耐心等待%d秒吧", waitTime);
+//			Toast.makeText(getActivity(), tip, Toast.LENGTH_SHORT).show();
 		}else{
 			showProgressOnActionBar();
 			showCenterProgress();
 		}
 	}
+	
+	
+	
 	
 	private void handleSharedClick(int pos){
 		SharedVideoAdapter adapter = mAdapter;
@@ -336,11 +343,6 @@ public class ShareVideoFragment extends BaseFragment implements
 	    }
 		SharedVideoAdapter adapter = mAdapter;
 		adapter.toggleTipOffMode();
-//		if(adapter.isTipOffMode()){
-//			mBtnChange.setText("取消");
-//		}else{
-//			mBtnChange.setText("换一批");
-//		}
 	}
 	
 	boolean isTipOffMode(){
@@ -407,5 +409,42 @@ public class ShareVideoFragment extends BaseFragment implements
             Toast.makeText(getActivity(), "ad close click", Toast.LENGTH_SHORT).show();
             
         }
+    }
+
+    @Override
+    public void onWait() {
+        mIsShowMoreTip = true;
+        getActivity().runOnUiThread(new Runnable() {
+            
+            @Override
+            public void run() {
+                long waitTime = TimeUtils.millsToSeconds(mSharedVideoController.getWaitingTime());
+                Log.d(TAG, "onWait :" + waitTime);
+                if(waitTime == 0) waitTime = 1;
+                LoadingLayout loading = mPullListView.getHeaderLayout();
+                loading.setRefrehingProgressVisible(false);
+                loading.setRefreshingLabel(mTipWaiting + "(等待" + waitTime + " 秒)");
+            }
+        });
+    }
+
+    @Override
+    public void onEndWait() {
+        Log.d(TAG, "onEndWait");
+        mIsShowMoreTip = false;
+        getActivity().runOnUiThread(new Runnable() {
+            
+            @Override
+            public void run() {
+                try{
+                    LoadingLayout loading = mPullListView.getHeaderLayout();
+                    loading.setRefreshingLabel(mTipRefreshing);
+                    loading.setRefrehingProgressVisible(true);
+                    mPullListView.onRefreshComplete();
+                }catch(Exception e) {
+                    
+                }
+            }
+        });
     }
 }

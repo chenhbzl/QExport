@@ -8,11 +8,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
+import douzi.android.qexport.R;
 import douzifly.android.qexport.model.SharedVideoInfo;
 import douzifly.android.qexport.model.db.CacheManager;
 import douzifly.android.qexport.model.db.VideoCache;
@@ -28,6 +31,8 @@ public class FaveFragment extends BaseFragment{
     ListView listView;
     List<SharedVideoInfo> mVideos;
     FaveVideoAdapter mAdapter;
+    ImageView imgNothing;
+    boolean mFirstIn = true;
 
     @Override
     public String getTitle() {
@@ -36,7 +41,9 @@ public class FaveFragment extends BaseFragment{
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        listView = new ListView(getActivity());
+        View root = inflater.inflate(R.layout.fave, null);
+        listView = (ListView) root.findViewById(R.id.list);
+        imgNothing = (ImageView) root.findViewById(R.id.imgNothing);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int pos, long l) {
@@ -73,8 +80,16 @@ public class FaveFragment extends BaseFragment{
             }
         });
         
+        imgNothing.setOnClickListener(new OnClickListener() {
+            
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getActivity(), "到大家合体长按吧", Toast.LENGTH_SHORT).show();
+            }
+        });
+        
         loadVideo();
-        return listView;
+        return root;
     }
 
     @Override
@@ -99,7 +114,13 @@ public class FaveFragment extends BaseFragment{
             listView.setAdapter(mAdapter);
             
             if(mVideos == null || mVideos.size() == 0) {
-                Toast.makeText(getActivity(), "到大家的合体，长按吧", Toast.LENGTH_SHORT).show();
+                imgNothing.setVisibility(View.VISIBLE);
+            }else {
+                imgNothing.setVisibility(View.GONE);
+                if(mFirstIn) {
+                    Toast.makeText(getActivity(), "长按可以删除哦", Toast.LENGTH_SHORT).show();
+                    mFirstIn = false;
+                }
             }
         } catch (Exception e){
             Log.d(TAG, "loadVideo exp:" + e.getMessage());

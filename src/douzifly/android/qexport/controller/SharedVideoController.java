@@ -7,6 +7,8 @@
 package douzifly.android.qexport.controller;
 
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import android.util.Log;
 import douzifly.android.qexport.model.SharedVideoInfo;
@@ -31,9 +33,39 @@ public class SharedVideoController {
 	long 	mLastRequestTime = 0;	
 	int 	mMaxRequestRandCount = DEFAULT_REQUEST_RAND_MAX;
 	long 	mLimitedPerid = DEFAULT_LIMTIED_PERID;
+	OnWaitListener mWaitListener;
 	
 	public void getRandVideos(OnSharedVideoLoadedListener l){
 		SharedVideoApi.getVideos(l);
+	}
+	
+	public void setWaitListener(OnWaitListener l) {
+	    mWaitListener = l;
+	}
+	
+	private boolean mWaiting = false;
+	private void startWaitCount() {
+	    mWaiting = true;
+	    final Timer t = new Timer();
+	    t.scheduleAtFixedRate(new TimerTask() {
+            
+            @Override
+            public void run() {
+                if(System.currentTimeMillis() - mLastRequestTime < DEFAULT_LIMTIED_PERID){
+                    if(mWaitListener != null) {
+                        mWaitListener.onWait();
+                    }
+                }else {
+                    // reset
+                    mRequestRandCount = 0;
+                    mWaiting = false;
+                    if(mWaitListener != null) {
+                        mWaitListener.onEndWait();
+                    }
+                    t.cancel();
+                }
+            }
+        }, 0, 1000);
 	}
 	
 	/**
@@ -42,16 +74,12 @@ public class SharedVideoController {
 	 * @return
 	 */
 	public boolean getRandVideosByLimted(final OnSharedVideoLoadedListener l){
-		Log.d(TAG, "getRandVideosByLimted mRequestRandCount:" + mRequestRandCount + " max:" );
+		Log.d(TAG, "getRandVideosByLimted mRequestRandCount:" + mRequestRandCount 
+		        + " max:" +DEFAULT_REQUEST_RAND_MAX + " isWaiting:" + mWaiting);
+		if(mWaiting) return false;
 		if(mRequestRandCount >= DEFAULT_REQUEST_RAND_MAX){
-			Log.d(TAG, "request times out of limited");
-			if(System.currentTimeMillis() - mLastRequestTime < DEFAULT_LIMTIED_PERID){
-				Log.d(TAG, "limited period not reached, still waiting");
-				return false;
-			}else{
-				// reset
-				mRequestRandCount = 0;
-			}
+		    startWaitCount();
+		    return false;
 		}
 		
 		getRandVideos(new OnSharedVideoLoadedListener() {
@@ -104,4 +132,8 @@ public class SharedVideoController {
 		SharedVideoApi.increaseFiledValue(SharedVideoApi.FILED_PLAY_COUNT, id);
 	}
 	
+	public static interface OnWaitListener {
+	    void onWait();
+	    void onEndWait();
+	}
 }
