@@ -128,7 +128,7 @@ public class LocalVideoFragment extends BaseFragment implements
 		}
 		showProgressOnActionBar();
 		
-		if(pullDown) {
+		if(pullDown && mPullListView != null) {
 			mPullListView.setRefreshing();
 		}
 		
