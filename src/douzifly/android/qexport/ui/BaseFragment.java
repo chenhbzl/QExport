@@ -6,6 +6,7 @@
  */
 package douzifly.android.qexport.ui;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 /**
@@ -19,6 +20,12 @@ public class BaseFragment extends Fragment {
 	public BaseFragment setIActivity(IActivity a){
 		activity = a;
 		return this;
+	}
+	
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		//super.onSaveInstanceState(outState);
+		// fix bug
 	}
 	
 	public String getTitle(){

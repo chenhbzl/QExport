@@ -213,7 +213,13 @@ public class LocalVideoFragment extends BaseFragment implements
 	
 	@Override
 	public void onMergeProgress(final VideoInfo v,final int progress, final int speed, final int writed ) {
-		getActivity().runOnUiThread(new Runnable() {
+		
+		Activity activity = getActivity();
+		if(activity == null) {
+			return;
+		}
+		
+		activity.runOnUiThread(new Runnable() {
 			
 			@Override
 			public void run() {

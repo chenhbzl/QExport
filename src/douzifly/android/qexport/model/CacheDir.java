@@ -55,12 +55,16 @@ public class CacheDir {
 				log(f.getName() + " is not directory ignore");
 				continue;
 			}
-			VideoInfo video = getVideo(f.getPath());
-			if(video == null){
-			    continue;
-			}
-			if(video != null){
-				mVideos.add(video);
+			try{
+				VideoInfo video = getVideo(f.getPath());
+				if(video == null){
+					continue;
+				}
+				if(video != null){
+					mVideos.add(video);
+				}
+			} catch(Exception e) {
+				continue;
 			}
 		}
 	}
@@ -95,7 +99,20 @@ public class CacheDir {
 		if(files == null || files.length == 0){
 			return null;
 		}
-		v.name = files[0].substring(0,files[0].lastIndexOf("_"));
+		try {
+			v.name = files[0].substring(0,files[0].lastIndexOf("_"));
+		} catch(Exception e) {
+			
+		}
+		if(v.name == null) {
+			
+			try{
+				v.name = files[0].substring(0, files[0].lastIndexOf(".!mv"));
+			}catch (Exception e) {
+				return null;
+			}
+			
+		}
 		StringComparator comparator = new StringComparator();
 		Arrays.sort(files, comparator);
 		long size = 0;
@@ -115,9 +132,13 @@ public class CacheDir {
 
 		@Override
 		public int compare(String lhs, String rhs) {
-			int lIndex = getFileIndex(lhs);
-			int rIndex = getFileIndex(rhs);
-			return lIndex - rIndex;
+			try{
+				int lIndex = getFileIndex(lhs);
+				int rIndex = getFileIndex(rhs);
+				return lIndex - rIndex;
+			}catch (Exception e) {
+				return 0;
+			}
 		}
 		
 		public int getFileIndex(String name){

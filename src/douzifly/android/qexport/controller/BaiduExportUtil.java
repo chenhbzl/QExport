@@ -129,6 +129,9 @@ public class BaiduExportUtil {
 		}
 		long totalSize = 0;
 		for (String path : subPaths) {
+			if(path == null || path.trim().length() == 0) {
+				continue;
+			}
 			totalSize += new File(path).length();
 		}
 
